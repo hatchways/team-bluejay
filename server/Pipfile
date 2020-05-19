@@ -7,6 +7,9 @@ verify_ssl = true
 
 [packages]
 flask = "*"
+sqlalchemy = "*"
+flask-jwt = "*"
+flask-bcrypt = "*"
 
 [requires]
 python_version = "3.7"
