@@ -7,10 +7,10 @@ verify_ssl = true
 
 [packages]
 flask = "*"
-flask-marshmallow = "*"
-marshmallow-sqlalchemy = "*"
 flask-sqlalchemy = "*"
 psycopg2 = "*"
+flask-restful = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.8"
