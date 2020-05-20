@@ -1,6 +1,6 @@
 import React from "react";
-import AuthPage from "../components/AuthPage";
-import LoginForm from "../components/LoginForm";
+import AuthPage from "components/AuthPage";
+import LoginForm from "components/LoginForm";
 
 const LoginScreen = ({ props }) => {
   return (

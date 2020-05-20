@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "./common/Form";
+import Form from "common/Form";
 
 const LoginForm = ({ props }) => {
   const onSubmit = (data) => {

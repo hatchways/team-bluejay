@@ -9,8 +9,8 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import BackgroundImage from "../images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
-import { ReactComponent as Logo } from "../images/logo.svg";
+import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
+import { ReactComponent as Logo } from "images/logo.svg";
 
 const WhiteTextTypography = withStyles({
   root: {
