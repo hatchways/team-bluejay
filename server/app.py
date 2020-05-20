@@ -3,12 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema
 from flask_restful import Api
 
-from api.customer_handler import CustomerResource
+from api.user_handler import UserResource
 
 from api.ping_handler import ping_handler
 from api.home_handler import home_handler
 
-from models import db, Customer, CustomerSchema
+from models import db, User, UserSchema
 
 app = Flask(__name__)
 
@@ -30,4 +30,4 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 api = Api(app)
 
-api.add_resource(CustomerResource, '/customer')
+api.add_resource(UserResource, '/customer')

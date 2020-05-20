@@ -4,4 +4,4 @@ from marshmallow import Schema
 # initialize our db
 db = SQLAlchemy()
 
-from .User import Customer, CustomerSchema
+from .User import User, UserSchema
