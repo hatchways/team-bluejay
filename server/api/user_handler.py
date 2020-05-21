@@ -6,6 +6,7 @@ from flask_restful import Resource
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
+
 class UserResource(Resource):
     def get(self):
         all_users = User.query.all()

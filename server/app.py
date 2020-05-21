@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 from marshmallow import Schema
 from flask_restful import Api
 
@@ -10,24 +9,28 @@ from api.home_handler import home_handler
 
 from models import db, User, UserSchema
 
-app = Flask(__name__)
 
-app.register_blueprint(home_handler)
-app.register_blueprint(ping_handler)
+def create_app():
+    app = Flask(__name__)
 
-# Database variables
-user = 'postgres'
-pw = 'put-your-password-here'
-url = 'localhost:5432'
-db_name = 'team-bluejay'
+    app.register_blueprint(home_handler)
+    app.register_blueprint(ping_handler)
 
-DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
-    user=user, pw=pw, url=url, db=db_name)
+    # Database variables
+    user = 'postgres'
+    pw = '123456'
+    url = 'localhost:5432'
+    db_name = 'team-bluejay'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
+        user=user, pw=pw, url=url, db=db_name)
 
-db.init_app(app)
-api = Api(app)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-api.add_resource(UserResource, '/customer')
+    db.init_app(app)
+    api = Api(app)
+
+    api.add_resource(UserResource, '/customer')
+
+    return app
