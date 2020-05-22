@@ -9,7 +9,6 @@ class MealItemResource(Resource):
         all_meals = MealItem.query.all()
         return json.dumps(all_meals)
 
-    # @jwt_required
     def post(self):
         curr_user = get_jwt_identity()
         return curr_user

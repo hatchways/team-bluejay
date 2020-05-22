@@ -1,8 +1,7 @@
-from models import db
 from models.User import User, UserSchema
 from flask import request, Response, json
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity, decode_token
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -33,9 +32,10 @@ class UserResource(Resource):
         try:
             new_user = User(name, email, password)
             new_user.add_to_database()
+            token = create_access_token(new_user.to_dict())
             data = {
                 "message": "Created",
-                "access_token": create_access_token(new_user.to_dict())
+                "access_token": token
             }
             return Response(
                 json.dumps(data),

@@ -1,7 +1,7 @@
 from flask import request, Response, jsonify, json
 from flask_restful import Resource
 from models import User
-from flask_jwt_extended import create_refresh_token
+from flask_jwt_extended import create_refresh_token, get_jwt_identity
 
 
 class LoginResource(Resource):
@@ -24,9 +24,10 @@ class LoginResource(Resource):
         user = User.authenticate(email, password)
 
         if user:
+            token = create_refresh_token(user.to_dict())
             data = {
                 "message": "Authenticated",
-                "access_token": create_refresh_token(user.to_dict())
+                "access_token": token
             }
             return Response(
                 json.dumps(data),
