@@ -4,6 +4,7 @@ from flask_restful import Api
 
 from api.login_handler import LoginResource
 from api.user_handler import UserResource
+from api.meal_item_handler import MealItemResource
 
 from api.ping_handler import ping_handler
 from api.home_handler import home_handler
@@ -38,5 +39,6 @@ def create_app():
 
     api.add_resource(UserResource, '/users')
     api.add_resource(LoginResource, '/users/login')
+    api.add_resource(MealItemResource, '/meal_items')
 
     return app

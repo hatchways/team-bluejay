@@ -9,6 +9,7 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
+    isChef = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, name, email, password):
         if len(password) < 6:
@@ -16,6 +17,7 @@ class User(db.Model):
         self.name = name
         self.email = email
         self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+        self.isChef = False
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
