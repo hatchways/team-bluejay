@@ -7,9 +7,13 @@ verify_ssl = true
 
 [packages]
 flask = "*"
-sqlalchemy = "*"
+flask-sqlalchemy = "*"
+psycopg2 = "*"
+flask-restful = "*"
+marshmallow = "*"
 flask-bcrypt = "*"
+sqlalchemy = "*"
 flask-jwt-extended = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
