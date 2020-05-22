@@ -18,14 +18,7 @@ class User(db.Model):
         self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.username}, {self.email}>"
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email
-        }
+        return f"<User #{self.id}: {self.name}, {self.email}>"
 
     def add_to_database(self):
         try:
@@ -49,4 +42,4 @@ class User(db.Model):
 
 class UserSchema(Schema):
     class Meta:
-        fields = ('id', 'name', 'email', 'password')
+        fields = ('id', 'name', 'email')

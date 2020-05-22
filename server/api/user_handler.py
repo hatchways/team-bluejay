@@ -24,31 +24,28 @@ class UserResource(Resource):
             data = {
                 "message": "Please submit a name, email, password (with a minimum length of 6)"
             }
-            return Response(
-                json.dumps(data),
-                status=400,
-                mimetype="application/json"
-            )
+            return custom_response(data, 400)
 
         try:
             new_user = User(name, email, password)
             new_user.add_to_database()
             data = {
                 "message": "Created",
-                "access_token": create_access_token(new_user.to_dict())
+                "access_token": create_access_token(user_schema.dump(new_user))
             }
-            return Response(
-                json.dumps(data),
-                status=201,
-                mimetype="application/json"
-            )
+            return custom_response(data, 201)
+
         except ValueError:
             data = {
                 "message":
                     "Please submit a valid password (minimum length of 6)"
             }
-            return Response(
-                json.dumps(data),
-                status=400,
-                mimetype="application/json"
-            )
+            return custom_response(data, 400)
+
+
+def custom_response(res, status_code):
+    return Response(
+        mimetype="application/json",
+        response=json.dumps(res),
+        status=status_code
+    )
