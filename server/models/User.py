@@ -25,8 +25,7 @@ class User(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "email": self.email
+            "name": self.name
         }
 
     def add_to_database(self):
@@ -51,4 +50,4 @@ class User(db.Model):
 
 class UserSchema(Schema):
     class Meta:
-        fields = ('id', 'name', 'email', 'password')
+        fields = ('id', 'name', 'email', 'password', 'isChef')
