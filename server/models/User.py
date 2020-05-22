@@ -1,5 +1,4 @@
 from . import db, bcrypt
-from sqlalchemy.exc import IntegrityError
 from marshmallow import Schema
 
 
@@ -37,7 +36,7 @@ class User(db.Model):
             db.session.rollback()
             return None
 
-    @classmethod
+    
     def authenticate(cls, email, password):
         user = cls.query.filter_by(email=email).first()
         if not user:
