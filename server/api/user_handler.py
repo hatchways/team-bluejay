@@ -15,13 +15,12 @@ class UserResource(Resource):
 
     def post(self):
         req_body, name, email, password = None, None, None, None
-
         try:
             req_body = request.get_json()
             name = req_body['name']
             email = req_body['email']
             password = req_body['password']
-        except:
+        except Exception:
             data = {
                 "message": "Please submit a name, email, password (with a minimum length of 6)"
             }

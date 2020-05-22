@@ -36,7 +36,7 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    api.add_resource(LoginResource, '/login')
     api.add_resource(UserResource, '/users')
-    
+    api.add_resource(LoginResource, '/users/login')
+
     return app
