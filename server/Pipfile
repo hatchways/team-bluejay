@@ -11,6 +11,9 @@ flask-sqlalchemy = "*"
 psycopg2 = "*"
 flask-restful = "*"
 marshmallow = "*"
+flask-bcrypt = "*"
+sqlalchemy = "*"
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.8"
