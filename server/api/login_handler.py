@@ -20,7 +20,6 @@ class LoginResource(Resource):
         user = User.authenticate(email, password)
 
         if user:
-            print(user.id)
             data = {
                 "message": "Authenticated",
                 "access_token": create_refresh_token({"id": user.id})
