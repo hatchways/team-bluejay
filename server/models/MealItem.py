@@ -16,7 +16,8 @@ class MealItem(db.Model):
     # to access chef info from a meal item
     # user = db.relationship("User", db.ForeignKey('users.id'))
 
-    def __init__(self, name, description=""):
+    def __init__(self, userId, name, description=""):
+        self.userId = userId
         self.name = name
         self.description = description
 
