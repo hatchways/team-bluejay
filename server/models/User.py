@@ -32,11 +32,11 @@ class User(db.Model):
             db.session.add(self)
             db.session.commit()
             return self
-        except IntegrityError:
+        except Exception:
             db.session.rollback()
             return None
 
-    
+    @classmethod
     def authenticate(cls, email, password):
         user = cls.query.filter_by(email=email).first()
         if not user:

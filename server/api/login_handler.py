@@ -11,7 +11,7 @@ class LoginResource(Resource):
             req_body = request.get_json()
             email = req_body['email']
             password = req_body['password']
-        except:
+        except Exception:
             data = {
                 "message": "Please login with your email and password"
             }
