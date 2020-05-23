@@ -1,7 +1,12 @@
 from models.MealItem import MealItem, MealItemSchema
+from models.User import User
 from flask import request, Response, json
 from flask_restful import Resource
-from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    get_jwt_identity,
+    jwt_required,
+    decode_token
+)
 
 
 class MealItemResource(Resource):
@@ -11,11 +16,15 @@ class MealItemResource(Resource):
 
     # @jwt_required
     def post(self):
-        # curr_user = get_jwt_identity()
+        # brute force get curr user identity
+        auth_header = request.headers.get("Authorization")
+        token = decode_token(auth_header.replace("Bearer ", ""))
+        curr_user_id = token.get('identity').get('id')
+        curr_user = User.query.get(curr_user_id)
+        # =================
         req_body, name, description, userId = None, None, None, None
         try:
             req_body = request.get_json()
-            # userId = curr_user.id
             name = req_body['name']
             description = req_body.get('description', "")
         except Exception:
@@ -29,9 +38,10 @@ class MealItemResource(Resource):
             )
 
         try:
-            userId = 1
-            new_meal = MealItem(userId, name, description)
-            new_meal.add_to_database()
+            new_meal = MealItem(curr_user.id, name, description)
+            new_meal.save_to_database()
+            curr_user.chef_flag_true()
+            curr_user.save_to_database()
             data = {
                 "message": "Created Meal Item",
                 "meal_item": new_meal.name
@@ -51,4 +61,3 @@ class MealItemResource(Resource):
                 status=400,
                 mimetype="application/json"
             )
-

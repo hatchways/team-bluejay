@@ -24,7 +24,7 @@ class MealItem(db.Model):
     def __repr__(self):
         return f"<Meal #{self.id}: {self.name}>"
 
-    def add_to_database(self):
+    def save_to_database(self):
         try:
             db.session.add(self)
             db.session.commit()

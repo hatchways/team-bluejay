@@ -27,7 +27,8 @@ class LoginResource(Resource):
             token = create_refresh_token(user.to_dict())
             data = {
                 "message": "Authenticated",
-                "access_token": token
+                "access_token": token,
+                "user": get_jwt_identity()
             }
             return Response(
                 json.dumps(data),

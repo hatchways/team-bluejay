@@ -28,7 +28,11 @@ class User(db.Model):
             "name": self.name
         }
 
-    def add_to_database(self):
+    def chef_flag_true(self):
+        self.isChef = True
+        return
+
+    def save_to_database(self):
         try:
             db.session.add(self)
             db.session.commit()

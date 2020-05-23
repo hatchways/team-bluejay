@@ -31,7 +31,7 @@ class UserResource(Resource):
 
         try:
             new_user = User(name, email, password)
-            new_user.add_to_database()
+            new_user.save_to_database()
             token = create_access_token(new_user.to_dict())
             data = {
                 "message": "Created",
