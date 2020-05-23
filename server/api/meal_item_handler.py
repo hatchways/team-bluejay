@@ -5,7 +5,8 @@ from flask_restful import Resource
 from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
-    decode_token
+    decode_token,
+    jwt_optional
 )
 
 
@@ -14,15 +15,9 @@ class MealItemResource(Resource):
         all_meals = MealItem.query.all()
         return json.dumps(all_meals)
 
-    # @jwt_required
+    @jwt_required
     def post(self):
-        # brute force get curr user identity
-        auth_header = request.headers.get("Authorization")
-        token = decode_token(auth_header.replace("Bearer ", ""))
-        curr_user_id = token.get('identity').get('id')
-        curr_user = User.query.get(curr_user_id)
-        # =================
-        req_body, name, description, userId = None, None, None, None
+        req_body, name, description = None, None, None
         try:
             req_body = request.get_json()
             name = req_body['name']
@@ -36,6 +31,9 @@ class MealItemResource(Resource):
                 status=400,
                 mimetype="application/json"
             )
+
+        user_id = get_jwt_identity().get("id")
+        curr_user = User.query.get(user_id)
 
         try:
             new_meal = MealItem(curr_user.id, name, description)
