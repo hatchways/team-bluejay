@@ -1,7 +1,7 @@
 from flask import request, Response, jsonify, json
 from flask_restful import Resource
 from models import User
-from flask_jwt_extended import create_refresh_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity
 
 
 class LoginResource(Resource):

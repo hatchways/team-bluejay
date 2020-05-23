@@ -1,7 +1,7 @@
 from models.User import User, UserSchema
 from flask import request, Response, json
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, get_jwt_identity, decode_token
+from flask_jwt_extended import create_access_token, get_jwt_identity
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
