@@ -16,12 +16,6 @@
 
 ### Commands to initialize Postgres database with tables
 
-```
-python
-from app import create_app()
-app = create_app()
-app.app_context().push()
-from app import db
-db.create_all()
-exit()
+```sh
+pipenv run createdb
 ```
