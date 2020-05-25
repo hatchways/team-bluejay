@@ -1,8 +1,9 @@
-from models import db
 from models.User import User, UserSchema
 from flask import request, Response, json
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token
+from helpers.api import custom_json_response
+from helpers.database import save_to_database
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -24,31 +25,22 @@ class UserResource(Resource):
             data = {
                 "message": "Please submit a name, email, password (with a minimum length of 6)"
             }
-            return Response(
-                json.dumps(data),
-                status=400,
-                mimetype="application/json"
-            )
+            return custom_json_response(data, 400)
 
         try:
             new_user = User(name, email, password)
-            new_user.add_to_database()
+            save_to_database(new_user)
+            token = create_access_token(
+                identity={"id": new_user.id}
+            )
             data = {
                 "message": "Created",
-                "access_token": create_access_token(new_user.to_dict())
+                "access_token": token
             }
-            return Response(
-                json.dumps(data),
-                status=201,
-                mimetype="application/json"
-            )
+            return custom_json_response(data, 201)
         except ValueError:
             data = {
                 "message":
                     "Please submit a valid password (minimum length of 6)"
             }
-            return Response(
-                json.dumps(data),
-                status=400,
-                mimetype="application/json"
-            )
+            return custom_json_response(data, 400)

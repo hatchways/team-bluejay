@@ -9,6 +9,7 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
+    isChef = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, name, email, password):
         if len(password) < 6:
@@ -16,25 +17,14 @@ class User(db.Model):
         self.name = name
         self.email = email
         self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+        self.isChef = False
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email
-        }
-
-    def add_to_database(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-            return self
-        except Exception:
-            db.session.rollback()
-            return None
+    def chef_flag_true(self):
+        self.isChef = True
+        return
 
     @classmethod
     def authenticate(cls, email, password):
@@ -49,4 +39,9 @@ class User(db.Model):
 
 class UserSchema(Schema):
     class Meta:
-        fields = ('id', 'name', 'email', 'password')
+        fields = (
+            'id',
+            'name',
+            'email',
+            'isChef'
+        )
