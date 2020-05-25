@@ -21,18 +21,14 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <Switch>
+        {/* <Switch>
             <Route path="/test" render={(props) => (
                 <div>
                     <Navbar />
-                    {/* <Dialog isOpen={true}>
-                      <h1>DIALOG</h1>
-                    </Dialog> */}
                 </div>
-
             ) } />
-        </Switch>
-        {/* <AuthProvider>
+        </Switch> */}
+        <AuthProvider>
           <Switch>
             <Route path="/login" render={(props) => <LoginPage {...props} />} />
             <Route path="/signup" render={(props) => <SignUp {...props} />} />
@@ -41,7 +37,7 @@ function App() {
               render={(props) => <LoggedInContainer {...props} />}
             />
           </Switch>
-        </AuthProvider> */}
+        </AuthProvider>
       </BrowserRouter>
     </MuiThemeProvider>
   );

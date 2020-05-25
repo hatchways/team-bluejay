@@ -12,14 +12,12 @@ import { ArrowDropDown } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
-import Dialog from "common/Dialog"
+import BecomeChefButton from "components/BecomeChefButton";
 
 const TopNavigationBar = ({ loggedInUser }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false)
-
   const open = Boolean(anchorEl);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,22 +33,7 @@ const TopNavigationBar = ({ loggedInUser }) => {
         <Button size="large">Chefs</Button>
         <Button size="large">Dishes</Button>
         <div className={classes.grow} />
-
-        <Button 
-          size="large"
-          onClick={() => setDialogOpen(true)}
-        >
-          Become A Chef
-        </Button>
-        <Dialog
-          isOpen={dialogOpen}
-          handleClose={() => setDialogOpen(false)}
-          title="Add your first menu item to become A Chef"
-          subtitle="Add your first menu item"
-        >
-          {}
-        </Dialog>
-
+        <BecomeChefButton />
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />
           <Typography>{loggedInUser.name}</Typography>
@@ -66,7 +49,7 @@ const TopNavigationBar = ({ loggedInUser }) => {
           open={open}
           onClose={handleClose}
         >
-          <MenuItem className={classes.menuItem} onClick={setDialogOpen}>
+          <MenuItem className={classes.menuItem} onClick={handleClose}>
             Messages
           </MenuItem>
           <Divider />
