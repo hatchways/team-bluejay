@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import Form from "common/Form";
+import { Context as AuthContext } from "contexts/AuthContext";
 
-const LoginForm = ({ props }) => {
-  const onSubmit = (data) => {
-    console.log(data);
-  };
+const LoginForm = () => {
+  const { login } = useContext(AuthContext);
 
   const fields = [
     {
@@ -25,18 +24,18 @@ const LoginForm = ({ props }) => {
       type: "password",
       validation: {
         required: "Password is required.",
-        minLength: { value: 8, message: "Too short (min: 8)." },
-        pattern: {
-          value: /(?=[0-9])(?=.*[A-Z])/,
-          message: `Password must meet the following:
- - At least 1 digit (0-9).
- - At least 1 uppercase character`,
-        },
       },
     },
   ];
 
-  return <Form header="Login" onSubmit={onSubmit} fields={fields} />;
+  return (
+    <Form
+      header="Login"
+      onSubmit={login}
+      fields={fields}
+      submitButtonLabel="Login"
+    />
+  );
 };
 
 export default LoginForm;
