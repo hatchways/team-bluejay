@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from marshmallow import Schema
 from flask_restful import Api
 
@@ -9,7 +9,7 @@ from api.meal_item_handler import MealItemResource
 from api.ping_handler import ping_handler
 from api.home_handler import home_handler
 
-from flask_jwt_extended import JWTManager, get_jwt_identity
+from flask_jwt_extended import JWTManager
 
 from models import db
 

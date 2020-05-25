@@ -24,16 +24,12 @@ class MealItem(db.Model):
     def __repr__(self):
         return f"<Meal #{self.id}: {self.name}>"
 
-    def save_to_database(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-            return self
-        except Exception:
-            db.session.rollback()
-            return None
-
 
 class MealItemSchema(Schema):
     class Meta:
-        fields = ('id', 'userId', 'name', 'description')
+        fields = (
+            'id',
+            'userId',
+            'name',
+            'description'
+        )

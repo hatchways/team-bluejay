@@ -22,24 +22,9 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name
-        }
-
     def chef_flag_true(self):
         self.isChef = True
         return
-
-    def save_to_database(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-            return self
-        except Exception:
-            db.session.rollback()
-            return None
 
     @classmethod
     def authenticate(cls, email, password):
@@ -54,4 +39,8 @@ class User(db.Model):
 
 class UserSchema(Schema):
     class Meta:
-        fields = ('id', 'name', 'email', 'password', 'isChef')
+        fields = (
+            'id',
+            'name',
+            'isChef'
+        )
