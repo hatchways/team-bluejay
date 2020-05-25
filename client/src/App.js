@@ -19,7 +19,15 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <AuthProvider>
+        <Switch>
+            <Route path="/test" render={(props) => (
+                <div>
+                    <Navbar />
+                </div>
+
+            ) } />
+        </Switch>
+        {/* <AuthProvider>
           <Switch>
             <Route path="/login" render={(props) => <LoginPage {...props} />} />
             <Route path="/signup" render={(props) => <SignUp {...props} />} />
@@ -28,7 +36,7 @@ function App() {
               render={(props) => <LoggedInContainer {...props} />}
             />
           </Switch>
-        </AuthProvider>
+        </AuthProvider> */}
       </BrowserRouter>
     </MuiThemeProvider>
   );
