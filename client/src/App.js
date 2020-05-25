@@ -11,6 +11,8 @@ import SignUp from "pages/SignUp";
 import Home from "pages/Home";
 import Profile from "pages/Profile";
 
+import Dialog from "common/Dialog"
+
 import { Provider as AuthProvider } from "contexts/AuthContext";
 
 import "App.css";
@@ -23,6 +25,9 @@ function App() {
             <Route path="/test" render={(props) => (
                 <div>
                     <Navbar />
+                    {/* <Dialog isOpen={true}>
+                      <h1>DIALOG</h1>
+                    </Dialog> */}
                 </div>
 
             ) } />
