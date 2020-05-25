@@ -42,5 +42,6 @@ class UserSchema(Schema):
         fields = (
             'id',
             'name',
+            'email',
             'isChef'
         )
