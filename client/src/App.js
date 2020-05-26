@@ -12,7 +12,7 @@ import Home from "pages/Home";
 import Profile from "pages/Profile";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
-import { Provider as AlertContext } from "contexts/AlertContext";
+import { Provider as AlertProvider } from "contexts/AlertContext";
 
 import "App.css";
 
@@ -20,7 +20,7 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <AlertContext>
+        <AlertProvider>
           <AuthProvider>
             <Switch>
               <Route path="/login" component={LoginPage} />
@@ -28,7 +28,7 @@ function App() {
               <ProtectedRoute path="/" component={LoggedInContainer} />
             </Switch>
           </AuthProvider>
-        </AlertContext>
+        </AlertProvider>
       </BrowserRouter>
     </MuiThemeProvider>
   );
