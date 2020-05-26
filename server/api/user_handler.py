@@ -55,3 +55,9 @@ class UserResource(Resource):
                     "Please submit a valid password (minimum length of 6)"
             }
             return custom_json_response(data, 400)
+        except Exception:
+            data = {
+                "message":
+                    "Error in creating new user."
+            }
+            return custom_json_response(data, 400)

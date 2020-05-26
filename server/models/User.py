@@ -20,7 +20,7 @@ class User(db.Model):
         self.isChef = False
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.username}, {self.email}>"
+        return f"<User #{self.id}: {self.name}, {self.email}>"
 
     def chef_flag_true(self):
         self.isChef = True

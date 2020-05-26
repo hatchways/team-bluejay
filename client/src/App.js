@@ -23,15 +23,9 @@ function App() {
         <AlertContext>
           <AuthProvider>
             <Switch>
-              <Route
-                path="/login"
-                render={(props) => <LoginPage {...props} />}
-              />
-              <Route path="/signup" render={(props) => <SignUp {...props} />} />
-              <ProtectedRoute
-                path="/"
-                render={(props) => <LoggedInContainer {...props} />}
-              />
+              <Route path="/login" component={LoginPage} />
+              <Route path="/signup" component={SignUp} />
+              <ProtectedRoute path="/" component={LoggedInContainer} />
             </Switch>
           </AuthProvider>
         </AlertContext>
