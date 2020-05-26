@@ -17,3 +17,6 @@ flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+createdb = "./createdb.py"
