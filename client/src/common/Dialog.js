@@ -21,7 +21,7 @@ const CustomDialog = ({
       maxWidth='md'
       open={isOpen}
       onClose={handleClose}
-      aria-labelledby='max-width-dialog-title'>
+      aria-labelledby='max-width-dialog-title' color='primary'>
         <DialogActions>
           <CloseIcon onClick={handleClose} color='primary'/>
         </DialogActions>

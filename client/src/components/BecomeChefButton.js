@@ -9,7 +9,6 @@ import {
 
 const BecomeChefButton = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const text="Become A Chef";
   // const { login } = useContext(AuthContext);
   const fields = [
     {
@@ -25,28 +24,27 @@ const BecomeChefButton = () => {
     },
   ];
 
-  const toggleDialog = () => {
-    setDialogOpen(!dialogOpen);
-  }
-
   return (
-    <Button 
-      size="large"
-      onClick={toggleDialog}
-    >
-      {text}
+    <>
+      <Button 
+        size="large"
+        onClick={() => setDialogOpen(true)}
+      >
+        Become A Chef
+      </Button>
+      
       <Dialog
           isOpen={dialogOpen}
-          handleClose={toggleDialog}
+          handleClose={() => setDialogOpen(false)}
       >
         <Form
           header="Add your first meal to become a chef"
-          // onSubmit={}
+          // onSubmit={handleSubmit}
           fields={fields}
           submitButtonLabel="Create Meal / Become A Chef"
         />
       </Dialog>
-    </Button>
+    </>
   );
 }
 
