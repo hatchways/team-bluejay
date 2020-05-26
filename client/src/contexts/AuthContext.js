@@ -11,7 +11,7 @@ const reducer = (state, action) => {
     case "serverError":
     case "signUpError":
       return { ...state, errorMessage: action.payload };
-    case "signup":
+    case "signUp":
       return { user: action.payload.user, errorMessage: "" };
     case "clearErrorMessage":
       return { ...state, errorMessage: "" };
