@@ -9,12 +9,15 @@ export const theme = createMuiTheme({
   },
   palette: {
     primary: { main: "#ff743d", contrastText: "#fff" },
-    secondary: { main: "#ff510c", contrastText: "#fff" },
+    secondary: { main: "#1f1f1f", contrastText: "#fff" },
     error: { main: "#d8000c" },
-    bgcolor: { main: "#f8f8ff" },
   },
-  primary: "#f04040",
-  secondary: "#1f1f1f",
-  error: "#d8000c",
-  bgcolor: "#f6f6f6",
+  overrides: {
+    MuiChip: {
+      root: {
+        borderRadius: 0,
+        margin: "5px",
+      },
+    },
+  },
 });
