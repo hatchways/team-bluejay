@@ -8,7 +8,6 @@ const Navbar = () => {
   const {
     state: { user },
   } = useContext(AuthContext);
-
   return (
     <React.Fragment>
       <Hidden smDown>

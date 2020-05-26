@@ -15,6 +15,8 @@ const reducer = (state, action) => {
       return { user: action.payload.user, errorMessage: "" };
     case "clearErrorMessage":
       return { ...state, errorMessage: "" };
+    case "refreshUser":
+      return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
   }
@@ -24,6 +26,8 @@ const Context = React.createContext();
 
 //fake user until real login flow has been implemented
 const fakeUser = { name: "John Smith" };
+//fake chef until real flow has been implemented
+const fakeChef = { name: "Chef" , isChef: true};
 
 const Provider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {
@@ -55,9 +59,14 @@ const Provider = ({ children }) => {
     history.push("/login");
   };
 
+  const refreshUser = async() => {
+    // TODO call backend
+    dispatch({type: "refreshUser", payload: { user: fakeChef } });
+  }
+
   return (
     <Context.Provider
-      value={{ state, signUp, login, clearErrorMessage, signOut }}
+      value={{ state, signUp, login, clearErrorMessage, signOut, refreshUser }}
     >
       {children}
     </Context.Provider>

@@ -12,6 +12,7 @@ import Home from "pages/Home";
 import Profile from "pages/Profile";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
+import { Provider as MealProvider } from "contexts/MealContext";
 
 import "App.css";
 
@@ -20,14 +21,16 @@ function App() {
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <AuthProvider>
-          <Switch>
-            <Route path="/login" render={(props) => <LoginPage {...props} />} />
-            <Route path="/signup" render={(props) => <SignUp {...props} />} />
-            <ProtectedRoute
-              path="/"
-              render={(props) => <LoggedInContainer {...props} />}
-            />
-          </Switch>
+          <MealProvider>
+            <Switch>
+              <Route path="/login" render={(props) => <LoginPage {...props} />} />
+              <Route path="/signup" render={(props) => <SignUp {...props} />} />
+              <ProtectedRoute
+                path="/"
+                render={(props) => <LoggedInContainer {...props} />}
+              />
+            </Switch>
+          </MealProvider>
         </AuthProvider>
       </BrowserRouter>
     </MuiThemeProvider>
