@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Typography,
@@ -29,9 +30,15 @@ const TopNavigationBar = ({ loggedInUser }) => {
   return (
     <AppBar style={{ background: "#fff" }} position="static">
       <Toolbar>
-        <Logo className={classes.logo} />
-        <Button size="large">Chefs</Button>
-        <Button size="large">Dishes</Button>
+        <Link to="/">
+          <Logo className={classes.logo} />
+        </Link>
+        <Button component={Link} to="/chefs" size="large">
+          Chefs
+        </Button>
+        <Button component={Link} to="/dishes" size="large">
+          Dishes
+        </Button>
         <div className={classes.grow} />
         <BecomeChefButton loggedInUser={loggedInUser}/>
         <Button onClick={handleMenu}>
