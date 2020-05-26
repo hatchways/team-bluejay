@@ -10,6 +10,7 @@ import LoginPage from "pages/Login";
 import SignUp from "pages/SignUp";
 import Home from "pages/Home";
 import Profile from "pages/Profile";
+import Chefs from "pages/Chefs";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
@@ -23,6 +24,7 @@ function App() {
         <AuthProvider>
           <MealProvider>
             <Switch>
+              <Route path="/chefs" component={Chefs} />
               <Route path="/login" render={(props) => <LoginPage {...props} />} />
               <Route path="/signup" render={(props) => <SignUp {...props} />} />
               <ProtectedRoute
