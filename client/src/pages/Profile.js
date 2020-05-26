@@ -12,10 +12,27 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
 import GoogleMaps from "components/GoogleMaps";
+import { Edit } from "@material-ui/icons";
+
+const EditProfileButton = ({ editingProfile }) =>
+  editingProfile ? (
+    <Button variant="contained" color="secondary">
+      Save Edits
+    </Button>
+  ) : (
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <Edit />
+      <Typography variant="body1">Edit Profile</Typography>{" "}
+    </div>
+  );
 
 const Profile = ({ props }) => {
   const classes = useStyles();
   const favoriteCuisines = ["Japanese", "Chinese", "Mediterranean", "Thai"];
+  const loggedInUser = true;
+  const editingProfile = true;
 
   return (
     <Grid
@@ -43,9 +60,13 @@ const Profile = ({ props }) => {
         <Typography variant="subtitle1" className={classes.location}>
           Toronto, Canada
         </Typography>
-        <Button variant="outlined" color="primary" size="large">
-          Send Message
-        </Button>
+        {loggedInUser ? (
+          <EditProfileButton editingProfile={editingProfile} />
+        ) : (
+          <Button variant="outlined" color="primary" size="large">
+            Send Message
+          </Button>
+        )}
       </Grid>
 
       <Grid item xs={12} sm={6} md={5} component={Paper}>
@@ -108,6 +129,10 @@ const useStyles = makeStyles((theme) => ({
   location: {
     color: "darkgrey",
     marginBottom: theme.spacing(4),
+  },
+  icon: {
+    height: theme.spacing(3),
+    width: theme.spacing(3),
   },
 }));
 
