@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
 
-const TopNavigationBar = ({ loggedInUser }) => {
+const TopNavigationBar = ({ loggedInUser, signOut }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -52,7 +52,14 @@ const TopNavigationBar = ({ loggedInUser }) => {
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              signOut();
+            }}
+          >
+            Logout
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

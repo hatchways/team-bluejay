@@ -12,6 +12,7 @@ import Home from "pages/Home";
 import Profile from "pages/Profile";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
+import { Provider as AlertContext } from "contexts/AlertContext";
 
 import "App.css";
 
@@ -19,16 +20,21 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <AuthProvider>
-          <Switch>
-            <Route path="/login" render={(props) => <LoginPage {...props} />} />
-            <Route path="/signup" render={(props) => <SignUp {...props} />} />
-            <ProtectedRoute
-              path="/"
-              render={(props) => <LoggedInContainer {...props} />}
-            />
-          </Switch>
-        </AuthProvider>
+        <AlertContext>
+          <AuthProvider>
+            <Switch>
+              <Route
+                path="/login"
+                render={(props) => <LoginPage {...props} />}
+              />
+              <Route path="/signup" render={(props) => <SignUp {...props} />} />
+              <ProtectedRoute
+                path="/"
+                render={(props) => <LoggedInContainer {...props} />}
+              />
+            </Switch>
+          </AuthProvider>
+        </AlertContext>
       </BrowserRouter>
     </MuiThemeProvider>
   );
