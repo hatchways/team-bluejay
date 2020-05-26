@@ -1,22 +1,11 @@
 import React from "react";
-import {
-  Grid,
-  Paper,
-  Button,
-  Typography,
-  Box,
-  Hidden,
-} from "@material-ui/core";
+import { Grid, Paper, Button, Box, Hidden } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
 import { ReactComponent as Logo } from "images/logo.svg";
 
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF",
-  },
-})(Typography);
+import WhiteTextTypography from "common/WhiteTextTypography";
 
 const SignUpScreen = ({ Form, navigateToLabel, navigateTo, linkTitle }) => {
   const classes = useStyles();

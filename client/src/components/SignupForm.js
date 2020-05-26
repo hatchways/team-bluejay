@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import Form from "common/Form";
+import { Context as AuthContext } from "contexts/AuthContext";
 
-const LoginForm = ({ props }) => {
-  const onSubmit = (data) => {
-    console.log(data);
-  };
+const SignupForm = () => {
+  const { signUp } = useContext(AuthContext);
 
   const fields = [
     {
@@ -52,8 +51,13 @@ const LoginForm = ({ props }) => {
   ];
 
   return (
-    <Form header="Create an account" onSubmit={onSubmit} fields={fields} />
+    <Form
+      header="Create an account"
+      onSubmit={signUp}
+      fields={fields}
+      submitButtonLabel="Sign Up"
+    />
   );
 };
 
-export default LoginForm;
+export default SignupForm;

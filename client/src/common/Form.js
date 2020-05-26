@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const LoginForm = ({ header, onSubmit, fields }) => {
+const Form = ({ header, onSubmit, fields, submitButtonLabel }) => {
   const classes = useStyles();
   const { register, handleSubmit, errors, watch } = useForm({
     reValidateMode: "onChange",
@@ -68,7 +68,7 @@ const LoginForm = ({ header, onSubmit, fields }) => {
           color="primary"
           className={classes.submit}
         >
-          Login
+          {submitButtonLabel}
         </Button>
       </form>
     </div>
@@ -90,4 +90,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default LoginForm;
+export default Form;
