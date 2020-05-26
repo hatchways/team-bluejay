@@ -4,12 +4,15 @@ import Form from "common/Form";
 import {
   Button
 } from "@material-ui/core";
+import { Context as MealContext } from "contexts/MealContext";
+import { Context as UserContext } from "contexts/AuthContext";
 
-// import { Context as AuthContext } from "contexts/AuthContext";
 
-const BecomeChefButton = () => {
+const BecomeChefButton = ({loggedInUser}) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  // const { login } = useContext(AuthContext);
+  const { createMeal } = useContext(MealContext);
+  const { refreshUser } = useContext(UserContext)
+  const isChef = loggedInUser.isChef || false;
   const fields = [
     {
       name: "mealName",
@@ -24,7 +27,15 @@ const BecomeChefButton = () => {
     },
   ];
 
-  return (
+  const handleSubmit = ({...mealObject}) => {
+    createMeal(mealObject);
+    // Todo: 
+    // purpose: update isChef flag on loggedInUser
+    refreshUser();
+    setDialogOpen(false);
+  }
+
+  return  ( !isChef &&
     <>
       <Button 
         size="large"
@@ -39,7 +50,7 @@ const BecomeChefButton = () => {
       >
         <Form
           header="Add your first meal to become a chef"
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           fields={fields}
           submitButtonLabel="Create Meal / Become A Chef"
         />

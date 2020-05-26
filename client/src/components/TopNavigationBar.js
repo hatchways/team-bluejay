@@ -33,7 +33,7 @@ const TopNavigationBar = ({ loggedInUser }) => {
         <Button size="large">Chefs</Button>
         <Button size="large">Dishes</Button>
         <div className={classes.grow} />
-        <BecomeChefButton />
+        <BecomeChefButton loggedInUser={loggedInUser}/>
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />
           <Typography>{loggedInUser.name}</Typography>
