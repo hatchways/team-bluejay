@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Paper,
@@ -14,14 +14,15 @@ import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png
 import GoogleMaps from "components/GoogleMaps";
 import { Edit } from "@material-ui/icons";
 
-const EditProfileButton = ({ editingProfile }) =>
-  editingProfile ? (
-    <Button variant="contained" color="secondary">
+const EditProfileButton = ({ editing, toggleEditing }) =>
+  editing ? (
+    <Button variant="contained" color="secondary" onClick={toggleEditing}>
       Save Edits
     </Button>
   ) : (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      onClick={toggleEditing}
     >
       <Edit />
       <Typography variant="body1">Edit Profile</Typography>{" "}
@@ -32,7 +33,8 @@ const Profile = ({ props }) => {
   const classes = useStyles();
   const favoriteCuisines = ["Japanese", "Chinese", "Mediterranean", "Thai"];
   const loggedInUser = true;
-  const editingProfile = true;
+  const [editing, setEditing] = useState(false);
+  const toggleEditing = () => setEditing(!editing);
 
   return (
     <Grid
@@ -61,7 +63,7 @@ const Profile = ({ props }) => {
           Toronto, Canada
         </Typography>
         {loggedInUser ? (
-          <EditProfileButton editingProfile={editingProfile} />
+          <EditProfileButton editing={editing} toggleEditing={toggleEditing} />
         ) : (
           <Button variant="outlined" color="primary" size="large">
             Send Message
@@ -72,7 +74,7 @@ const Profile = ({ props }) => {
       <Grid item xs={12} sm={6} md={5} component={Paper}>
         <Box py={12} px={10}>
           <Typography variant="h6" paragraph className={classes.bold}>
-            ABOUT ME:
+            {editing && <Edit color="action" />}ABOUT ME:
           </Typography>
           <Box mb={6}>
             <Typography variant="body1" paragraph>
