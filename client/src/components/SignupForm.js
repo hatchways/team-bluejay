@@ -1,9 +1,15 @@
 import React, { useContext } from "react";
 import Form from "common/Form";
 import { Context as AuthContext } from "contexts/AuthContext";
+import { Redirect } from "react-router-dom";
 
 const SignupForm = () => {
-  const { signUp } = useContext(AuthContext);
+  const {
+    signUp,
+    state: { user },
+  } = useContext(AuthContext);
+
+  if (user) return <Redirect to="/" />;
 
   const fields = [
     {
