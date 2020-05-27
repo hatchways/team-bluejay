@@ -17,6 +17,8 @@ const reducer = (state, action) => {
       return { ...state, errorMessage: "" };
     case "refreshUser":
       return { user: action.payload.user, errorMessage: "" };
+    case "updateUser":
+      return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
   }
@@ -25,9 +27,18 @@ const reducer = (state, action) => {
 const Context = React.createContext();
 
 //fake user until real login flow has been implemented
-const fakeUser = { name: "John Smith" };
+const fakeUser = {
+  name: "John Smith",
+  aboutMe: "I am a nice person who likes expensive food at a cheap price",
+  address: "123 Merry lane",
+  city: "Pirate Bay",
+  state: "Toronto",
+  zipcode: "M4B 1B3",
+  country: "Canada",
+  cuisines: ["Japanese", "Chinese"],
+};
 //fake chef until real flow has been implemented
-const fakeChef = { name: "Chef" , isChef: true};
+const fakeChef = { name: "Chef", isChef: true };
 
 const Provider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {
@@ -51,6 +62,10 @@ const Provider = ({ children }) => {
     history.replace(from);
   };
 
+  const updateUser = async (updatedUser) => {
+    // TODO call back end
+    dispatch({ type: "updateUser", payload: { user: updatedUser } });
+  };
   const clearErrorMessage = () => dispatch({ type: "clearErrorMessage" });
 
   const signOut = async () => {
@@ -59,14 +74,22 @@ const Provider = ({ children }) => {
     history.push("/login");
   };
 
-  const refreshUser = async() => {
+  const refreshUser = async () => {
     // TODO call backend
-    dispatch({type: "refreshUser", payload: { user: fakeChef } });
-  }
+    dispatch({ type: "refreshUser", payload: { user: fakeChef } });
+  };
 
   return (
     <Context.Provider
-      value={{ state, signUp, login, clearErrorMessage, signOut, refreshUser }}
+      value={{
+        state,
+        signUp,
+        login,
+        clearErrorMessage,
+        signOut,
+        refreshUser,
+        updateUser,
+      }}
     >
       {children}
     </Context.Provider>
