@@ -67,10 +67,10 @@ const Provider = ({ children }) => {
 
   const refreshLoggedInUser = async () => {
     try {
-      const { data } = await API.get("/login");
+      const { data } = await API.get("/users/login");
       dispatch({ type: "login", payload: { user: data.user } });
     } catch (error) {
-      alert(error.response.data.message);
+      return;
     }
   };
 

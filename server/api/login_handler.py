@@ -17,6 +17,7 @@ class LoginResource(Resource):
         curr_user = User.query.get(user_id)
         response = custom_json_response({
             'user': user_schema.dump(curr_user)}, 200)
+        return response
 
     def post(self):
         req_body, email, password = None, None, None

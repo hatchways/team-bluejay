@@ -6,7 +6,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(async (config) => {
-  // config.headers.common["X-CSRF-TOKEN"] = Cookies.get("csrf_access_token");
+  config.headers.common["X-CSRF-TOKEN"] = Cookies.get("csrf_access_token");
   return config;
 });
 
