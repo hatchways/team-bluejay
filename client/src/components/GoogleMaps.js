@@ -24,8 +24,6 @@ const MapContainer = ({ google }) => {
   );
 };
 
-const MOSHES_GOOGLE_MAPS_API_KEY = "AIzaSyAN3q6E8D80h38QQsiSWQ5keW6YSRMPqYc";
-
 export default GoogleApiWrapper({
-  apiKey: MOSHES_GOOGLE_MAPS_API_KEY,
+  apiKey: process.env.MOSHES_GOOGLE_MAPS_API_KEY,
 })(MapContainer);
