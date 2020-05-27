@@ -6,7 +6,6 @@ from api.login_handler import LoginResource
 from api.user_handler import UserResource
 from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
-from api.TokenRefreshResource import TokenRefreshResource
 
 
 from flask_jwt_extended import (
@@ -50,6 +49,5 @@ def create_app():
     api.add_resource(LoginResource, '/users/login')
     api.add_resource(MealItemResource, '/meal_items')
     api.add_resource(LogoutResource, '/users/logout')
-    api.add_resource(TokenRefreshResource, '/token/refresh')
 
     return app
