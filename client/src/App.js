@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { theme } from "themes/theme";
 
+import Bootsrapper from "components/Bootstrapper";
 import Navbar from "components/Navbar";
 import ProtectedRoute from "common/ProtectedRoute";
 import LoginPage from "pages/Login";
@@ -13,6 +14,7 @@ import Profile from "pages/Profile";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
+import { Provider as AlertProvider } from "contexts/AlertContext";
 
 import "App.css";
 
@@ -20,15 +22,19 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <AuthProvider>
-          <MealProvider>
-            <Switch>
-              <Route path="/login" component={LoginPage} />
-              <Route path="/signup" component={SignUp} />
-              <ProtectedRoute path="/" component={LoggedInContainer} />
-            </Switch>
-          </MealProvider>
-        </AuthProvider>
+        <AlertProvider>
+          <AuthProvider>
+            <MealProvider>
+              <Bootsrapper>
+                <Switch>
+                  <Route path="/login" component={LoginPage} />
+                  <Route path="/signup" component={SignUp} />
+                  <ProtectedRoute path="/" component={LoggedInContainer} />
+                </Switch>
+              </Bootsrapper>
+            </MealProvider>
+          </AuthProvider>
+        </AlertProvider>
       </BrowserRouter>
     </MuiThemeProvider>
   );
