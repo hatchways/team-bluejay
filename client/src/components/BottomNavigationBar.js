@@ -9,7 +9,28 @@ import UserAvatar from "common/UserAvatar";
 const BottomNavigationBar = ({ loggedInUser }) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-
+  const bottomTabs = [
+    {
+      value: "chefs",
+      label: "Chefs",
+      icon: <ChefLogo className={classes.icon} />,
+    },
+    {
+      value: "dishes",
+      label: "Dishes",
+      icon: <DishIcon className={classes.icon} />,
+    },
+    {
+      value: "messages",
+      label: "Messages",
+      icon: <ChatBubbleOutline className={classes.icon} />,
+    },
+    {
+      value: "profile",
+      label: "Profile",
+      icon: <UserAvatar className={classes.avatarIcon} user={loggedInUser} />,
+    },
+  ];
   return (
     <BottomNavigation
       value={value}
@@ -19,26 +40,11 @@ const BottomNavigationBar = ({ loggedInUser }) => {
       showLabels
       className={classes.stickToBottom}
     >
-      <BottomNavigationAction
-        label="Chefs"
-        value="chefs"
-        icon={<ChefLogo className={classes.icon} />}
-      />
-      <BottomNavigationAction
-        label="Dishes"
-        value="dishes"
-        icon={<DishIcon className={classes.icon} />}
-      />
-      <BottomNavigationAction
-        label="Messages"
-        value="messages"
-        icon={<ChatBubbleOutline className={classes.icon} />}
-      />
-      <BottomNavigationAction
-        label="Profile"
-        value="profile"
-        icon={<UserAvatar className={classes.avatarIcon} user={loggedInUser} />}
-      />
+      {bottomTabs.map(({ value, label, icon }) => {
+        return (
+          <BottomNavigationAction label={label} value={value} icon={icon} />
+        );
+      })}
     </BottomNavigation>
   );
 };

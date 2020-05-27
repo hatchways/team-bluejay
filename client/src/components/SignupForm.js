@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import Form from "common/Form";
 import { Context as AuthContext } from "contexts/AuthContext";
 
-const LoginForm = () => {
+const SignupForm = () => {
   const { signUp } = useContext(AuthContext);
 
   const fields = [
@@ -60,4 +60,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignupForm;
