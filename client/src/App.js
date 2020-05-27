@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { theme } from "themes/theme";
 
-import Bootsrapper from "components/Bootstrapper";
+import Bootstrapper from "components/Bootstrapper";
 import Navbar from "components/Navbar";
 import ProtectedRoute from "common/ProtectedRoute";
 import LoginPage from "pages/Login";
@@ -23,13 +23,13 @@ function App() {
       <BrowserRouter>
         <AlertProvider>
           <AuthProvider>
-            <Bootsrapper>
+            <Bootstrapper>
               <Switch>
                 <Route path="/login" component={LoginPage} />
                 <Route path="/signup" component={SignUp} />
                 <ProtectedRoute path="/" component={LoggedInContainer} />
               </Switch>
-            </Bootsrapper>
+            </Bootstrapper>
           </AuthProvider>
         </AlertProvider>
       </BrowserRouter>

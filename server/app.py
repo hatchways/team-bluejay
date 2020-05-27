@@ -25,7 +25,7 @@ def create_app():
     # should likely be True
     app.config['JWT_COOKIE_SECURE'] = False
     app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
-    app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+    app.config['JWT_REFRESH_COOKIE_PATH'] = '/users/login'
     app.config['JWT_COOKIE_CSRF_PROTECT'] = True
     app.config['JWT_CSRF_IN_COOKIES'] = True
     app.config['JWT_SECRET_KEY'] = 'team-bluejay'
