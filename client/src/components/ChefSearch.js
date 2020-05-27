@@ -1,94 +1,219 @@
-import React from "react";
-import { Grid, Paper, Button, Box, Hidden, TextField, Input, InputLabel, FormControl, FormGroup } from "@material-ui/core";
-import { LocationOn, BorderColor } from '@material-ui/icons';
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { 
+  Grid, 
+  Paper, 
+  Button, 
+  Box, 
+  Input,  
+  Typography,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardMedia,
+  CardContent
+} from "@material-ui/core";
+import { LocationOn, Clear} from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
-import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
-import { ReactComponent as Logo } from "images/logo.svg";
+import { addressToCoords } from "api/location";
+import chefImage from "images/chef.png"
 
-import WhiteTextTypography from "common/WhiteTextTypography";
 
-const ChefSearch = (props) => {
+const ChefSearch = ({coords}) => {
+  const [chefs, setChefs] = useState([]);
+  const [userAddress, setUserAddress] = useState("");
+  const [userCoordinates, setUserCoordinates] = useState(null);
+  const [selectedCuisines, setSelectedCuisines] = useState([]);
+  const [cuisineTypes, setCuisineTypes] = useState([]);
   const classes = useStyles();
-  let history = useHistory();
+  useEffect(() => {
+    // do api call
+
+    // to change later
+    // dummy cuisine types
+    setCuisineTypes(['Japanese', 'Chinese', 'American', 'French', 'Mexican', 'Italian']);
+    // dummy chefs
+    setChefs([
+      {name: "Sushi Chef", cuisine: ['Japanese'], location:"Toronto, Canada", description:"Sushi Master", img: chefImage},
+      {name: "Pasta Chef", cuisine: ['Italian'], location:"Toronto, Canada", description:"Pasta Master", img: chefImage},
+      {name: "Burger Maker", cuisine: ['American'], location:"Toronto, Canada", description:"Burger Master", img: chefImage}
+    ])
+  }, []);
+
+  const getLocation = () => {
+    const success = (pos) => {
+      const {latitude, longitude} = pos.coords;
+      setUserAddress(`${latitude}, ${longitude}`);
+      setUserCoordinates({latitude, longitude});
+    }
+    const error = (err) => {
+      alert(err)
+    }
+    navigator.geolocation.getCurrentPosition(success, error);  
+  }
+
+  const handleChange = (e) => {
+    setUserAddress(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const addressCoordinates = addressToCoords(userAddress);
+    setUserCoordinates(addressCoordinates);
+  }
+
+  const addSelectedCuisine = (cuisine) => {
+    setSelectedCuisines([...selectedCuisines, cuisine])
+  }
+
+  const removeSelectedCuisine = (cuisine) => {
+    let filteredCuisines = selectedCuisines.filter( c => (c !== cuisine));
+    setSelectedCuisines(filteredCuisines)
+  }
+
+  
   return (
     <Grid container component="main" className={classes.root}>
       <Grid item xs={12} sm={6} md={3} component={Paper} square>
         <Box className={classes.paper}>
-          <FormGroup className={classes.formGroup}>
-            <InputLabel color='primary'>Location</InputLabel>
-            <Box className={classes.locationBox} >
-              <Input id="my-input" aria-describedby="my-helper-text" flexGrow={0.8} disableUnderline/>
-              <LocationOn className={classes.locationIcon} color='primary'/>
-            </Box> 
-          </FormGroup>
-          <FormGroup className={classes.formGroup}>
-            <InputLabel color='primary'>Cuisine: </InputLabel>
-            
-          </FormGroup>   
-          
+          <Box className={classes.filterGroup}>
+            <Typography component="h6" variant="h6">
+              Location
+            </Typography>
+            <form className={classes.locationBox} onSubmit={handleSubmit}>
+              <Input id="my-input" aria-describedby="my-helper-text" onChange={handleChange} value={userAddress} disableUnderline/>
+              <LocationOn className={classes.locationIcon} color={userCoordinates ? 'primary':'lightgrey'} onClick={getLocation}/>
+            </form> 
+          </Box>
+          <Box className={classes.filterGroup}>
+            <Typography component="h6" variant="h6">
+              Cuisine:
+            </Typography>
+            <Box className={classes.selectedCuisines}>
+              {selectedCuisines.map(cuisine => (
+                <Button 
+                  className={classes.button} 
+                  color="secondary" 
+                  variant="contained" 
+                  key={cuisine}
+                >
+                  {cuisine}
+                  <Clear onClick={() => removeSelectedCuisine(cuisine)}/>
+                </Button>
+              ))}
+            </Box>
+          </Box>
+          <Box className={classes.filterGroup}>
+            <Box className={classes.cuisineTypes}>
+              {cuisineTypes.filter(
+                cuisine => !selectedCuisines.includes(cuisine)).map(
+                cuisine => (
+                  <Button 
+                    className={classes.button} 
+                    color="error" 
+                    variant="contained" 
+                    key={cuisine}
+                    onClick={() => addSelectedCuisine(cuisine)}
+                  >
+                    {cuisine}
+                  </Button>
+                )
+                )
+              }
+            </Box>
+          </Box>             
         </Box>
       </Grid>
-      {/* <Hidden xsDown> */}
         <Grid item xs={true} sm={4} md={7}>
-          <Box component="div" className={classes.navigationHelper}>
-            <WhiteTextTypography>{"linkTitle"}</WhiteTextTypography>
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-            >
-              {"navigateToLabel"}
-            </Button>
+          <Box className={classes.chefsPage}>
+          <Typography component="h4" variant="h4">
+            Available Chefs:
+          </Typography>
+          <Box className={classes.chefTiles}>
+            {chefs.map(chef => <CustomCard chef={chef}/>)}
+          </Box>
           </Box>
         </Grid>
-      {/* </Hidden> */}
     </Grid>
   );
 };
 
+const CustomCard = ({chef}) => {
+  const classes = useStyles();
+  const { name, location, cuisine, description} = chef;
+  return (
+    <Card className={classes.card}>
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          alt="Chef Picture"
+          image={chefImage}
+          title={name}
+        />
+        <CardContent>
+          <Typography variant="h5" component="h5">
+            {name}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary" component="p">
+            {location}
+          </Typography>
+          <Button mx="auto" className={classes.button} color="secondary" variant="contained">
+            {cuisine[0]}
+          </Button>
+          <Typography variant="body" color="textSecondary" component="p">
+            {description}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+}
+
 const useStyles = makeStyles((theme) => ({
-  formGroup: {
-    margin: theme.spacing(3,0)
+  card: {
+    minWidth: 345,
+    margin: theme.spacing(2, 2, 2, 0),
+    display: 'block',
+    '& p': {
+      textAlign: 'center'
+    },
+    '& h5': {
+      textAlign: 'center'
+    },
+  },
+  chefTiles: {
+    display: 'flex'
+  },
+  chefsPage: {
+    padding: theme.spacing(8, 10, 0, 8),
+  },
+  filterGroup: {
+    marginTop: theme.spacing(2)
+  },
+  cuisineTypes: {
+    display: 'inline-block',
+  },
+  selectedCuisines: {
+    display: 'inline-block',
   },
   locationBox: {
-    
     padding: theme.spacing(1,1),
-    display:"block",
+    display:"inline-block",
     border: `1px solid ${"lightgrey"}`
   },
   locationIcon: {
     float: "right"
   },
-  logo: {
-    margin: theme.spacing(4, 5),
-  },
   button: {
-    marginLeft: theme.spacing(3),
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(3),
     padding: theme.spacing(1, 0),
     minWidth: theme.spacing(15),
   },
   root: {
     height: "100vh",
   },
-  image: {
-    backgroundImage: `url(${BackgroundImage})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-  },
-  navigationHelper: {
-    margin: theme.spacing(1, 1),
-    backgroundPosition: "center",
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
   paper: {
     margin: theme.spacing(8, 10, 0, 8),
-  },
-  navigationLink: {
-    padding: theme.spacing(0),
   },
 }));
 
