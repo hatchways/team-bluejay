@@ -48,20 +48,16 @@ class UserResource(Resource):
 
         return response
 
-    # Todo: how to get past csrf token using postman
-    # @jwt_required
+    @jwt_required
     def put(self):
         try:
             req_body = request.get_json()
-            # load method from marshmallow validates data according to schema definition
             data = user_schema.load(req_body, partial=True)
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
-        #current_userid = get_jwt_identity()
-        #user = User.query.get(current_userid)
-        SAMPLE_ID = 1
-        user = User.query.get(SAMPLE_ID)
+        current_userid = get_jwt_identity()
+        user = User.query.get(current_userid)
         user.update(data)
         ser_user = user_schema.dump(user)
         return custom_json_response(ser_user, 200)
