@@ -1,5 +1,6 @@
 from . import db, bcrypt
-from marshmallow import Schema
+from marshmallow import fields, Schema, validate
+from marshmallow.utils import missing
 
 
 class User(db.Model):
@@ -11,13 +12,12 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     isChef = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, name, email, password):
-        if len(password) < 6:
-            raise ValueError
-        self.name = name
-        self.email = email
-        self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
-        self.isChef = False
+    def __init__(self, data):
+        self.name = data['name']
+        self.email = data['email']
+        self.password = bcrypt.generate_password_hash(
+            data['password']).decode('UTF-8')
+        self.isChef = data['isChef']
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
@@ -25,6 +25,12 @@ class User(db.Model):
     def chef_flag_true(self):
         self.isChef = True
         return
+
+    def update(self, data):
+        for key, item in data.items():
+            # To do: check if key is password and hash it properly
+            setattr(self, key, item)
+        db.session.commit()
 
     @classmethod
     def authenticate(cls, email, password):
@@ -38,10 +44,8 @@ class User(db.Model):
 
 
 class UserSchema(Schema):
-    class Meta:
-        fields = (
-            'id',
-            'name',
-            'email',
-            'isChef'
-        )
+    name = fields.String(required=True)
+    email = fields.Email(required=True)
+    isChef = fields.Boolean(missing=True)
+    password = fields.String(required=True, validate=[
+                             validate.Length(min=6)], load_only=True)

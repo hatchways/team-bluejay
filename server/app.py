@@ -32,7 +32,7 @@ def create_app():
 
     # Database variables
     user = 'postgres'
-    pw = 'P@ssw0rd'
+    pw = '123456'
     url = 'localhost:5432'
     db_name = 'team-bluejay'
 
