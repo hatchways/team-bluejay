@@ -1,7 +1,13 @@
 from models.User import User, UserSchema
 from flask import request, Response
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, set_access_cookies, create_refresh_token, get_csrf_token, set_refresh_cookies
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+    create_refresh_token,
+    get_csrf_token,
+    set_refresh_cookies
+)
 from helpers.api import custom_json_response
 from helpers.database import save_to_database
 from datetime import timedelta
@@ -33,8 +39,19 @@ class UserResource(Resource):
 
         new_user = User(**user_data)
         new_user.save()
+
+        access_token = create_access_token(
+            identity={"id": new_user.id}, expires_delta=timedelta(days=30))
+        refresh_token = create_refresh_token(
+            identity={"id": new_user.id}, expires_delta=timedelta(days=30))
+        
         data = {
             "message": "Created",
-            "meal": user_schema.dump(new_user)
+            "user": user_schema.dump(new_user)
         }
-        return custom_json_response(data, 201)
+        response = custom_json_response(data, 201)
+        
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        
+        return response

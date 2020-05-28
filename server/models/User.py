@@ -11,8 +11,8 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     isChef = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, name, email, password):
-        if len(password) < 6:
+    def __init__(self, name, email, password, confirmPassword):
+        if len(password) < 6 or password != confirmPassword:
             raise ValueError
         self.name = name
         self.email = email
@@ -56,3 +56,4 @@ class UserSchema(Schema):
     email = fields.Str(required=True)
     password = fields.Str(required=True)
     isChef = fields.Boolean()
+    confirmPassword = fields.Str()
