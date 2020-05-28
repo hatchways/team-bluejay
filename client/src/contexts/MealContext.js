@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import API from "api/index";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -21,15 +21,17 @@ const Provider = ({ children }) => {
     errorMessage: "",
   });
 
-  let history = useHistory();
-  let location = useLocation();
-
-  const createMeal = async ({ mealName, description }) => {
+  const createMeal = async (meal) => {
     // do backend call
-    dispatch({
-      type: "createMeal",
-      payload: { createdMeal: { mealName, description } },
-    });
+    try {
+      const { data } = await API.post("/meal_items", meal);
+      dispatch({
+        type: "createMeal",
+        payload: { createdMeal: meal },
+      });
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
 
   return (

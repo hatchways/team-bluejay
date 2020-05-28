@@ -29,7 +29,7 @@ function App() {
                 <Switch>
                   <Route path="/login" component={LoginPage} />
                   <Route path="/signup" component={SignUp} />
-                  <ProtectedRoute path="/" component={LoggedInContainer} />
+                  <ProtectedRoute path="/" render={LoggedInContainer} />
                 </Switch>
               </Bootsrapper>
             </MealProvider>

@@ -12,15 +12,45 @@ const BecomeChefButton = ({ loggedInUser }) => {
   const isChef = loggedInUser.isChef || false;
   const fields = [
     {
-      name: "mealName",
+      name: "name",
       label: "Meal Name",
       validation: {
-        required: "Name is required.",
+        required: "Meal Name is required.",
+      },
+    },
+    {
+      name: "price",
+      label: "Price",
+      validation: {
+        required: "Price is required.",
+        pattern: {
+          value: /\d+/,
+          message: "Please supply a proper price",
+        },
+      },
+    },
+    {
+      name: "servings",
+      label: "Servings",
+      validation: {
+        required: "Servings is required.",
+        pattern: {
+          value: /^\d+$/,
+          message: "Please supply a proper serving size",
+        },
       },
     },
     {
       name: "description",
       label: "Description",
+    },
+    {
+      name: "ingredients",
+      label: "Ingredients",
+    },
+    {
+      name: "required_stuff",
+      label: "Required Stuff",
     },
   ];
 
