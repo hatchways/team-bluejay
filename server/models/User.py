@@ -55,5 +55,5 @@ class UserSchema(Schema):
     name = fields.Str(required=True)
     email = fields.Str(required=True)
     password = fields.Str(required=True)
-    confirmPassword = fields.Str()
     isChef = fields.Boolean()
+    confirmPassword = fields.Str()
