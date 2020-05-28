@@ -39,7 +39,10 @@ class LoginResource(Resource):
             refresh_token = create_refresh_token(
                 identity={"id": user.id}, expires_delta=timedelta(days=30))
             response = custom_json_response({
-                "message": "Authenticated", 'user': user_schema.dump(user)}, 200)
+                "message": "Authenticated", 
+                'user': user_schema.dump(user)}, 
+                200
+            )
             # 'access_csrf': get_csrf_token(access_token),
             # 'refresh_csrf': get_csrf_token(refresh_token)},
 

@@ -9,7 +9,6 @@ from sqlalchemy import exc
 
 
 user_schema = UserSchema()
-users_schema = UserSchema(many=True)
 
 
 class UserResource(Resource):
@@ -18,46 +17,24 @@ class UserResource(Resource):
         return users_schema.dump(all_users)
 
     def post(self):
-        req_body, name, email, password = None, None, None, None
+        req_data = request.get_json()
+        user_data = None
         try:
-            req_body = request.get_json()
-            name = req_body['name']
-            email = req_body['email']
-            password = req_body['password']
+            user_data = user_schema.load(req_data)
         except Exception:
-            data = {
-                "message": "Please submit a name, email, password (with a minimum length of 6)"
-            }
-            return custom_json_response(data, 400)
+            return custom_json_response({
+                "error": "Please supply a valid email and password."
+            }, 400)
 
-        try:
-            new_user = User(name, email, password)
-            save_to_database(new_user)
+        if User.get_user_by_email(req_data.get("email")):
+            return custom_json_response({
+                "error": "User already exists. Please supply a different email."
+            }, 400)
 
-            access_token = create_access_token(
-                identity={"id": new_user.id}, expires_delta=timedelta(days=1))
-
-            refresh_token = create_refresh_token(
-                identity={"id": new_user.id}, expires_delta=timedelta(days=30))
-
-            response = custom_json_response({
-                "message": "Created", "user": user_schema.dump(new_user)}, 200)
-
-            set_access_cookies(response, access_token)
-            set_refresh_cookies(response, refresh_token)
-
-            return response
-        except exc.IntegrityError:
-            return custom_json_response({"message": "User already exists!"}, 400)
-        except ValueError:
-            data = {
-                "message":
-                    "Please submit a valid password (minimum length of 6)"
-            }
-            return custom_json_response(data, 400)
-        except Exception:
-            data = {
-                "message":
-                    "Error in creating new user."
-            }
-            return custom_json_response(data, 400)
+        new_user = User(**user_data)
+        new_user.save()
+        data = {
+            "message": "Created",
+            "meal": user_schema.dump(new_user)
+        }
+        return custom_json_response(data, 201)

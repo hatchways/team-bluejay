@@ -1,14 +1,14 @@
 from . import db, bcrypt
-from marshmallow import Schema
+from marshmallow import Schema, fields
 
 
 class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(128), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
     isChef = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, name, email, password):
@@ -26,6 +26,18 @@ class User(db.Model):
         self.isChef = True
         return
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_one_user(id):
+        return User.query.get(id)
+
+    @staticmethod
+    def get_user_by_email(value):
+        return User.query.filter_by(email=value).first()
+
     @classmethod
     def authenticate(cls, email, password):
         user = cls.query.filter_by(email=email).first()
@@ -38,10 +50,9 @@ class User(db.Model):
 
 
 class UserSchema(Schema):
-    class Meta:
-        fields = (
-            'id',
-            'name',
-            'email',
-            'isChef'
-        )
+    id = fields.Int()
+    userId = fields.Int()
+    name = fields.Str(required=True)
+    email = fields.Str(required=True, exclude=True)
+    password = fields.Str(required=True, exclued=True)
+    isChef = fields.Boolean()
