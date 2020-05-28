@@ -26,8 +26,6 @@ const BecomeChefButton = ({ loggedInUser }) => {
 
   const handleSubmit = ({ ...mealObject }) => {
     createMeal(mealObject);
-    // Todo:
-    // purpose: update isChef flag on loggedInUser
     refreshLoggedInUser();
     setDialogOpen(false);
   };

@@ -4,7 +4,10 @@ import { useHistory, useLocation } from "react-router-dom";
 const reducer = (state, action) => {
   switch (action.type) {
     case "createMeal":
-      return { meals: [...state.meals, action.payload.createdMeal], errorMessage: "" };
+      return {
+        meals: [...state.meals, action.payload.createdMeal],
+        errorMessage: "",
+      };
     default:
       return state;
   }
@@ -21,23 +24,16 @@ const Provider = ({ children }) => {
   let history = useHistory();
   let location = useLocation();
 
-
-  const createMeal = async({mealName, description}) => {
+  const createMeal = async ({ mealName, description }) => {
     // do backend call
-    dispatch({ 
-      type: "createMeal", 
-      payload: { createdMeal: 
-        { mealName, description }
-    }});
-    // go back to previous page
-    let { from } = location.state || { from: { pathname: "/" } };
-    history.replace(from);
-  }
+    dispatch({
+      type: "createMeal",
+      payload: { createdMeal: { mealName, description } },
+    });
+  };
 
   return (
-    <Context.Provider
-      value={{ state, createMeal }}
-    >
+    <Context.Provider value={{ state, createMeal }}>
       {children}
     </Context.Provider>
   );
