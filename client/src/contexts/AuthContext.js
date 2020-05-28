@@ -25,14 +25,6 @@ const reducer = (state, action) => {
 
 const Context = React.createContext();
 
-<<<<<<< HEAD
-//fake user until real login flow has been implemented
-const fakeUser = { name: "John Smith" };
-//fake chef until real flow has been implemented
-const fakeChef = { name: "Chef" , isChef: true};
-
-=======
->>>>>>> temp-branch-kareem
 const Provider = ({ children }) => {
   const { alert } = useContext(AlertContext);
   const [state, dispatch] = useReducer(reducer, {
@@ -84,16 +76,8 @@ const Provider = ({ children }) => {
     }
   };
 
-  const refreshUser = async() => {
-    // TODO call backend
-    dispatch({type: "refreshUser", payload: { user: fakeChef } });
-  }
-
   return (
     <Context.Provider
-<<<<<<< HEAD
-      value={{ state, signUp, login, clearErrorMessage, signOut, refreshUser }}
-=======
       value={{
         state,
         signUp,
@@ -102,7 +86,6 @@ const Provider = ({ children }) => {
         signOut,
         refreshLoggedInUser,
       }}
->>>>>>> temp-branch-kareem
     >
       {children}
     </Context.Provider>
