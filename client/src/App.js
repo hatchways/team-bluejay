@@ -24,13 +24,15 @@ function App() {
       <BrowserRouter>
         <AlertProvider>
           <AuthProvider>
-            <Bootstrapper>
-              <Switch>
-                <Route path="/login" component={LoginPage} />
-                <Route path="/signup" component={SignUp} />
-                <ProtectedRoute path="/" component={LoggedInContainer} />
-              </Switch>
-            </Bootstrapper>
+            <MealProvider>
+              <Bootstrapper>
+                <Switch>
+                  <Route path="/login" component={LoginPage} />
+                  <Route path="/signup" component={SignUp} />
+                  <ProtectedRoute path="/" component={LoggedInContainer} />
+                </Switch>
+              </Bootstrapper>
+            </MealProvider>
           </AuthProvider>
         </AlertProvider>
       </BrowserRouter>
