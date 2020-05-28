@@ -23,7 +23,7 @@ class MealItemResource(Resource):
     def post(self):
         req_data = request.get_json()
         user_id = get_jwt_identity().get("id")
-        req_data["userId"] = get_jwt_identity().get("id")
+        req_data["userId"] = user_id
         meal_data = None
         try:
             meal_data = meal_item_schema.load(req_data)
