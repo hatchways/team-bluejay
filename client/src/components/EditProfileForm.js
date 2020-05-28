@@ -162,46 +162,50 @@ const EditProfileForm = ({ onSubmit }) => {
           )
         )}
         {/* TODO: Add option to add customized cuisines */}
-        <FormControl className={classes.formControl}>
-          <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
-          <Controller
-            as={
-              <Select
-                labelId="cuisines-label"
-                id="cuisines"
-                multiple
-                input={<Input id="select-multiple-chip" />}
-                renderValue={(selected) => (
-                  <div className={classes.chips}>
-                    {selected.map((value) => (
-                      <Chip
-                        key={value}
-                        label={value}
-                        className={classes.chip}
-                        color="primary"
-                      />
-                    ))}
-                  </div>
-                )}
-                MenuProps={MenuProps}
-              >
-                {cuisines.map((cuisine) => (
-                  <MenuItem
-                    key={cuisine}
-                    value={cuisine}
-                    className={classes.menuItem}
-                  >
-                    {cuisine}
-                  </MenuItem>
-                ))}
-              </Select>
-            }
-            name="cuisines"
-            rules={{ required: "Please list at least one cuisine" }}
-            control={control}
-            defaultValue={user.cuisines}
-          />
-        </FormControl>
+        <div>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-mutiple-chip-label">
+              Favorite Cuisines
+            </InputLabel>
+            <Controller
+              as={
+                <Select
+                  labelId="cuisines-label"
+                  id="cuisines"
+                  multiple
+                  input={<Input id="select-multiple-chip" />}
+                  renderValue={(selected) => (
+                    <div className={classes.chips}>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          className={classes.chip}
+                          color="primary"
+                        />
+                      ))}
+                    </div>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {cuisines.map((cuisine) => (
+                    <MenuItem
+                      key={cuisine}
+                      value={cuisine}
+                      className={classes.menuItem}
+                    >
+                      {cuisine}
+                    </MenuItem>
+                  ))}
+                </Select>
+              }
+              name="cuisines"
+              rules={{ required: "Please list at least one cuisine" }}
+              control={control}
+              defaultValue={user.cuisines}
+            />
+          </FormControl>
+        </div>
         <div>
           <Button
             type="submit"
