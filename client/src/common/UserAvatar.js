@@ -4,9 +4,6 @@ import { Avatar } from "@material-ui/core";
 
 const UserAvatar = ({ user, className }) => {
   const classes = useStyles();
-  if (!user || !className) {
-    return "";
-  }
 
   return user.avatarUrl ? (
     <Avatar src={user.avatarUrl} className={`${classes.avatar} ${className}`} />
