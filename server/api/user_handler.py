@@ -7,14 +7,14 @@ from helpers.database import save_to_database
 from datetime import timedelta
 from sqlalchemy import exc
 
-
 user_schema = UserSchema()
+user_schema_private = UserSchema(exclude=['password', 'email'])
 
 
 class UserResource(Resource):
     def get(self):
         all_users = User.query.all()
-        return users_schema.dump(all_users)
+        return user_schema_private.dump(all_users, many=True)
 
     def post(self):
         req_data = request.get_json()

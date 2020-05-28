@@ -53,6 +53,6 @@ class UserSchema(Schema):
     id = fields.Int()
     userId = fields.Int()
     name = fields.Str(required=True)
-    email = fields.Str(required=True, exclude=True)
-    password = fields.Str(required=True, exclued=True)
+    email = fields.Str(required=True)
+    password = fields.Str(required=True)
     isChef = fields.Boolean()

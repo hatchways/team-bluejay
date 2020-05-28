@@ -10,7 +10,6 @@ from flask_jwt_extended import (
 from helpers.database import save_to_database
 
 meal_item_schema = MealItemSchema()
-meal_items_schema = MealItemSchema(many=True)
 
 
 class MealItemResource(Resource):
