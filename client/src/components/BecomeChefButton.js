@@ -54,8 +54,8 @@ const BecomeChefButton = ({ loggedInUser }) => {
     },
   ];
 
-  const handleSubmit = ({ ...mealObject }) => {
-    createMeal(mealObject);
+  const handleSubmit = async ({ ...mealObject }) => {
+    await createMeal(mealObject);
     refreshLoggedInUser();
     setDialogOpen(false);
   };
