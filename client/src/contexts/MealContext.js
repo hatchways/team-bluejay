@@ -22,7 +22,6 @@ const Provider = ({ children }) => {
   });
 
   const createMeal = async (meal) => {
-    // do backend call
     try {
       const { data } = await API.post("/meal_items", meal);
       dispatch({
@@ -30,7 +29,7 @@ const Provider = ({ children }) => {
         payload: { createdMeal: meal },
       });
     } catch (error) {
-      alert(error.response.data.message);
+      console.log(error.response.data.message);
     }
   };
 
