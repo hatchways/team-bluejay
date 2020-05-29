@@ -1,9 +1,19 @@
 import React, { useContext } from "react";
+import { Redirect } from "react-router-dom";
 import Form from "common/Form";
 import { Context as AuthContext } from "contexts/AuthContext";
+import { useHistory, useLocation } from "react-router-dom";
 
 const LoginForm = () => {
-  const { login } = useContext(AuthContext);
+  const {
+    login,
+    state: { user },
+  } = useContext(AuthContext);
+
+  const location = useLocation();
+  let { from } = location.state || { from: { pathname: "/" } };
+
+  if (user) return <Redirect to={from} />;
 
   const fields = [
     {

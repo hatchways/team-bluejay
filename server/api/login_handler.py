@@ -1,11 +1,31 @@
-from flask import request, Response, jsonify, json
+from flask import request, Response, json
 from flask_restful import Resource
-from models import User
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from models import User, UserSchema
+from flask_jwt_extended import (create_access_token, get_jwt_identity,
+                                set_access_cookies, create_refresh_token, set_refresh_cookies, get_csrf_token, jwt_required, jwt_refresh_token_required)
 from helpers.api import custom_json_response
+from datetime import timedelta
+
+
+user_schema = UserSchema()
 
 
 class LoginResource(Resource):
+    @jwt_refresh_token_required
+    def get(self):
+        user_id = get_jwt_identity().get("id")
+        curr_user = User.query.get(user_id)
+        response = custom_json_response({
+            'user': user_schema.dump(curr_user)}, 200)
+        access_token = create_access_token(
+            identity={"id": user_id}, expires_delta=timedelta(days=30))
+        refresh_token = create_refresh_token(
+            identity={"id": user_id}, expires_delta=timedelta(days=30))
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        
+        return response
+
     def post(self):
         req_body, email, password = None, None, None
         try:
@@ -21,16 +41,16 @@ class LoginResource(Resource):
         user = User.authenticate(email, password)
 
         if user:
-            token = create_access_token(
-                identity={"id": user.id}
-            )
-            data = {
-                "message": "Authenticated",
-                "access_token": token
-            }
-            return custom_json_response(data, 200)
+            access_token = create_access_token(
+                identity={"id": user.id}, expires_delta=timedelta(days=30))
+            refresh_token = create_refresh_token(
+                identity={"id": user.id}, expires_delta=timedelta(days=30))
+            response = custom_json_response({
+                "message": "Authenticated", 'user': user_schema.dump(user)}, 200)
+
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            return response
         else:
-            data = {
-                "message": "Access denied."
-            }
+            data = {"message": "Incorrect username or password."}
             return custom_json_response(data, 401)
