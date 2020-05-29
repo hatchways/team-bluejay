@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     width: "80%",
     height: theme.spacing(30),
     display: "flex",
+    padding: theme.spacing(5),
   },
   image: {
     width: "40%",

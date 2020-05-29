@@ -44,7 +44,6 @@ const ChefProfile = ({ user }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      {/* <Navbar /> */}
       <Grid container>
         <ChefBanner chef={user} />
         <MealItemList chefName={user.name} meals={user.meals} />

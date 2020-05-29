@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(20),
     height: theme.spacing(20),
     border: "3px solid #fff",
-    top: "56%",
+    top: "60%",
   },
   chefDetails: {
     marginTop: theme.spacing(14),

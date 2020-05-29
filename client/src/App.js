@@ -22,7 +22,6 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Switch>
-            <Route path="/profile" component={ChefProfile} />
             <Route path="/login" component={LoginPage} />
             <Route path="/signup" component={SignUp} />
             <ProtectedRoute path="/" component={LoggedInContainer} />
