@@ -42,7 +42,12 @@ const BottomNavigationBar = ({ loggedInUser }) => {
     >
       {bottomTabs.map(({ value, label, icon }) => {
         return (
-          <BottomNavigationAction label={label} value={value} icon={icon} />
+          <BottomNavigationAction
+            label={label}
+            value={value}
+            icon={icon}
+            key={value}
+          />
         );
       })}
     </BottomNavigation>

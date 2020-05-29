@@ -1,6 +1,7 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useContext } from "react";
 import API from "api/index";
 import { useHistory, useLocation } from "react-router-dom";
+import { Context as AlertContext } from "contexts/AlertContext";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -26,21 +27,8 @@ const reducer = (state, action) => {
 
 const Context = React.createContext();
 
-//fake user until real login flow has been implemented
-const fakeUser = {
-  name: "John Smith",
-  aboutMe: "I am a nice person who likes expensive food at a cheap price",
-  address: "123 Merry lane",
-  city: "Pirate Bay",
-  state: "Toronto",
-  zipcode: "M4B 1B3",
-  country: "Canada",
-  cuisines: ["Japanese", "Chinese"],
-};
-//fake chef until real flow has been implemented
-const fakeChef = { name: "Chef", isChef: true };
-
 const Provider = ({ children }) => {
+  const { alert } = useContext(AlertContext);
   const [state, dispatch] = useReducer(reducer, {
     user: null,
     errorMessage: "",
@@ -49,17 +37,24 @@ const Provider = ({ children }) => {
   let history = useHistory();
   let location = useLocation();
 
-  const signUp = async ({ email, password }) => {
-    // TODO call back end
-    dispatch({ type: "signUp", payload: { user: fakeUser } });
-    history.push("/");
+  const signUp = async (user) => {
+    try {
+      const { data } = await API.post("/users", user);
+      dispatch({ type: "signUp", payload: { user: data.user } });
+      history.push("/");
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
   const login = async ({ email, password }) => {
-    // TODO call back end
-    dispatch({ type: "login", payload: { user: fakeUser } });
-    // We are trying to redirect the user to the page he was attempting to visit before he got redirected to login
-    let { from } = location.state || { from: { pathname: "/" } };
-    history.replace(from);
+    try {
+      const { data } = await API.post("/users/login", { email, password });
+      dispatch({ type: "login", payload: { user: data.user } });
+      let { from } = location.state || { from: { pathname: "/" } };
+      history.replace(from);
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
 
   const updateUser = async (updatedUser) => {
@@ -69,14 +64,28 @@ const Provider = ({ children }) => {
   const clearErrorMessage = () => dispatch({ type: "clearErrorMessage" });
 
   const signOut = async () => {
-    // TODO call back end
-    dispatch({ type: "signOut" });
-    history.push("/login");
+    try {
+      await API.post("/users/logout");
+      dispatch({ type: "signOut" });
+      history.push("/login");
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
 
+<<<<<<< HEAD
   const refreshUser = async () => {
     // TODO call backend
     dispatch({ type: "refreshUser", payload: { user: fakeChef } });
+=======
+  const refreshLoggedInUser = async () => {
+    try {
+      const { data } = await API.get("/users/login");
+      dispatch({ type: "login", payload: { user: data.user } });
+    } catch (error) {
+      return;
+    }
+>>>>>>> dev
   };
 
   return (
@@ -87,8 +96,12 @@ const Provider = ({ children }) => {
         login,
         clearErrorMessage,
         signOut,
+<<<<<<< HEAD
         refreshUser,
         updateUser,
+=======
+        refreshLoggedInUser,
+>>>>>>> dev
       }}
     >
       {children}

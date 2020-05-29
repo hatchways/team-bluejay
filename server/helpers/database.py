@@ -1,4 +1,5 @@
 from models import db
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def save_to_database(*objects):
@@ -6,6 +7,6 @@ def save_to_database(*objects):
         for obj in objects:
             db.session.add(obj)
         db.session.commit()
-    except Exception:
+    except Exception as e:
         db.session.rollback()
-        raise RuntimeError
+        raise e
