@@ -14,6 +14,7 @@ import Profile from "pages/Profile";
 import { Provider as AuthProvider } from "contexts/AuthContext";
 
 import "App.css";
+import ChefProfile from "components/ChefProfile";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Switch>
+            <Route path="/profile" component={ChefProfile} />
             <Route path="/login" component={LoginPage} />
             <Route path="/signup" component={SignUp} />
             <ProtectedRoute path="/" component={LoggedInContainer} />
