@@ -42,7 +42,9 @@ class LoginResource(Resource):
             refresh_token = create_refresh_token(
                 identity={"id": user.id}, expires_delta=timedelta(days=30))
             response = custom_json_response({
-                "message": "Authenticated", 'user': user_schema.dump(user)}, 200)
+                "message": "Authenticated", 
+                'user': user_schema.dump(user)}
+            , 200)
 
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)

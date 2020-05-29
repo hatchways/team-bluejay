@@ -16,6 +16,8 @@ const reducer = (state, action) => {
       return { user: action.payload.user, errorMessage: "" };
     case "clearErrorMessage":
       return { ...state, errorMessage: "" };
+    case "refreshUser":
+      return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
   }

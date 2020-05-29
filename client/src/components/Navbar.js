@@ -9,7 +9,6 @@ const Navbar = () => {
     state: { user },
     signOut,
   } = useContext(AuthContext);
-
   return (
     <React.Fragment>
       <Hidden smDown>

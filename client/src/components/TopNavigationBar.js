@@ -13,6 +13,7 @@ import { ArrowDropDown } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
+import BecomeChefButton from "components/BecomeChefButton";
 
 const TopNavigationBar = ({ loggedInUser, signOut }) => {
   const classes = useStyles();
@@ -39,6 +40,7 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
           Dishes
         </Button>
         <div className={classes.grow} />
+        <BecomeChefButton loggedInUser={loggedInUser}/>
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />
           <Typography>{loggedInUser.name}</Typography>
