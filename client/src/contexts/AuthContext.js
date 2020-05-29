@@ -73,11 +73,6 @@ const Provider = ({ children }) => {
     }
   };
 
-<<<<<<< HEAD
-  const refreshUser = async () => {
-    // TODO call backend
-    dispatch({ type: "refreshUser", payload: { user: fakeChef } });
-=======
   const refreshLoggedInUser = async () => {
     try {
       const { data } = await API.get("/users/login");
@@ -85,7 +80,6 @@ const Provider = ({ children }) => {
     } catch (error) {
       return;
     }
->>>>>>> dev
   };
 
   return (
@@ -96,12 +90,8 @@ const Provider = ({ children }) => {
         login,
         clearErrorMessage,
         signOut,
-<<<<<<< HEAD
-        refreshUser,
         updateUser,
-=======
         refreshLoggedInUser,
->>>>>>> dev
       }}
     >
       {children}
