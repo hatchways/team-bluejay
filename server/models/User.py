@@ -35,6 +35,10 @@ class User(db.Model):
         return User.query.get(id)
 
     @staticmethod
+    def get_all():
+        return User.query.all()
+
+    @staticmethod
     def get_user_by_email(value):
         return User.query.filter_by(email=value).first()
 
