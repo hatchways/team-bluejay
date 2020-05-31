@@ -18,7 +18,10 @@ user_schema_private = UserSchema(exclude=['password', 'email'])
 
 
 class UserResource(Resource):
-    def get(self):
+    def get(self, id=None):
+        if id:
+            user = User.get_by_id(id)
+            return user_schema_private.dump(user)
         all_users = User.get_all()
         return user_schema_private.dump(all_users, many=True)
 

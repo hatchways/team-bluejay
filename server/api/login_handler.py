@@ -14,7 +14,7 @@ class LoginResource(Resource):
     @jwt_refresh_token_required
     def get(self):
         user_id = get_jwt_identity().get("id")
-        curr_user = User.query.get(user_id)
+        curr_user = User.get_by_id(user_id)
         response = custom_json_response({
             'user': user_schema.dump(curr_user)}, 200)
         access_token = create_access_token(
