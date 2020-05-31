@@ -13,6 +13,7 @@ import Home from "pages/Home";
 import Profile from "pages/Profile";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
+import { Provider as MealProvider } from "contexts/MealContext";
 import { Provider as AlertProvider } from "contexts/AlertContext";
 
 import "App.css";
@@ -24,11 +25,13 @@ function App() {
         <AlertProvider>
           <AuthProvider>
             <Bootstrapper>
-              <Switch>
-                <Route path="/login" component={LoginPage} />
-                <Route path="/signup" component={SignUp} />
-                <ProtectedRoute path="/" component={LoggedInContainer} />
-              </Switch>
+              <MealProvider>
+                <Switch>
+                  <Route path="/login" component={LoginPage} />
+                  <Route path="/signup" component={SignUp} />
+                  <ProtectedRoute path="/" component={LoggedInContainer} />
+                </Switch>
+              </MealProvider>
             </Bootstrapper>
           </AuthProvider>
         </AlertProvider>
