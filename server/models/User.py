@@ -1,33 +1,6 @@
 from . import db, bcrypt
 from marshmallow import fields, Schema, validate, validates_schema, ValidationError
 
-favorite_cuisines_table = db.Table('favorite_cuisines',
-                                   db.Column('user_id', db.Integer,
-                                             db.ForeignKey('users.id')),
-                                   db.Column('cuisine_id', db.Integer,
-                                             db.ForeignKey('cuisines.id')),
-                                   db.PrimaryKeyConstraint(
-                                       'user_id', 'cuisine_id')
-                                   )
-
-
-class Cuisine(db.Model):
-    __tablename__ = 'cuisines'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False, unique=True)
-    users = db.relationship('User',
-                            secondary=favorite_cuisines_table,
-                            backref='user_cuisines'
-                            )
-
-    def __init__(self, name):
-        self.name = name
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -46,10 +19,6 @@ class User(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     formattedAddress = db.Column(db.String)
-    cuisines = db.relationship('Cuisine',
-                               secondary=favorite_cuisines_table,
-                               backref='cuisine_users'
-                               )
 
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
     def __init__(self, name, email, password, confirmPassword, aboutMe="", streetAddress="", city="", state="", zipcode="", country="", latitude=0.0, longitude=0.0, formattedAddress=""):

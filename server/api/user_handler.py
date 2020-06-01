@@ -1,4 +1,4 @@
-from models.User import User, UserSchema, Cuisine
+from models.User import User, UserSchema
 from config import MOSHES_GOOGLE_API_KEY
 from flask import request
 from flask_restful import Resource
@@ -54,12 +54,6 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
-        # Cuisines should go into separate seeder file
-        new_cuisine = Cuisine('Japanase')
-        new_cuisine.save()
-        new_cuisine2 = Cuisine('French')
-        new_cuisine2.save()
-
         req_body = request.get_json()
         try:
             valid_data = user_schema.load(req_body, partial=True)
@@ -69,10 +63,8 @@ class UserResource(Resource):
         current_userid = get_jwt_identity()
         user = User.get_one_user(current_userid)
 
-        geocoding_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
-
-        geocode_result = requests.get(
-            geocoding_url + 'address=' + valid_data.get('streetAddress') + valid_data.get('city') + valid_data.get('state') + valid_data.get('zipcode') + valid_data.get('country') + '&key=' + MOSHES_GOOGLE_API_KEY)
+        geocode_result = geocoder(valid_data.get('streetAddress', ''), valid_data.get(
+            'city', ''), valid_data.get('state', ''), valid_data.get('zipcode', ''), valid_data.get('country', ''))
 
         location = geocode_result.json()['results'][0]
 
@@ -86,10 +78,12 @@ class UserResource(Resource):
 
         user.update(valid_data)
 
-        query = User.query.join(Cuisine, User.cuisines)
-        print(query)
-        favorite_cuisines = query.all()
-        print(favorite_cuisines)
-
         ser_user = user_schema.dump(user)
         return custom_json_response(ser_user, 200)
+
+
+def geocoder(streetAddress="", city="", state="", zipcode="", country=""):
+    geocoding_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
+    request_url = geocoding_url + 'address=' + streetAddress + city + \
+        state + zipcode + country + '&key=' + MOSHES_GOOGLE_API_KEY
+    return requests.get(request_url)
