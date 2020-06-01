@@ -1,5 +1,5 @@
 from . import db, bcrypt
-from marshmallow import Schema, fields
+from marshmallow import fields, Schema, validate, validates_schema, ValidationError
 
 
 class User(db.Model):
@@ -10,14 +10,31 @@ class User(db.Model):
     email = db.Column(db.String(128), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     isChef = db.Column(db.Boolean, nullable=False)
+    aboutMe = db.Column(db.String(600))
+    streetAddress = db.Column(db.String(200))
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(50))
+    zipcode = db.Column(db.String(25))
+    country = db.Column(db.String(50))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+    formattedAddress = db.Column(db.String)
 
-    def __init__(self, name, email, password, confirmPassword):
-        if len(password) < 6 or password != confirmPassword:
-            raise ValueError
+    # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
+    def __init__(self, name, email, password, confirmPassword, aboutMe="", streetAddress="", city="", state="", zipcode="", country="", latitude=0.0, longitude=0.0, formattedAddress=""):
         self.name = name
         self.email = email
-        self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+        self.password = self.__generate_hash(password)
         self.isChef = False
+        self.aboutMe = aboutMe
+        self.streetAddress = streetAddress
+        self.city = city
+        self.state = state
+        self.zipcode = zipcode
+        self.country = country
+        self.latitude = latitude
+        self.longitude = longitude
+        self.formattedAddress = formattedAddress
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
@@ -29,6 +46,17 @@ class User(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def update(self, data):
+        for key, item in data.items():
+            if key == 'password':
+                self.password = self.__generate_hash(item)
+            else:
+                setattr(self, key, item)
+        db.session.commit()
+
+    def __generate_hash(self, password):
+        return bcrypt.generate_password_hash(password).decode('UTF-8')
 
     @staticmethod
     def get_all():
@@ -53,11 +81,29 @@ class User(db.Model):
             return user
 
 
+# Marshmallow is opionated. If you use marshmallow it expects all validation to be done in Schemas
 class UserSchema(Schema):
-    id = fields.Int()
-    userId = fields.Int()
-    name = fields.Str(required=True)
-    email = fields.Str(required=True)
-    password = fields.Str(required=True)
+    # dump_only makes the field "read only" and prevents id from being edited by PUT requests
+    id = fields.Integer(dump_only=True)
+    name = fields.String(required=True)
+    email = fields.Email(required=True)
     isChef = fields.Boolean()
-    confirmPassword = fields.Str()
+    # load_only means the field is "write only" - so it will not be read with schema.dump()
+    password = fields.String(
+        required=True, validate=validate.Length(min=6), load_only=True)
+    confirmPassword = fields.String()
+    aboutMe = fields.String()
+    streetAddress = fields.String()
+    city = fields.String()
+    state = fields.String()
+    zipcode = fields.String()
+    country = fields.String()
+    latitude = fields.Float()
+    longitude = fields.Float()
+    formattedAddress = fields.String()
+
+    @validates_schema
+    def validate_password(self, data, **kwargs):
+        if (data.get("password") and data.get("confirmPassword")) and (data.get("password") != data.get("confirmPassword")):
+            # For all validation errors, Marshmallow raises its own error type called ValidationError
+            raise ValidationError("Passwords do not match")
