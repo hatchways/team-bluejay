@@ -16,6 +16,7 @@ from flask_jwt_extended import (
 from models import db
 
 
+
 def create_app():
     app = Flask(__name__)
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
