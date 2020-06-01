@@ -1,4 +1,4 @@
-const GOOGLE_API_KEY = "AIzaSyDhNEP92qeLiIJJSqKgFBs5NQffc8YVnlQ";
+const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 const addressToCoords = (address) => {
   // to do later
   // dummy coordinates
