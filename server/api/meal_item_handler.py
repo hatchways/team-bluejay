@@ -34,7 +34,7 @@ class MealItemResource(Resource):
                 "required": "name, price, servings",
                 "optional": "description, ingredients, required_stuff"
             }, 400)
-        
+
         new_meal = MealItem(**meal_data)
         new_meal.save()
 

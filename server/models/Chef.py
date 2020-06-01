@@ -13,7 +13,7 @@ class Chef(User):
     @staticmethod
     def get_all():
         return Chef.query.filter_by(isChef=True).all()
-
+    
 
 class ChefSchema(Schema):
     id = fields.Int()
