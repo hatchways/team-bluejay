@@ -2,13 +2,14 @@ const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 const addressToCoords = (address) => {
   // to do later
   // dummy coordinates
-  // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDhNEP92qeLiIJJSqKgFBs5NQffc8YVnlQ
+  // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=${GOOGLE_API_KEY}
   return fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_API_KEY}`
   )
     .then((response) => response.json())
     .then((data) => {
       let retData;
+      console.log(data);
       try {
         retData = {
           address: data.results[0].formatted_address,
@@ -33,7 +34,17 @@ const coordsToAddress = (latitude, longitude) => {
   )
     .then((response) => response.json())
     .then((data) => {
-      return data.results[0].formatted_address;
+      let addressComponents = [];
+      data.results[0].address_components.forEach((comp) => {
+        if (
+          comp.types.includes("route") ||
+          comp.types.includes("political") ||
+          comp.types.includes("postal_code")
+        ) {
+          addressComponents.push(comp.short_name);
+        }
+      });
+      return addressComponents.join(", ");
     });
 };
 

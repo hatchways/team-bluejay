@@ -66,6 +66,15 @@ const ChefSearch = ({ coords }) => {
     ]);
   }, []);
 
+  const toggleLocation = () => {
+    if (!userCoordinates) {
+      getLocation();
+    } else {
+      setUserCoordinates(null);
+      setUserAddress("");
+    }
+  };
+
   const getLocation = () => {
     const success = (pos) => {
       const { latitude, longitude } = pos.coords;
@@ -94,6 +103,8 @@ const ChefSearch = ({ coords }) => {
         setUserAddress(address);
       } else {
         alert("failed to find address");
+        setUserCoordinates(null);
+        setUserAddress("");
       }
     });
   };
@@ -125,6 +136,7 @@ const ChefSearch = ({ coords }) => {
           <form className={classes.locationBox} onSubmit={handleSubmit}>
             <Input
               id="my-input"
+              autoFocus
               aria-describedby="my-helper-text"
               onChange={handleChange}
               value={userAddress}
@@ -133,7 +145,7 @@ const ChefSearch = ({ coords }) => {
             <LocationOn
               className={classes.locationIcon}
               color={userCoordinates ? "primary" : "lightgrey"}
-              onClick={getLocation}
+              onClick={toggleLocation}
             />
           </form>
         </Box>
