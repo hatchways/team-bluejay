@@ -1,4 +1,4 @@
-from models.Chef import Chef, ChefSchema
+from models.User import User, UserSchema
 from flask import request, Response, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import (
@@ -13,21 +13,21 @@ from helpers.database import save_to_database
 from helpers.distance import distance
 from sqlalchemy import exc
 
-chef_schema = ChefSchema()
-chef_schema_private = ChefSchema(exclude=['password', 'email', 'isChef'])
+user_schema = UserSchema()
+user_schema_private = UserSchema(exclude=['password', 'email', 'isChef'])
 
 
 class ChefResource(Resource):
     def get(self, id=None):
         q_params = request.args
         if id:
-            chef = Chef.get_by_id(id)
-            return chef_schema_private.dump(chef)
+            user = User.get_by_id(id)
+            return user_schema_private.dump(user)
 
         filters = []
-        all_chefs = Chef.get_all()
-        ser_chefs = chef_schema_private.dump(all_chefs, many=True)
-
+        all_chefs = User.get_all_chefs()
+        ser_chefs = user_schema_private.dump(all_chefs, many=True)
+        
         # stub data
         chef_loc = (43.643523, -79.386722)  # CN Tower, Toronto
         cuisines_str = "Japanese, Chinese, Mexican"
@@ -45,13 +45,13 @@ class ChefResource(Resource):
             ]
 
         # supply userCuisines to filter by cuisines
-        # user and chef cuisines represented by string
+        # user and user cuisines represented by string
         if (q_params.get("userCuisines")):
             user_cuisines = [c.strip() for c in q_params.get("userCuisines").split(",")]
-            # to change chef_cuisines
+            # to change user_cuisines
             filters.append("cuisine")
             ser_chefs = [
-                chef for chef in
+                user for user in
                 ser_chefs if set(chef_cuisines)
                 .intersection(user_cuisines)
             ]

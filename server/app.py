@@ -47,7 +47,7 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    api.add_resource(UserResource, '/users', '/users/<id>')
+    api.add_resource(UserResource, '/users')
     api.add_resource(ChefResource, '/chefs', '/chefs/<id>')
     api.add_resource(LoginResource, '/users/login')
     api.add_resource(MealItemResource, '/meal_items')

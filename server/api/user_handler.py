@@ -1,12 +1,22 @@
 from models.User import User, UserSchema
-from config import MOSHES_GOOGLE_API_KEY
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, set_access_cookies, create_refresh_token, get_csrf_token, set_refresh_cookies, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+    create_refresh_token,
+    get_csrf_token,
+    set_refresh_cookies,
+    jwt_required,
+    get_jwt_identity,
+    jwt_refresh_token_required
+)
 from helpers.api import custom_json_response
+from helpers.google import address_to_coordinates
 from datetime import timedelta
 from marshmallow import ValidationError
-import requests
+import os
+
 
 
 user_schema = UserSchema()
@@ -14,16 +24,13 @@ user_schema_private = UserSchema(exclude=['password', 'email'])
 
 
 class UserResource(Resource):
-    def get(self, id=None):
-        if id:
-            user = User.get_by_id(id)
-            return user_schema_private.dump(user)
+    @jwt_required
+    def get(self):
         all_users = User.get_all()
         return user_schema_private.dump(all_users, many=True)
 
     def post(self):
         req_body = request.get_json()
-        valid_data = None
         try:
             # load method from marshmallow validates data according to schema definition
             valid_data = user_schema.load(req_body)
@@ -58,35 +65,41 @@ class UserResource(Resource):
     @jwt_required
     def put(self):
         req_body = request.get_json()
+        valid_data = None
+
         try:
             valid_data = user_schema.load(req_body, partial=True)
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
         current_userid = get_jwt_identity()
-        user = User.get_one_user(current_userid)
-
-        geocode_result = geocoder(valid_data.get('streetAddress', ''), valid_data.get(
-            'city', ''), valid_data.get('state', ''), valid_data.get('zipcode', ''), valid_data.get('country', ''))
-
-        location = geocode_result.json()['results'][0]
-
-        latitude = location['geometry']['location']['lat']
-        longitude = location['geometry']['location']['lat']
-        formatted_address = location['formatted_address']
-
-        valid_data['latitude'] = float(latitude)
-        valid_data['longitude'] = float(longitude)
-        valid_data['formattedAddress'] = formatted_address
+        user = User.get_by_id(current_userid)
 
         user.update(valid_data)
 
-        ser_user = user_schema.dump(user)
-        return custom_json_response(ser_user, 200)
+        # streetAddress
+        # city
+        # state
+        # zicode
+        # country
+        address = f'{user.streetAddress}, {user.city}, {user.state}, {user.zipcode}, {user.country}'
+        location_err = None
+        try:
+            result_data = address_to_coordinates(address).json().get("results")[0]
+            coordinates = result_data.get("access_points")[0].get("location")
+            # formatted_address = result_data.get("formatted_address")
+            coords_data = {
+                "latitude": float(coordinates.get("latitude")),
+                "longitude": float(coordinates.get("longitude"))
+            }
+            user.update(coords_data)
+        except Exception:
+            location_err = "Location not generated. Please enter a valid and complete address."
+            user.update({"latitude": None, "longitude": None})
 
-
-def geocoder(streetAddress="", city="", state="", zipcode="", country=""):
-    geocoding_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
-    request_url = geocoding_url + 'address=' + streetAddress + city + \
-        state + zipcode + country + '&key=' + MOSHES_GOOGLE_API_KEY
-    return requests.get(request_url)
+        data = {
+            "User successfully edited": user_schema.dump(user)
+        }
+        if location_err:
+            data["location error"] = location_err
+        return custom_json_response(data, 200)

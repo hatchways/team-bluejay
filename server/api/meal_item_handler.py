@@ -38,7 +38,7 @@ class MealItemResource(Resource):
         new_meal = MealItem(**meal_data)
         new_meal.save()
 
-        curr_user = User.get_one_user(user_id)
+        curr_user = User.get_by_id(user_id)
         curr_user.chef_flag_true()
         curr_user.save()
 

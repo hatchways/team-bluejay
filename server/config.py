@@ -1,4 +1,4 @@
 import os
 
 TEAM_NAME = os.environ['TEAM_NAME']
-MOSHES_GOOGLE_API_KEY = 'AIzaSyAN3q6E8D80h38QQsiSWQ5keW6YSRMPqYc'
+

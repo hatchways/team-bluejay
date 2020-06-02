@@ -10,7 +10,6 @@ class User(db.Model):
     email = db.Column(db.String(128), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     isChef = db.Column(db.Boolean, nullable=False)
-    aboutMe = db.Column(db.String(600))
     streetAddress = db.Column(db.String(200))
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
@@ -18,15 +17,15 @@ class User(db.Model):
     country = db.Column(db.String(50))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    formattedAddress = db.Column(db.String)
+    aboutMe = db.Column(db.Text)
+    chefDescription = db.Column(db.Text)
 
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
-    def __init__(self, name, email, password, confirmPassword, aboutMe="", streetAddress="", city="", state="", zipcode="", country="", latitude=0.0, longitude=0.0, formattedAddress=""):
+    def __init__(self, name, email, password, confirmPassword, streetAddress="", city="", state="", zipcode="", country="", latitude=None, longitude=None, aboutMe="", chefProfile=""):
         self.name = name
         self.email = email
         self.password = self.__generate_hash(password)
         self.isChef = False
-        self.aboutMe = aboutMe
         self.streetAddress = streetAddress
         self.city = city
         self.state = state
@@ -34,7 +33,8 @@ class User(db.Model):
         self.country = country
         self.latitude = latitude
         self.longitude = longitude
-        self.formattedAddress = formattedAddress
+        self.aboutMe = aboutMe
+        self.chefProfile = chefProfile
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
@@ -70,6 +70,10 @@ class User(db.Model):
     def get_user_by_email(value):
         return User.query.filter_by(email=value).first()
 
+    @staticmethod
+    def get_all_chefs():
+        return User.query.filter_by(isChef=True).all()
+
     @classmethod
     def authenticate(cls, email, password):
         user = cls.query.filter_by(email=email).first()
@@ -92,7 +96,6 @@ class UserSchema(Schema):
     password = fields.String(
         required=True, validate=validate.Length(min=6), load_only=True)
     confirmPassword = fields.String()
-    aboutMe = fields.String()
     streetAddress = fields.String()
     city = fields.String()
     state = fields.String()
@@ -100,7 +103,8 @@ class UserSchema(Schema):
     country = fields.String()
     latitude = fields.Float()
     longitude = fields.Float()
-    formattedAddress = fields.String()
+    aboutMe = fields.String()
+    chefProfile = fields.String()
 
     @validates_schema
     def validate_password(self, data, **kwargs):
