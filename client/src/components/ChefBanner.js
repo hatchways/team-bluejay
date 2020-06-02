@@ -25,25 +25,27 @@ const ChefBanner = ({ chef }) => {
       component="main"
       className={classes.root}
     >
-      <Grid item className={classes.image}>
-        <Avatar className={classes.avatar} src={chef.avatarUrl} />
-      </Grid>
-      <Grid item className={classes.chefDetails}>
-        <Typography variant="h6">{chef.name}</Typography>
-        <Box color="text.secondary">
-          <Typography>{chef.location}</Typography>
-        </Box>
-        <Divider classes={{ root: classes.divider }} variant="middle" />
-        <Typography>{chef.bio}</Typography>
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.button}
-        >
-          Send Request
-        </Button>
-      </Grid>
+      <Paper className={classes.paper} elevation={2}>
+        <Grid item className={classes.image}>
+          <Avatar className={classes.avatar} src={chef.avatarUrl} />
+        </Grid>
+        <Grid item className={classes.chefDetails}>
+          <Typography variant="h6">{chef.name}</Typography>
+          <Box color="text.secondary">
+            <Typography>{chef.location}</Typography>
+          </Box>
+          <Divider classes={{ root: classes.divider }} variant="middle" />
+          <Typography>{chef.bio}</Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.button}
+          >
+            Send Request
+          </Button>
+        </Grid>
+      </Paper>
     </Grid>
   );
 };
@@ -51,6 +53,12 @@ const ChefBanner = ({ chef }) => {
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: theme.spacing(80),
+    backgroundColor: "#fff",
+    maxHeight: "600px",
+  },
+  paper: {
+    width: "100%",
+    height: "100%",
   },
   image: {
     display: "flex",

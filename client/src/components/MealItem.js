@@ -1,5 +1,11 @@
 import React from "react";
-import { Card, CardMedia, CardContent, Typography } from "@material-ui/core";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Chip,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const MealItem = ({ meal }) => {
@@ -7,12 +13,33 @@ const MealItem = ({ meal }) => {
   const { image } = meal;
   console.log(meal);
   return (
-    <Card className={classes.root} elevation="2">
+    <Card className={classes.root} elevation={2}>
       <div className={classes.details}>
         <CardContent className={classes.content}>
-          <Typography component="h5" variant="h5">
-            Live From Space
+          <Chip
+            label={meal.tagLine}
+            color="primary"
+            className={classes.tagLine}
+          />
+          <Typography
+            classes={{ root: classes.boldCapitalText }}
+            component="h6"
+            variant="h6"
+          >
+            {meal.name}
           </Typography>
+          <Typography
+            classes={{ root: classes.price }}
+          >{`$ ${meal.price}`}</Typography>
+          <Typography classes={{ root: classes.boldCapitalText }}>
+            Ingredients:
+          </Typography>
+          <Typography>{meal.ingredients}</Typography>
+          <div className={classes.spacer} />
+          <Typography classes={{ root: classes.boldCapitalText }}>
+            Requirements:
+          </Typography>
+          <Typography>{meal.requirements}</Typography>
         </CardContent>
       </div>
       <CardMedia className={classes.image} image={image} />
@@ -23,7 +50,7 @@ const MealItem = ({ meal }) => {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "80%",
-    height: theme.spacing(30),
+    height: theme.spacing(35),
     display: "flex",
     padding: theme.spacing(5),
   },
@@ -34,9 +61,29 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
+    maxWidth: "55%",
+    paddingRight: theme.spacing(2),
   },
   content: {
     flex: "1 0 auto",
+  },
+  tagLine: {
+    marginBottom: theme.spacing(2),
+  },
+  price: {
+    color: "#ff743d",
+    fontWeight: "700",
+    margin: theme.spacing(1),
+  },
+  boldCapitalText: {
+    fontWeight: "700",
+    textTransform: "uppercase",
+  },
+  boldText: {
+    fontWeight: "500",
+  },
+  spacer: {
+    margin: theme.spacing(1),
   },
 }));
 export default MealItem;
