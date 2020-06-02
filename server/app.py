@@ -1,6 +1,7 @@
 from flask import Flask
 from marshmallow import Schema
 from flask_restful import Api
+from config import DB_URL
 
 from api.login_handler import LoginResource
 from api.user_handler import UserResource
@@ -16,7 +17,6 @@ from flask_jwt_extended import (
 from models import db
 
 
-
 def create_app():
     app = Flask(__name__)
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -30,15 +30,6 @@ def create_app():
     app.config['JWT_CSRF_IN_COOKIES'] = True
     app.config['JWT_SECRET_KEY'] = 'team-bluejay'
     jwt = JWTManager(app)
-
-    # Database variables
-    user = 'postgres'
-    pw = '123456'
-    url = 'localhost:5432'
-    db_name = 'team-bluejay'
-
-    DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
-        user=user, pw=pw, url=url, db=db_name)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -63,6 +63,11 @@ class UserResource(Resource):
         current_userid = get_jwt_identity()
         user = User.get_one_user(current_userid)
 
+        if req_body.get('email'):
+            return custom_json_response({
+                "error": "Cannot use this route to update email address."
+            }, 403)
+
         geocode_result = geocoder(valid_data.get('streetAddress', ''), valid_data.get(
             'city', ''), valid_data.get('state', ''), valid_data.get('zipcode', ''), valid_data.get('country', ''))
 
