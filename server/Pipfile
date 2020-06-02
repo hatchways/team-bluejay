@@ -16,6 +16,8 @@ sqlalchemy = "*"
 flask-jwt-extended = "*"
 requests = "*"
 python-dotenv = "*"
+flask-migrate = "*"
+flask-script = "*"
 
 [requires]
 python_version = "3.8"
