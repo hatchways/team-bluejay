@@ -14,6 +14,7 @@ marshmallow = "*"
 flask-bcrypt = "*"
 sqlalchemy = "*"
 flask-jwt-extended = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"
