@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Typography,
@@ -14,7 +15,7 @@ import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
 import BecomeChefButton from "components/BecomeChefButton";
 
-const TopNavigationBar = ({ loggedInUser }) => {
+const TopNavigationBar = ({ loggedInUser, signOut }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -29,9 +30,15 @@ const TopNavigationBar = ({ loggedInUser }) => {
   return (
     <AppBar style={{ background: "#fff" }} position="static">
       <Toolbar>
-        <Logo className={classes.logo} />
-        <Button size="large">Chefs</Button>
-        <Button size="large">Dishes</Button>
+        <Link to="/">
+          <Logo className={classes.logo} />
+        </Link>
+        <Button component={Link} to="/chefs" size="large">
+          Chefs
+        </Button>
+        <Button component={Link} to="/dishes" size="large">
+          Dishes
+        </Button>
         <div className={classes.grow} />
         <BecomeChefButton loggedInUser={loggedInUser}/>
         <Button onClick={handleMenu}>
@@ -54,7 +61,14 @@ const TopNavigationBar = ({ loggedInUser }) => {
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              signOut();
+            }}
+          >
+            Logout
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

@@ -1,9 +1,15 @@
 import React, { useContext } from "react";
 import Form from "common/Form";
 import { Context as AuthContext } from "contexts/AuthContext";
+import { Redirect } from "react-router-dom";
 
-const LoginForm = () => {
-  const { signUp } = useContext(AuthContext);
+const SignupForm = () => {
+  const {
+    signUp,
+    state: { user },
+  } = useContext(AuthContext);
+
+  if (user) return <Redirect to="/" />;
 
   const fields = [
     {
@@ -60,4 +66,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignupForm;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import API from "api/index";
 import {
   Grid,
   Paper,
@@ -21,16 +22,45 @@ import chefImage from "images/chef.png";
 import chefPlaceholder from "images/chefPlaceholder.jpeg";
 
 const ChefSearch = ({ coords }) => {
-  const [chefs, setChefs] = useState([]);
+  const [chefs, setChefs] = useState([
+    {
+      name: "Sushi Chef",
+      cuisine: ["Japanese"],
+      location: "Toronto, Canada",
+      description:
+        "Sushi Master. 20 Years of experience working under Sushi Masters in Japan.",
+      img: chefImage,
+    },
+    {
+      name: "Pasta Chef",
+      cuisine: ["Italian", "American"],
+      location: "Toronto, Canada",
+      description: "Pasta Master",
+      img: chefImage,
+    },
+  ]);
+  const [cuisineTypes, setCuisineTypes] = useState([
+    "Japanese",
+    "Chinese",
+    "American",
+    "French",
+    "Mexican",
+    "Italian",
+  ]);
   const [userAddress, setUserAddress] = useState("");
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [selectedCuisines, setSelectedCuisines] = useState([]);
-  const [cuisineTypes, setCuisineTypes] = useState([]);
+  const [distanceFilter, setDistanceFilter] = useState(null);
+
   const classes = useStyles();
   useEffect(() => {
     // do api call
-    console.log("call api");
+    searchChefs();
     // to change later
+    setDummyData();
+  }, [userAddress, userCoordinates, selectedCuisines, distanceFilter]);
+
+  const setDummyData = () => {
     // dummy cuisine types
     setCuisineTypes([
       "Japanese",
@@ -41,31 +71,25 @@ const ChefSearch = ({ coords }) => {
       "Italian",
     ]);
     // dummy chefs
-    setChefs([
-      {
-        name: "Sushi Chef",
-        cuisine: ["Japanese"],
-        location: "Toronto, Canada",
-        description:
-          "Sushi Master. 20 Years of experience working under Sushi Masters in Japan.",
-        img: chefImage,
-      },
-      {
-        name: "Pasta Chef",
-        cuisine: ["Italian", "American"],
-        location: "Toronto, Canada",
-        description: "Pasta Master",
-        img: chefImage,
-      },
-      {
-        name: "Burger Maker",
-        cuisine: ["American", "Chinese", "Mexican"],
-        location: "Toronto, Canada",
-        description: "Burger Master",
-        img: chefImage,
-      },
-    ]);
-  }, [userAddress, userCoordinates, selectedCuisines]);
+  };
+
+  const searchChefs = async () => {
+    try {
+      const { data } = await API.get("/chefs", {
+        // chef has stub cuisines of ""Japanese, Chinese, Mexican""
+        params: {
+          userCuisines: selectedCuisines.join(","),
+          userLat: userCoordinates ? userCoordinates.latitude : null,
+          userLon: userCoordinates ? userCoordinates.longitude : null,
+          maxDistance: distanceFilter > 0 ? distanceFilter : null,
+        },
+      });
+      setChefs(data["Search Result"]);
+      console.log(data);
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -77,6 +101,8 @@ const ChefSearch = ({ coords }) => {
         selectedCuisines={selectedCuisines}
         setSelectedCuisines={setSelectedCuisines}
         cuisineTypes={cuisineTypes}
+        distanceFilter={distanceFilter}
+        setDistanceFilter={setDistanceFilter}
       />
       <Grid item sm={12} md={9}>
         <Box className={classes.chefsPage}>
@@ -96,7 +122,7 @@ const ChefSearch = ({ coords }) => {
 
 const CustomCard = ({ chef }) => {
   const classes = useStyles();
-  const { name, location, cuisine, description } = chef;
+  const { name, location, chefProfile } = chef;
   return (
     <Card className={classes.chefTile}>
       <CardMedia
@@ -111,12 +137,12 @@ const CustomCard = ({ chef }) => {
         <Typography variant="subtitle2" color="textSecondary" component="p">
           {location}
         </Typography>
-        {chef.cuisine.map((c) => (
+        {["American", "Japanese", "Mexican"].map((c) => (
           <Chip className={classes.chip} color="primary" label={c} />
         ))}
 
         <Typography variant="body" color="textSecondary" component="p">
-          {description}
+          {chefProfile ? chefProfile : "Description here"}
         </Typography>
       </CardContent>
     </Card>

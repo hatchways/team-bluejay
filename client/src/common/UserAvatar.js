@@ -6,9 +6,11 @@ const UserAvatar = ({ user, className }) => {
   const classes = useStyles();
 
   return user.avatarUrl ? (
-    <Avatar className={`${classes.avatar} ${className}`} />
+    <Avatar src={user.avatarUrl} className={`${classes.avatar} ${className}`} />
   ) : (
-    <Avatar className={`${classes.avatar} ${className}`}>{user.name[0]}</Avatar>
+    <Avatar className={`${classes.avatar} ${className}`}>
+      {user ? user.name[0] : ""}
+    </Avatar>
   );
 };
 

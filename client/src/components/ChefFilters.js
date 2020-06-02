@@ -12,6 +12,7 @@ import {
   CardActions,
   CardMedia,
   CardContent,
+  Slider,
 } from "@material-ui/core";
 import { LocationOn, Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -27,6 +28,8 @@ const ChefFilters = ({
   selectedCuisines,
   setSelectedCuisines,
   cuisineTypes,
+  distanceFilter,
+  setDistanceFilter,
 }) => {
   const classes = useStyles();
 
@@ -58,6 +61,7 @@ const ChefFilters = ({
       if (address && coordinates) {
         const { latitude, longitude } = coordinates;
         setUserCoordinates({ latitude, longitude });
+        setDistanceFilter(5);
         setUserAddress(address);
       } else {
         alert("failed to find address");
@@ -72,6 +76,7 @@ const ChefFilters = ({
       const { latitude, longitude } = pos.coords;
 
       setUserCoordinates({ latitude, longitude });
+      setDistanceFilter(5);
       coordsToAddress(latitude, longitude).then((data) => {
         setUserAddress(data);
       });
@@ -81,14 +86,39 @@ const ChefFilters = ({
     };
     navigator.geolocation.getCurrentPosition(success, error);
   };
+
+  const DistanceSlider = (
+    <Box className={classes.filterGroup}>
+      <Typography id="discrete-slider" gutterBottom>
+        Filter by Distance (km): {distanceFilter ? distanceFilter : "all"}
+      </Typography>
+      <Slider
+        value={distanceFilter}
+        onChange={(e, v) => setDistanceFilter(v)}
+        aria-labelledby="discrete-slider"
+        valueLabelDisplay="auto"
+        step={1}
+        marks
+        min={0}
+        max={10}
+      />
+    </Box>
+  );
+
   return (
     <Grid item sm={12} md={3} component={Paper} variant="outlined" square>
       <Box className={classes.filters}>
+        {userCoordinates && DistanceSlider}
         <Box className={classes.filterGroup}>
           <Typography component="h6" variant="h6">
             Location
           </Typography>
           <form className={classes.locationBox} onSubmit={handleSubmit}>
+            <LocationOn
+              className={classes.locationIcon}
+              color={userCoordinates ? "primary" : "lightgrey"}
+              onClick={toggleLocation}
+            />
             <Input
               id="my-input"
               autoFocus
@@ -96,11 +126,6 @@ const ChefFilters = ({
               onChange={handleChange}
               value={userAddress}
               disableUnderline
-            />
-            <LocationOn
-              className={classes.locationIcon}
-              color={userCoordinates ? "primary" : "lightgrey"}
-              onClick={toggleLocation}
             />
           </form>
         </Box>
@@ -151,6 +176,7 @@ const useStyles = makeStyles((theme) => ({
   },
   filterGroup: {
     marginTop: theme.spacing(2),
+    width: "80%",
   },
   cuisineTypes: {
     display: "inline-block",
@@ -159,9 +185,12 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
   },
   locationBox: {
-    padding: theme.spacing(1, 1),
+    width: "100%",
     display: "inline-block",
     border: `1px solid ${"lightgrey"}`,
+    "& div": {
+      width: "90%",
+    },
   },
   locationIcon: {
     float: "right",

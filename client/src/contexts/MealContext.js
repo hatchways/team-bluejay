@@ -1,10 +1,13 @@
 import React, { useReducer } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import API from "api/index";
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "createMeal":
-      return { meals: [...state.meals, action.payload.createdMeal], errorMessage: "" };
+      return {
+        meals: [...state.meals, action.payload.createdMeal],
+        errorMessage: "",
+      };
     default:
       return state;
   }
@@ -18,26 +21,20 @@ const Provider = ({ children }) => {
     errorMessage: "",
   });
 
-  let history = useHistory();
-  let location = useLocation();
-
-
-  const createMeal = async({mealName, description}) => {
-    // do backend call
-    dispatch({ 
-      type: "createMeal", 
-      payload: { createdMeal: 
-        { mealName, description }
-    }});
-    // go back to previous page
-    let { from } = location.state || { from: { pathname: "/" } };
-    history.replace(from);
-  }
+  const createMeal = async (meal) => {
+    try {
+      const { data } = await API.post("/meal_items", meal);
+      dispatch({
+        type: "createMeal",
+        payload: { createdMeal: meal },
+      });
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  };
 
   return (
-    <Context.Provider
-      value={{ state, createMeal }}
-    >
+    <Context.Provider value={{ state, createMeal }}>
       {children}
     </Context.Provider>
   );
