@@ -12,15 +12,14 @@ from flask_jwt_extended import (
     jwt_refresh_token_required
 )
 from helpers.api import custom_json_response
-from helpers.google import address_to_coordinates
+from helpers.google import address_to_data
 from datetime import timedelta
 from marshmallow import ValidationError
 import os
 
 
-
 user_schema = UserSchema()
-user_schema_private = UserSchema(exclude=['password', 'email'])
+user_schema_private = UserSchema(exclude=['password', 'email', 'address'])
 
 
 class UserResource(Resource):
@@ -76,30 +75,7 @@ class UserResource(Resource):
         user = User.get_by_id(current_userid)
 
         user.update(valid_data)
-
-        # streetAddress
-        # city
-        # state
-        # zicode
-        # country
-        address = f'{user.streetAddress}, {user.city}, {user.state}, {user.zipcode}, {user.country}'
-        location_err = None
-        try:
-            result_data = address_to_coordinates(address).json().get("results")[0]
-            coordinates = result_data.get("access_points")[0].get("location")
-            # formatted_address = result_data.get("formatted_address")
-            coords_data = {
-                "latitude": float(coordinates.get("latitude")),
-                "longitude": float(coordinates.get("longitude"))
-            }
-            user.update(coords_data)
-        except Exception:
-            location_err = "Location not generated. Please enter a valid and complete address."
-            user.update({"latitude": None, "longitude": None})
-
         data = {
             "User successfully edited": user_schema.dump(user)
         }
-        if location_err:
-            data["location error"] = location_err
         return custom_json_response(data, 200)

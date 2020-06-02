@@ -14,7 +14,7 @@ from helpers.distance import distance
 from sqlalchemy import exc
 
 user_schema = UserSchema()
-user_schema_private = UserSchema(exclude=['password', 'email', 'isChef'])
+user_schema_private = UserSchema(exclude=['password', 'email', 'isChef', 'address'])
 
 
 class ChefResource(Resource):

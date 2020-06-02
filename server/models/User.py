@@ -1,6 +1,6 @@
 from . import db, bcrypt
-from marshmallow import fields, Schema, validate, validates_schema, ValidationError
-
+from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
+from helpers.google import address_to_data
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -10,32 +10,23 @@ class User(db.Model):
     email = db.Column(db.String(128), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     isChef = db.Column(db.Boolean, nullable=False)
-    streetAddress = db.Column(db.String(200))
-    city = db.Column(db.String(50))
-    state = db.Column(db.String(50))
-    zipcode = db.Column(db.String(25))
-    country = db.Column(db.String(50))
+
+    address = db.Column(db.Text)
+    generalLocation = db.Column(db.Text)
+    
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+
     aboutMe = db.Column(db.Text)
     chefDescription = db.Column(db.Text)
 
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
-    def __init__(self, name, email, password, confirmPassword, streetAddress="", city="", state="", zipcode="", country="", latitude=None, longitude=None, aboutMe="", chefProfile=""):
+    def __init__(self, name, email, password, **kwargs):
         self.name = name
         self.email = email
         self.password = self.__generate_hash(password)
         self.isChef = False
-        self.streetAddress = streetAddress
-        self.city = city
-        self.state = state
-        self.zipcode = zipcode
-        self.country = country
-        self.latitude = latitude
-        self.longitude = longitude
-        self.aboutMe = aboutMe
-        self.chefProfile = chefProfile
-
+        
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
 
@@ -51,6 +42,18 @@ class User(db.Model):
         for key, item in data.items():
             if key == 'password':
                 self.password = self.__generate_hash(item)
+            elif key == 'address':
+                data = address_to_data(item)
+                if data.get("access_points"):
+                    coordinates = data.get("access_points")[0].get("location")
+                    self.latitude = float(coordinates.get("latitude"))
+                    self.longitude = float(coordinates.get("longitude"))
+                    self.address = data.get("formatted_address")
+                    location = []
+                    for component in data.get("address_components"):
+                        if "locality" in component.get("types") or "country" in component.get("types"):
+                            location.append(component.get("short_name"))
+                    self.generalLocation = ", ".join(location)
             else:
                 setattr(self, key, item)
         db.session.commit()
@@ -96,13 +99,10 @@ class UserSchema(Schema):
     password = fields.String(
         required=True, validate=validate.Length(min=6), load_only=True)
     confirmPassword = fields.String()
-    streetAddress = fields.String()
-    city = fields.String()
-    state = fields.String()
-    zipcode = fields.String()
-    country = fields.String()
-    latitude = fields.Float()
-    longitude = fields.Float()
+
+    address = fields.String()
+    generalLocation = fields.String()
+
     aboutMe = fields.String()
     chefProfile = fields.String()
 
@@ -111,3 +111,9 @@ class UserSchema(Schema):
         if (data.get("password") and data.get("confirmPassword")) and (data.get("password") != data.get("confirmPassword")):
             # For all validation errors, Marshmallow raises its own error type called ValidationError
             raise ValidationError("Passwords do not match")
+
+    @validates("address")
+    def validate_address(self, address):
+        data = address_to_data(address)
+        if not data.get("access_points"):
+            raise ValidationError("Location not found for address")
