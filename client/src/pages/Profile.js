@@ -20,6 +20,9 @@ const Profile = ({ props }) => {
     state: { user },
   } = useContext(UserContext);
 
+  // TODO: Remove stub data and receive data from backend
+  user.cuisines = ["French", "Japanese"];
+
   const loggedInUser = true;
 
   return (
