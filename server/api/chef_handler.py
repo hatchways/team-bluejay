@@ -29,10 +29,8 @@ class ChefResource(Resource):
         ser_chefs = user_schema_private.dump(all_chefs, many=True)
         
         # stub data
-        chef_loc = (43.643523, -79.386722)  # CN Tower, Toronto
         cuisines_str = "Japanese, Chinese, Mexican"
         chef_cuisines = [c.strip() for c in cuisines_str.split(",")]
-        # userLoc = (43.664389, -79.392249)  # Queens PArk, Toronto
 
         # supply maxDistance, userLat, and userLong to filter by distance
         if (q_params.get("maxDistance") and q_params.get("userLat") and q_params.get("userLon")):
@@ -41,7 +39,8 @@ class ChefResource(Resource):
             filters.append("distance")
             ser_chefs = [
                 chef for chef in ser_chefs
-                if distance(chef_loc, user_loc) < max_dist
+                if chef.get("latitude") and chef.get("longitude")
+                and distance((chef.get("latitude"), chef.get("longitude")), user_loc) < max_dist
             ]
 
         # supply userCuisines to filter by cuisines

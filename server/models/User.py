@@ -100,6 +100,9 @@ class UserSchema(Schema):
         required=True, validate=validate.Length(min=6), load_only=True)
     confirmPassword = fields.String()
 
+    latitude = fields.Float()
+    longitude = fields.Float()
+
     address = fields.String()
     generalLocation = fields.String()
 

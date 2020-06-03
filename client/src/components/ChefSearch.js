@@ -87,7 +87,7 @@ const ChefSearch = ({ coords }) => {
       setChefs(data["Search Result"]);
       console.log(data);
     } catch (error) {
-      alert(error.response.data.message);
+      console.log(error.response.data.message);
     }
   };
 
@@ -122,7 +122,7 @@ const ChefSearch = ({ coords }) => {
 
 const CustomCard = ({ chef }) => {
   const classes = useStyles();
-  const { name, location, chefProfile } = chef;
+  const { name, generalLocation, chefProfile } = chef;
   return (
     <Card className={classes.chefTile}>
       <CardMedia
@@ -135,14 +135,14 @@ const CustomCard = ({ chef }) => {
           {name}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary" component="p">
-          {location}
+          {generalLocation || "City, Country"}
         </Typography>
         {["American", "Japanese", "Mexican"].map((c) => (
           <Chip className={classes.chip} color="primary" label={c} />
         ))}
 
         <Typography variant="body" color="textSecondary" component="p">
-          {chefProfile ? chefProfile : "Description here"}
+          {chefProfile ? chefProfile : "Chef Profile"}
         </Typography>
       </CardContent>
     </Card>
