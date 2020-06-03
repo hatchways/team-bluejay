@@ -18,6 +18,8 @@ const reducer = (state, action) => {
       return { ...state, errorMessage: "" };
     case "refreshUser":
       return { user: action.payload.user, errorMessage: "" };
+    case "updateUser":
+      return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
   }
@@ -55,6 +57,10 @@ const Provider = ({ children }) => {
     }
   };
 
+  const updateUser = async (updatedUser) => {
+    // TODO call back end
+    dispatch({ type: "updateUser", payload: { user: updatedUser } });
+  };
   const clearErrorMessage = () => dispatch({ type: "clearErrorMessage" });
 
   const signOut = async () => {
@@ -84,6 +90,7 @@ const Provider = ({ children }) => {
         login,
         clearErrorMessage,
         signOut,
+        updateUser,
         refreshLoggedInUser,
       }}
     >

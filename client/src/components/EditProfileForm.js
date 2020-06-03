@@ -126,6 +126,8 @@ const EditProfileForm = ({ onSubmit }) => {
       <Typography component="h1" variant="h5">
         Edit your profile
       </Typography>
+      {/* TODO:  add fullWidth to all input components (so that they expand the whole dialog)
+                 use Grids for some of the components so that entire form width will expand equally the width of the dialog*/}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className={classes.form}
