@@ -1,5 +1,5 @@
 from . import db, bcrypt
-from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError, pre_dump
+from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
 
 favorite_cuisines_table = db.Table('favorite_cuisines',
                                    db.Column('user_id', db.Integer,
@@ -27,13 +27,13 @@ class Cuisine(db.Model):
         db.session.commit()
 
     @staticmethod
-    # filter my multiple ids
-    def get_cuisine_by_name(value):
-        return Cuisine.query.filter_by(name=value).first()
+    # TODO: filter my multiple ids
+    def get_cuisines_by_ids(ids):
+        return Cuisine.query.filter(Cuisine.id.in_(ids)).all()
 
 
 class CuisineSchema(Schema):
-    id = fields.Integer(dump_only=True)
+    id = fields.Integer()
     name = fields.String(required=True)
     users = fields.List(fields.Nested(
         lambda: UserSchema(exclude=("cuisines",))))
@@ -76,13 +76,6 @@ class User(db.Model):
         self.latitude = latitude
         self.longitude = longitude
         self.formattedAddress = formattedAddress
-        if (len(cuisines) > 0):
-            updated_cuisines = []
-            for cuisine in cuisines:
-                # Should be:  target_cuisine = Cuisine.get_cuisine_by_id(cuisine)
-                target_cuisine = Cuisine.get_cuisine_by_name(cuisine['name'])
-                updated_cuisines.append(target_cuisine)
-            self.cuisines = updated_cuisines
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
@@ -99,6 +92,11 @@ class User(db.Model):
         for key, item in data.items():
             if key == 'password':
                 self.password = self.__generate_hash(item)
+
+            elif key == 'cuisines':
+                list_of_ids = list(map(lambda id: id['id'], item))
+                self.cuisines = Cuisine.get_cuisines_by_ids(list_of_ids)
+
             else:
                 setattr(self, key, item)
         db.session.commit()
@@ -153,16 +151,11 @@ class UserSchema(Schema):
             # For all validation errors, Marshmallow raises its own error type called ValidationError
             raise ValidationError("Passwords do not match")
 
-
-"""
     @validates("cuisines")
     def validates_cuisines(self, cuisines):
-        if (len(cuisines) > 0):
-            # for database calls rarely a need to do a for loop
-            for cuisine in cuisines:
-                print(cuisine)
-                # get all cuisines and if number of returned is different than return ValidationError
-                if Cuisine.get_cuisine_by_name(cuisine) == None:
-                    raise ValidationError(
-                        cuisine + " is not a valid cuisine registered within our database")
-"""
+        list_of_ids = list(map(lambda id: id.get('id'), cuisines))
+        valid_cuisines = Cuisine.get_cuisines_by_ids(list_of_ids)
+        # Todo: if all cuisines are valid then replace the list of cuisine ids with the list of cuisines itself. This would prevent us from rerunning the query again later
+        if (len(cuisines) != len(valid_cuisines)):
+            raise ValidationError(
+                "One your cuisine ids is not a valid cuisine registered within our database")
