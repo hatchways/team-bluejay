@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import {
   AppBar,
   Typography,
@@ -8,6 +8,7 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Link,
 } from "@material-ui/core";
 import { ArrowDropDown } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,17 +31,17 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
   return (
     <AppBar style={{ background: "#fff" }} position="static">
       <Toolbar>
-        <Link to="/">
+        <Link component={RouterLink} to="/">
           <Logo className={classes.logo} />
         </Link>
-        <Button component={Link} to="/chefs" size="large">
+        <Button component={RouterLink} to="/chefs" size="large">
           Chefs
         </Button>
-        <Button component={Link} to="/dishes" size="large">
+        <Button component={RouterLink} to="/dishes" size="large">
           Dishes
         </Button>
         <div className={classes.grow} />
-        <BecomeChefButton loggedInUser={loggedInUser}/>
+        <BecomeChefButton loggedInUser={loggedInUser} />
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />
           <Typography>{loggedInUser.name}</Typography>
@@ -60,7 +61,9 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
             Messages
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <Link component={RouterLink} to="/profile" color="inherit">
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+          </Link>
           <MenuItem
             onClick={() => {
               handleClose();

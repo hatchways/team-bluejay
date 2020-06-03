@@ -31,3 +31,5 @@ instance/
 
 # SQL database migrations folder
 migrations
+
+client/.env

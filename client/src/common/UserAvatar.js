@@ -9,7 +9,7 @@ const UserAvatar = ({ user, className }) => {
     <Avatar src={user.avatarUrl} className={`${classes.avatar} ${className}`} />
   ) : (
     <Avatar className={`${classes.avatar} ${className}`}>
-      {user ? user.name[0] : ""}
+      {user && user.name ? user.name[0] : ""}
     </Avatar>
   );
 };
