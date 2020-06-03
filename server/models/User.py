@@ -35,6 +35,8 @@ class Cuisine(db.Model):
 class CuisineSchema(Schema):
     id = fields.Integer(dump_only=True)
     name = fields.String(required=True)
+    users = fields.List(fields.Nested(
+        lambda: UserSchema(exclude=("cuisines",))))
 
 
 class User(db.Model):
@@ -78,7 +80,7 @@ class User(db.Model):
             updated_cuisines = []
             for cuisine in cuisines:
                 # Should be:  target_cuisine = Cuisine.get_cuisine_by_id(cuisine)
-                target_cuisine = Cuisine.get_cuisine_by_name(cuisine)
+                target_cuisine = Cuisine.get_cuisine_by_name(cuisine['name'])
                 updated_cuisines.append(target_cuisine)
             self.cuisines = updated_cuisines
 
@@ -143,8 +145,7 @@ class UserSchema(Schema):
     latitude = fields.Float()
     longitude = fields.Float()
     formattedAddress = fields.String()
-    #cuisines = fields.List(fields.Nested(CuisineSchema))
-    cuisines = fields.List(fields.String())
+    cuisines = fields.List(fields.Nested(CuisineSchema(exclude=("users",))))
 
     @validates_schema
     def validate_password(self, data, **kwargs):
@@ -152,6 +153,8 @@ class UserSchema(Schema):
             # For all validation errors, Marshmallow raises its own error type called ValidationError
             raise ValidationError("Passwords do not match")
 
+
+"""
     @validates("cuisines")
     def validates_cuisines(self, cuisines):
         if (len(cuisines) > 0):
@@ -162,3 +165,4 @@ class UserSchema(Schema):
                 if Cuisine.get_cuisine_by_name(cuisine) == None:
                     raise ValidationError(
                         cuisine + " is not a valid cuisine registered within our database")
+"""
