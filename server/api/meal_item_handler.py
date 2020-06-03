@@ -27,6 +27,7 @@ class MealItemResource(Resource):
         meal_data = None
         try:
             meal_data = meal_item_schema.load(req_data)
+            meal_data['userId'] = user_id
         except Exception:
             return custom_json_response({
                 "error": "Please submit valid parameters to create a meal.",

@@ -21,6 +21,20 @@ const EditProfileForm = ({ onSubmit }) => {
     state: { user },
   } = useContext(UserContext);
 
+  // added by kareem for the sake of the demo only
+  // replacing the actual logged in user with a fake user
+  const fakeUser = {
+    name: "Atsushi Mikazuki",
+    aboutMe: "I am a nice person who likes expensive food at a cheap price",
+    address: "123 Merry lane",
+    city: "Pirate Bay",
+    state: "Toronto",
+    zipcode: "M4B 1B3",
+    country: "Canada",
+    cuisines: ["Japanese", "Chinese"],
+  };
+  user = fakeUser;
+
   const { register, handleSubmit, errors, control } = useForm({
     reValidateMode: "onChange",
     validateCriteriaMode: "all",
