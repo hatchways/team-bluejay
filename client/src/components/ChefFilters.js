@@ -61,6 +61,7 @@ const ChefFilters = ({
       if (address && coordinates) {
         const { latitude, longitude } = coordinates;
         setUserCoordinates({ latitude, longitude });
+        console.info("location found: ", coordinates);
         setDistanceFilter(5);
         setUserAddress(address);
       } else {

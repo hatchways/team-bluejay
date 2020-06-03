@@ -56,7 +56,7 @@ const Profile = ({ props }) => {
           {user.name}
         </Typography>
         <Typography variant="subtitle1" className={classes.location}>
-          {user.state}, {user.country}
+          {user.generalLocation}
         </Typography>
         {user ? (
           <EditProfileButton />

@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Map, GoogleApiWrapper, Circle } from "google-maps-react";
 
 const MapContainer = ({ google, coords }) => {
-  // Todo: replace hardcoded coordinates with data from back end
-  // const coords = { lat: 47.444, lng: -122.176 };
   const outerCircle = { radius: 140, fillOpacity: 0.4 };
   const innerCircle = { radius: 12, fillOpacity: 1 };
 
