@@ -1,6 +1,7 @@
 from . import db, bcrypt
 from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
-from Cuisine import Cuisine, CuisineSchema, favorite_cuisines_table
+
+from models.Cuisine import Cuisine, CuisineSchema, favorite_cuisines_table
 
 
 class User(db.Model):
@@ -107,7 +108,8 @@ class UserSchema(Schema):
     latitude = fields.Float()
     longitude = fields.Float()
     formattedAddress = fields.String()
-    cuisines = fields.List(fields.Nested(CuisineSchema(exclude=("users",))))
+    cuisines = fields.List(fields.Nested(
+        "CuisineSchema", exclude=("users",)))
 
     @validates_schema
     def validate_password(self, data, **kwargs):

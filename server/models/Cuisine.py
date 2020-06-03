@@ -1,6 +1,6 @@
 from . import db
 from marshmallow import fields, Schema
-from User import UserSchema
+from models.User import UserSchema
 
 
 # Join table linking users and their favorite cuisines
@@ -37,5 +37,4 @@ class Cuisine(db.Model):
 class CuisineSchema(Schema):
     id = fields.Integer()
     name = fields.String(required=True)
-    users = fields.List(fields.Nested(
-        lambda: UserSchema(exclude=("cuisines",))))
+    users = fields.List(fields.Nested("UserSchema", load_only=True))
