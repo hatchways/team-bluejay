@@ -118,5 +118,5 @@ class UserSchema(Schema):
     @validates("address")
     def validate_address(self, address):
         data = address_to_data(address)
-        if not data.get("access_points"):
+        if not data or not data.get("access_points"):
             raise ValidationError("Location not found for address")

@@ -20,9 +20,10 @@ const MealItemList = ({ chefName, meals }) => {
         className={classes.menuTitle}
       >{`${chefName}'s Menu`}</Typography>
       <Grid item className={classes.menuList}>
-        {meals.map((meal) => {
-          return <MealItem key={meal.id} meal={meal} />;
-        })}
+        {meals &&
+          meals.map((meal) => {
+            return <MealItem key={meal.id} meal={meal} />;
+          })}
       </Grid>
     </Grid>
   );

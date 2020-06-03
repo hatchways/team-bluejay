@@ -76,6 +76,7 @@ class UserResource(Resource):
 
         user.update(valid_data)
         data = {
-            "User successfully edited": user_schema.dump(user)
+            "user": user_schema.dump(user),
+            "message": "Succesfully Edited."
         }
         return custom_json_response(data, 200)

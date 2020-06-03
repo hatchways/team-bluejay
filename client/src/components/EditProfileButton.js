@@ -11,7 +11,7 @@ const EditProfileButton = () => {
   const { updateUser } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleSubmit = async (profileData) => {
+  const handleSubmit = (profileData) => {
     updateUser(profileData);
     setDialogOpen(false);
   };

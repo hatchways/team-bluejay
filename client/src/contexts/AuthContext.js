@@ -37,13 +37,22 @@ const Provider = ({ children }) => {
   let history = useHistory();
   let location = useLocation();
 
+  const handleErrorResponse = (error) => {
+    for (const [key, value] of Object.entries(error.response.data)) {
+      console.error(`${key} : ${value}`);
+      if (key === "error" || key === "message" || key === "address") {
+        alert(value);
+      }
+    }
+  };
+
   const signUp = async (user) => {
     try {
       const { data } = await API.post("/users", user);
       dispatch({ type: "signUp", payload: { user: data.user } });
       history.push("/");
     } catch (error) {
-      alert(error.response.data.error);
+      handleErrorResponse(error);
     }
   };
   const login = async ({ email, password }) => {
@@ -53,13 +62,21 @@ const Provider = ({ children }) => {
       let { from } = location.state || { from: { pathname: "/" } };
       history.replace(from);
     } catch (error) {
-      alert(error.response.data.message);
+      handleErrorResponse(error);
     }
   };
 
   const updateUser = async (updatedUser) => {
-    // TODO call back end
-    dispatch({ type: "updateUser", payload: { user: updatedUser } });
+    try {
+      //remove when cuisines has been implemented
+      delete updatedUser.cuisines;
+      const { data } = await API.put("/users", {
+        ...updatedUser,
+      });
+      dispatch({ type: "updateUser", payload: { user: data.user } });
+    } catch (error) {
+      handleErrorResponse(error);
+    }
   };
   const clearErrorMessage = () => dispatch({ type: "clearErrorMessage" });
 
@@ -69,16 +86,16 @@ const Provider = ({ children }) => {
       dispatch({ type: "signOut" });
       history.push("/login");
     } catch (error) {
-      alert(error);
-      console.log(error);
+      handleErrorResponse(error);
     }
   };
 
   const refreshLoggedInUser = async () => {
     try {
       const { data } = await API.get("/users/login");
-      dispatch({ type: "login", payload: { user: data.user } });
+      dispatch({ type: "refreshUser", payload: { user: data.user } });
     } catch (error) {
+      alert("Unable to refresh user");
       return;
     }
   };
