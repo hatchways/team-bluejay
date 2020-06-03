@@ -17,7 +17,7 @@ import { Context as UserContext } from "contexts/AuthContext";
 
 const EditProfileForm = ({ onSubmit }) => {
   const classes = useStyles();
-  const {
+  let {
     state: { user },
   } = useContext(UserContext);
 
