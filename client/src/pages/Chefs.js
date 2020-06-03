@@ -1,19 +1,14 @@
 import React from "react";
 import ChefSearch from "components/ChefSearch";
 import LoginForm from "components/LoginForm";
-import Navbar from "components/Navbar"
+import Navbar from "components/Navbar";
 
 const Chefs = ({ props }) => {
   return (
     <>
-      <Navbar/>
-      <ChefSearch
-      />
+      <ChefSearch />
     </>
-    
   );
 };
 
 export default Chefs;
-
-

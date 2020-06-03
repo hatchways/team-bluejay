@@ -43,7 +43,7 @@ const Provider = ({ children }) => {
       dispatch({ type: "signUp", payload: { user: data.user } });
       history.push("/");
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response.data.error);
     }
   };
   const login = async ({ email, password }) => {
@@ -69,7 +69,8 @@ const Provider = ({ children }) => {
       dispatch({ type: "signOut" });
       history.push("/login");
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error);
+      console.log(error);
     }
   };
 

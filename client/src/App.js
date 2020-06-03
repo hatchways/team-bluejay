@@ -29,7 +29,6 @@ function App() {
             <Bootstrapper>
               <MealProvider>
                 <Switch>
-                  <Route path="/chefs" component={Chefs} />
                   <Route path="/login" component={LoginPage} />
                   <Route path="/signup" component={SignUp} />
                   <ProtectedRoute path="/" component={LoggedInContainer} />
@@ -48,7 +47,8 @@ const LoggedInContainer = () => {
     <React.Fragment>
       <Navbar />
       <Switch>
-        <Route path="/Profile" render={(props) => <Profile {...props} />} />
+        <Route path="/chefs" render={(props) => <Chefs {...props} />} />
+        <Route path="/profile" render={(props) => <Profile {...props} />} />
         <Route path="/" render={(props) => <Home {...props} />} />
       </Switch>
     </React.Fragment>
