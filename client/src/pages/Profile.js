@@ -9,7 +9,6 @@ import {
   Chip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Redirect, useHistory, useLocation } from "react-router-dom";
 import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
 import EditProfileButton from "components/EditProfileButton";
 import GoogleMaps from "components/GoogleMaps";
