@@ -7,6 +7,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required
 )
+from marshmallow import ValidationError
 from helpers.database import save_to_database
 
 meal_item_schema = MealItemSchema()
@@ -24,21 +25,17 @@ class MealItemResource(Resource):
         req_data = request.get_json()
         user_id = get_jwt_identity().get("id")
         req_data["userId"] = user_id
-        meal_data = None
+
         try:
             meal_data = meal_item_schema.load(req_data)
             meal_data['userId'] = user_id
-        except Exception:
-            return custom_json_response({
-                "error": "Please submit valid parameters to create a meal.",
-                "required": "name, price, servings",
-                "optional": "description, ingredients, required_stuff"
-            }, 400)
-        
+        except ValidationError as err:
+            return custom_json_response(err.messages, 400)
+
         new_meal = MealItem(**meal_data)
         new_meal.save()
 
-        curr_user = User.get_one_user(user_id)
+        curr_user = User.get_by_id(user_id)
         curr_user.chef_flag_true()
         curr_user.save()
 
