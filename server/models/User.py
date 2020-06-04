@@ -1,7 +1,7 @@
 from . import db, bcrypt
 from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
 
-from models.Cuisine import Cuisine, CuisineSchema, favorite_cuisines_table
+from models.Cuisine import Cuisine, favorite_cuisines_table
 
 
 class User(db.Model):
@@ -108,6 +108,7 @@ class UserSchema(Schema):
     latitude = fields.Float()
     longitude = fields.Float()
     formattedAddress = fields.String()
+    # When schema is from another file it must be in quotes to prevent circular imports. Marshmallow automatically searches other Schemas from other files in this directory and finds one called "CuisineSchema"
     cuisines = fields.List(fields.Nested(
         "CuisineSchema", exclude=("users",)))
 
