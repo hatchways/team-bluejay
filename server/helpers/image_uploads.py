@@ -5,7 +5,7 @@ SECRET_KEY = 'z/zcq/dLRTHfZY2edDbzzV0ncxkSQwjXrXQ4W2l0'
 
 
 def upload_profile_picture(file, profile_id):
-    if (is_image_file(file.filename) == False):
+    if not is_image_file(file.filename):
         return False
 
     local_file = 'images/sample_image.png'

@@ -56,13 +56,15 @@ class UserResource(Resource):
     @jwt_required
     def put(self):
         if 'image' in request.files:
+            req_body = request.form.to_dict()
+            print(req_body)
+
             file = request.files['image']
-            saved_image_url = upload_profile_picture(file, 4)
+            saved_image_url = upload_profile_picture(file, req_body.get('id'))
             if saved_image_url == False:
                 return custom_json_response("Error with uploading image", 400)
 
             print(saved_image_url)
-            req_body = request.form.to_dict()
         else:
             req_body = request.get_json()
 
