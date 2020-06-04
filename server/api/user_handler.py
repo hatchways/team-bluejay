@@ -1,27 +1,39 @@
 from models.User import User, UserSchema
-from config import MOSHES_GOOGLE_API_KEY
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, set_access_cookies, create_refresh_token, get_csrf_token, set_refresh_cookies, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+    create_refresh_token,
+    get_csrf_token,
+    set_refresh_cookies,
+    jwt_required,
+    get_jwt_identity,
+    jwt_refresh_token_required
+)
 from helpers.api import custom_json_response
+<< << << < HEAD
 from helpers.image_uploads import upload_profile_picture
+== == == =
+from helpers.google import address_to_data
+>>>>>> > dev
 from datetime import timedelta
 from marshmallow import ValidationError
-import requests
+import os
 
 
 user_schema = UserSchema()
-user_schema_private = UserSchema(exclude=['password', 'email'])
+user_schema_private = UserSchema(exclude=['password', 'email', 'address'])
 
 
 class UserResource(Resource):
+    @jwt_required
     def get(self):
-        all_users = User.query.all()
+        all_users = User.get_all()
         return user_schema_private.dump(all_users, many=True)
 
     def post(self):
         req_body = request.get_json()
-        valid_data = None
         try:
             # load method from marshmallow validates data according to schema definition
             valid_data = user_schema.load(req_body)
@@ -55,12 +67,13 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
+
         if 'image' in request.files:
             req_body = request.form.to_dict()
-            print(req_body)
 
             file = request.files['image']
             saved_image_url = upload_profile_picture(file, req_body.get('id'))
+
             if saved_image_url == False:
                 return custom_json_response("Error with uploading image", 400)
 
@@ -69,37 +82,19 @@ class UserResource(Resource):
             req_body = request.get_json()
 
         print(req_body)
-        """
+
+        valid_data = None
+
         try:
             valid_data = user_schema.load(req_body, partial=True)
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
         current_userid = get_jwt_identity()
-        user = User.get_one_user(current_userid)
-
-        geocode_result = geocoder(valid_data.get('streetAddress', ''), valid_data.get(
-            'city', ''), valid_data.get('state', ''), valid_data.get('zipcode', ''), valid_data.get('country', ''))
-
-        location = geocode_result.json()['results'][0]
-
-        latitude = location['geometry']['location']['lat']
-        longitude = location['geometry']['location']['lat']
-        formatted_address = location['formatted_address']
-
-        valid_data['latitude'] = float(latitude)
-        valid_data['longitude'] = float(longitude)
-        valid_data['formattedAddress'] = formatted_address
+        user = User.get_by_id(current_userid)
 
         user.update(valid_data)
-
-        ser_user = user_schema.dump(user)
-        return custom_json_response(ser_user, 200)
-        """
-
-
-def geocoder(streetAddress="", city="", state="", zipcode="", country=""):
-    geocoding_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
-    request_url = geocoding_url + 'address=' + streetAddress + city + \
-        state + zipcode + country + '&key=' + MOSHES_GOOGLE_API_KEY
-    return requests.get(request_url)
+        data = {
+            "User successfully edited": user_schema.dump(user)
+        }
+        return custom_json_response(data, 200)

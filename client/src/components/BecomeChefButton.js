@@ -49,7 +49,7 @@ const BecomeChefButton = ({ loggedInUser }) => {
       label: "Ingredients",
     },
     {
-      name: "required_stuff",
+      name: "required_items",
       label: "Required Stuff",
     },
   ];
