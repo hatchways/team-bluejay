@@ -1,4 +1,3 @@
-from flask import request
 import os
 import requests
 
@@ -9,6 +8,4 @@ def address_to_data(address):
         data = requests.get(request_url).json().get("results")[0]
     except:
         return
-    # print(data.get("access_points")[0].get("location"))
-    # print(data.get("formatted_address"))
     return data

@@ -50,6 +50,15 @@ const EditProfileForm = ({ onSubmit }) => {
     },
     {
       component: TextField,
+      name: "chefProfile",
+      label: "Chef Profile",
+      inputClass: "largeWidth",
+      defaultValue: user.chefProfile,
+      multiline: true,
+      rows: 5,
+    },
+    {
+      component: TextField,
       name: "address",
       label: "Address",
       defaultValue: user.address,
@@ -58,7 +67,11 @@ const EditProfileForm = ({ onSubmit }) => {
         required: "Address is required.",
       },
     },
-  ];
+  ].filter((field) => {
+    // remove chefProfile field is user is not a chef
+    return user.isChef ? true : field.name !== "chefProfile";
+  });
+
   const cuisines = [
     "Japanese",
     "Martian",

@@ -17,6 +17,7 @@ const Context = React.createContext();
 
 const Provider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {
+    shoppingCart: [],
     meals: [],
     errorMessage: "",
   });
@@ -26,7 +27,7 @@ const Provider = ({ children }) => {
       const { data } = await API.post("/meal_items", meal);
       dispatch({
         type: "createMeal",
-        payload: { createdMeal: meal },
+        payload: { createdMeal: data.meal },
       });
     } catch (error) {
       console.log(error.response.data.message);
