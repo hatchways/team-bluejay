@@ -21,7 +21,7 @@ class User(db.Model):
     aboutMe = db.Column(db.Text)
     chefDescription = db.Column(db.Text)
 
-    mealItems = db.relationship("MealItem")
+    mealItems = db.relationship("MealItem", back_populates="user")
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
 
     def __init__(self, name, email, password, **kwargs):
