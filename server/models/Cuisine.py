@@ -1,6 +1,5 @@
 from . import db
 from marshmallow import fields, Schema
-from models.User import UserSchema
 
 
 # Join table linking users and their favorite cuisines
@@ -37,4 +36,5 @@ class Cuisine(db.Model):
 class CuisineSchema(Schema):
     id = fields.Integer()
     name = fields.String(required=True)
-    users = fields.List(fields.Nested("UserSchema", load_only=True))
+    # When schema is from another file it must be in quotes to prevent circular imports. Marshmallow automatically searches other Schemas from other files in this directory and finds one called "UserSchema"
+    users = fields.List(fields.Nested("UserSchema"))
