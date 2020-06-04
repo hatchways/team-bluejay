@@ -4,6 +4,7 @@ from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, set_access_cookies, create_refresh_token, get_csrf_token, set_refresh_cookies, jwt_required, get_jwt_identity
 from helpers.api import custom_json_response
+from helpers.image_uploads import upload_profile_picture
 from datetime import timedelta
 from marshmallow import ValidationError
 import requests
@@ -54,6 +55,12 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
+        response = upload_profile_picture(2)
+        if response == False:
+            return custom_json_response("Failure to upload image", 400)
+
+        print(response)
+
         req_body = request.get_json()
         try:
             valid_data = user_schema.load(req_body, partial=True)
