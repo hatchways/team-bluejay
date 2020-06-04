@@ -33,3 +33,4 @@ instance/
 migrations
 
 client/.env
+server/.env

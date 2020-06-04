@@ -8,7 +8,7 @@ from api.user_handler import UserResource
 from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
 from api.cuisine_handler import CuisineResource
-
+ss
 
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
