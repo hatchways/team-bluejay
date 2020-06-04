@@ -2,6 +2,7 @@ from . import db, bcrypt
 from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
 from helpers.google import address_to_data
 
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -13,25 +14,21 @@ class User(db.Model):
 
     address = db.Column(db.Text)
     generalLocation = db.Column(db.Text)
-    
+
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-<<<<<<< HEAD
 
     aboutMe = db.Column(db.Text)
     chefDescription = db.Column(db.Text)
-=======
     formattedAddress = db.Column(db.String)
     mealItems = db.relationship("MealItem", back_populates="user")
->>>>>>> 1b49fcf8f825312b8b543cb4a8d3879d99535d11
 
-    # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
     def __init__(self, name, email, password, **kwargs):
         self.name = name
         self.email = email
         self.password = self.__generate_hash(password)
         self.isChef = False
-        
+
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
 

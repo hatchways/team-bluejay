@@ -12,11 +12,7 @@ from flask_jwt_extended import (
     jwt_refresh_token_required
 )
 from helpers.api import custom_json_response
-<< << << < HEAD
 from helpers.image_uploads import upload_profile_picture
-== == == =
-from helpers.google import address_to_data
->>>>>> > dev
 from datetime import timedelta
 from marshmallow import ValidationError
 import os
@@ -67,7 +63,6 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
-
         if 'image' in request.files:
             req_body = request.form.to_dict()
 
