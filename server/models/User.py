@@ -20,6 +20,7 @@ class User(db.Model):
     aboutMe = db.Column(db.Text)
     chefDescription = db.Column(db.Text)
 
+    mealItems = db.relationship("MealItem")
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
     def __init__(self, name, email, password, **kwargs):
         self.name = name
@@ -109,6 +110,8 @@ class UserSchema(Schema):
     aboutMe = fields.String()
     chefProfile = fields.String()
 
+    mealItems = fields.List(fields.Nested(
+        "MealItemSchema"))
     @validates_schema
     def validate_password(self, data, **kwargs):
         if (data.get("password") and data.get("confirmPassword")) and (data.get("password") != data.get("confirmPassword")):
