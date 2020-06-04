@@ -11,7 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Image from "material-ui-image";
 import MealItem from "components/MealItem";
 
-const MealItemList = ({ chefName, meals }) => {
+const MealItemList = ({ chefName, meals, editable }) => {
   const classes = useStyles();
   return (
     <Grid item className={classes.root}>
@@ -22,7 +22,7 @@ const MealItemList = ({ chefName, meals }) => {
       <Grid item className={classes.menuList}>
         {meals &&
           meals.map((meal) => {
-            return <MealItem key={meal.id} meal={meal} />;
+            return <MealItem key={meal.id} meal={meal} editable={editable} />;
           })}
       </Grid>
     </Grid>

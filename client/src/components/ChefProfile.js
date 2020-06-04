@@ -29,7 +29,7 @@ const ChefProfile = ({ user }) => {
           <ChefBanner chef={user} editable={true} />
           <MealItemList
             chefName={user.name}
-            meals={user.meals}
+            meals={user.mealItems}
             editable={true}
           />
         </Grid>
@@ -44,7 +44,7 @@ const ChefProfile = ({ user }) => {
       <div className={classes.root}>
         <Grid container>
           <ChefBanner chef={chef} />
-          <MealItemList chefName={chef.name} meals={chef.meals} />
+          <MealItemList chefName={chef.name} meals={chef.mealItems} />
         </Grid>
       </div>
     );
