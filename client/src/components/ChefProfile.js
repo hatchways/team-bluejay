@@ -7,15 +7,14 @@ import Navbar from "components/Navbar";
 import MealItemList from "components/MealItemList";
 import { useParams, useHistory, useLocation, Redirect } from "react-router-dom";
 import { Context as UserContext } from "contexts/AuthContext";
+import { Context as MealContext } from "contexts/MealContext";
 import API from "api/index";
 
 const ChefProfile = ({ user }) => {
   const classes = useStyles();
   const { chefId } = useParams();
   const [chef, setChef] = useState(null);
-  const {
-    state: { mealItems },
-  } = useContext(UserContext);
+  const { getMenuItems } = useContext(MealContext);
 
   const fetchChef = async () => {
     const { data } = await API.get(`/chefs/${chefId}`);
