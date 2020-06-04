@@ -55,13 +55,19 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
-        response = upload_profile_picture(2)
-        if response == False:
-            return custom_json_response("Failure to upload image", 400)
+        if 'image' in request.files:
+            file = request.files['image']
+            saved_image_url = upload_profile_picture(file, 4)
+            if saved_image_url == False:
+                return custom_json_response("Error with uploading image", 400)
 
-        print(response)
+            print(saved_image_url)
+            req_body = request.form.to_dict()
+        else:
+            req_body = request.get_json()
 
-        req_body = request.get_json()
+        print(req_body)
+        """
         try:
             valid_data = user_schema.load(req_body, partial=True)
         except ValidationError as err:
@@ -87,6 +93,7 @@ class UserResource(Resource):
 
         ser_user = user_schema.dump(user)
         return custom_json_response(ser_user, 200)
+        """
 
 
 def geocoder(streetAddress="", city="", state="", zipcode="", country=""):
