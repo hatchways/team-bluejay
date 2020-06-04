@@ -70,7 +70,6 @@ const ChefSearch = ({ coords }) => {
       "Mexican",
       "Italian",
     ]);
-    // dummy chefs
   };
 
   const searchChefs = async () => {

@@ -47,7 +47,7 @@ const ChefFilters = ({
   };
 
   const removeSelectedCuisine = (cuisine) => {
-    let filteredCuisines = selectedCuisines.filter((c) => c !== cuisine);
+    const filteredCuisines = selectedCuisines.filter((c) => c !== cuisine);
     setSelectedCuisines(filteredCuisines);
   };
 
