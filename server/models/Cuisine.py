@@ -3,7 +3,7 @@ from marshmallow import fields, Schema
 
 
 # Join table linking users and their favorite cuisines
-favorite_cuisines_table = db.Table('favorite_cuisines',
+favorite_cuisines_table = db.Table('favorite_cuisines(users_cuisines)',
                                    db.Column('user_id', db.Integer,
                                              db.ForeignKey('users.id'), primary_key=True),
                                    db.Column('cuisine_id', db.Integer,
