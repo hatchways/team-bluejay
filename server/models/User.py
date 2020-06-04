@@ -16,9 +16,14 @@ class User(db.Model):
     
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+<<<<<<< HEAD
 
     aboutMe = db.Column(db.Text)
     chefDescription = db.Column(db.Text)
+=======
+    formattedAddress = db.Column(db.String)
+    mealItems = db.relationship("MealItem", back_populates="user")
+>>>>>>> 1b49fcf8f825312b8b543cb4a8d3879d99535d11
 
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
     def __init__(self, name, email, password, **kwargs):
@@ -100,11 +105,17 @@ class UserSchema(Schema):
         required=True, validate=validate.Length(min=6), load_only=True)
     confirmPassword = fields.String()
 
+    latitude = fields.Float()
+    longitude = fields.Float()
+
     address = fields.String()
     generalLocation = fields.String()
 
     aboutMe = fields.String()
     chefProfile = fields.String()
+
+    mealItems = fields.List(fields.Nested(
+        "MealItemSchema", exclude=("user",)))
 
     @validates_schema
     def validate_password(self, data, **kwargs):

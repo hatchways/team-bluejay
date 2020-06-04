@@ -11,12 +11,14 @@ import LoginPage from "pages/Login";
 import SignUp from "pages/SignUp";
 import Home from "pages/Home";
 import Profile from "pages/Profile";
+import Chefs from "pages/Chefs";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
 import { Provider as AlertProvider } from "contexts/AlertContext";
 
 import "App.css";
+import ChefProfile from "components/ChefProfile";
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
             <Bootstrapper>
               <MealProvider>
                 <Switch>
+                  <Route path="/chefs" component={Chefs} />
                   <Route path="/login" component={LoginPage} />
                   <Route path="/signup" component={SignUp} />
                   <ProtectedRoute path="/" component={LoggedInContainer} />
