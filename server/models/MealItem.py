@@ -17,8 +17,7 @@ class MealItem(db.Model):
     description = db.Column(db.Text, nullable=True)
     ingredients = db.Column(db.String(128), nullable=True)
     required_stuff = db.Column(db.String(128), nullable=True)
-    # to access chef info from a meal item
-    user = db.relationship("User")
+    user = db.relationship("User", back_populates="mealItems")
 
     def __init__(self, userId, name, price, servings, description="", ingredients="", required_stuff=""):
         self.userId = userId
@@ -50,3 +49,4 @@ class MealItemSchema(Schema):
     description = fields.Str()
     ingredients = fields.Str()
     required_stuff = fields.Str()
+    user = fields.Nested("UserSchema", exclude=("mealItems",))
