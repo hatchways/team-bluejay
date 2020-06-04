@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Grid, Paper, Avatar, Chip, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Image from "material-ui-image";
@@ -13,6 +13,9 @@ const ChefProfile = ({ user }) => {
   const classes = useStyles();
   const { chefId } = useParams();
   const [chef, setChef] = useState(null);
+  const {
+    state: { mealItems },
+  } = useContext(UserContext);
 
   const fetchChef = async () => {
     const { data } = await API.get(`/chefs/${chefId}`);

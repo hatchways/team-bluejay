@@ -20,6 +20,12 @@ const reducer = (state, action) => {
       return { user: action.payload.user, errorMessage: "" };
     case "updateUser":
       return { user: action.payload.user, errorMessage: "" };
+    case "updateMenuItems":
+      return {
+        ...state,
+        menuItems: action.payload.menuItems,
+        errorMessage: "",
+      };
     default:
       return state;
   }
@@ -30,6 +36,7 @@ const Context = React.createContext();
 const Provider = ({ children }) => {
   const { alert } = useContext(AlertContext);
   const [state, dispatch] = useReducer(reducer, {
+    menuItems: [],
     user: null,
     errorMessage: "",
   });
@@ -61,6 +68,7 @@ const Provider = ({ children }) => {
       dispatch({ type: "login", payload: { user: data.user } });
       let { from } = location.state || { from: { pathname: "/" } };
       history.replace(from);
+      updateMenuItems(data.user.id);
     } catch (error) {
       handleErrorResponse(error);
     }
@@ -94,9 +102,27 @@ const Provider = ({ children }) => {
     try {
       const { data } = await API.get("/users/login");
       dispatch({ type: "refreshUser", payload: { user: data.user } });
+      updateMenuItems(data.user.id);
     } catch (error) {
       alert("Unable to refresh user");
       return;
+    }
+  };
+
+  const updateMenuItems = async (userId) => {
+    try {
+      const { data } = await API.get("/meal_items", {
+        params: {
+          chefId: userId,
+        },
+      });
+      dispatch({
+        type: "updateMenuItems",
+        payload: { menuItems: data },
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
     }
   };
 
