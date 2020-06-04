@@ -27,7 +27,7 @@ class User(db.Model):
                                )
 
     # Todo: this method of initializing with default values feels very sloppy and a better way to do it probably exists
-    def __init__(self, name, email, password, confirmPassword, aboutMe="", streetAddress="", city="", state="", zipcode="", country="", latitude=0.0, longitude=0.0, formattedAddress="", cuisines=[]):
+    def __init__(self, name, email, password, confirmPassword, aboutMe="", streetAddress="", city="", state="", zipcode="", country="", latitude=0.0, longitude=0.0, formattedAddress=""):
         self.name = name
         self.email = email
         self.password = self.__generate_hash(password)
