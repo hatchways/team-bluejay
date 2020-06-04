@@ -122,7 +122,7 @@ class UserSchema(Schema):
     def validates_cuisines(self, cuisines):
         list_of_ids = list(map(lambda id: id.get('id'), cuisines))
         valid_cuisines = Cuisine.get_cuisines_by_ids(list_of_ids)
-        # Todo: if all cuisines are valid then replace the list of cuisine ids with the list of cuisines itself. This would prevent us from rerunning the query again later
+        # Todo: if all cuisines are valid then replace the list of cuisine ids with the list of cuisines itself. This would save us from needing to rerun the query later
         if (len(cuisines) != len(valid_cuisines)):
             raise ValidationError(
                 "One your cuisine ids is not a valid cuisine registered within our database")
