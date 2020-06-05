@@ -19,6 +19,7 @@ class User(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     aboutMe = db.Column(db.Text)
+    chefProfile = db.Column(db.Text)
 
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
