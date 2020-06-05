@@ -10,14 +10,14 @@ const Navbar = () => {
     signOut,
   } = useContext(AuthContext);
   return (
-    <React.Fragment>
+    <>
       <Hidden smDown>
         <TopNavigationBar loggedInUser={user} signOut={signOut} />
       </Hidden>
       <Hidden mdUp>
         <BottomNavigationBar loggedInUser={user} signOut={signOut} />
       </Hidden>
-    </React.Fragment>
+    </>
   );
 };
 

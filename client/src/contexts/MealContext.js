@@ -4,6 +4,11 @@ import { Context as AlertContext } from "contexts/AlertContext";
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case "addItem":
+      return {
+        ...state,
+        shoppingCart: [...state.shoppingCart, { item: "1" }],
+      };
     // case "createMeal":
     //   return {
     //     ...state,
@@ -37,8 +42,12 @@ const Provider = ({ children }) => {
     }
   };
 
+  const addItem = (mealItem) => {
+    dispatch({ type: "addItem", payload: { item: mealItem } });
+  };
+
   return (
-    <Context.Provider value={{ state, getMenuItems }}>
+    <Context.Provider value={{ state, getMenuItems, addItem }}>
       {children}
     </Context.Provider>
   );

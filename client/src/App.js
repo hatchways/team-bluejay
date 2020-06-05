@@ -44,7 +44,7 @@ function App() {
 
 const LoggedInContainer = () => {
   return (
-    <React.Fragment>
+    <>
       <Navbar />
       <Switch>
         <Route
@@ -55,7 +55,7 @@ const LoggedInContainer = () => {
         <Route path="/profile" render={(props) => <Profile {...props} />} />
         <Route path="/" render={(props) => <Chefs {...props} />} />
       </Switch>
-    </React.Fragment>
+    </>
   );
 };
 
