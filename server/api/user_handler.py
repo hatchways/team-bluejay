@@ -64,25 +64,30 @@ class UserResource(Resource):
     @jwt_required
     def put(self):
         current_userid = get_jwt_identity()
+        print(current_userid)
 
+        req_body = request.form.to_dict()
+        print("PRINTING MULTIOART FORM")
+        print(req_body)
+
+        # Needed for Postman requests as Postman submits files in request.files
         if 'profileImage' in request.files:
             req_image = request.files['profileImage']
+        else:
+            req_image = req_body.get('profileImage')
+        print("PRINTING REQ_IMAGE")
+        print(req_image)
+        if req_image:
             profile_image_url = upload_profile_picture(
                 req_image, current_userid['id'])
 
             if not profile_image_url:
                 return custom_json_response("Error with uploading image", 400)
 
-            req_body = request.form.to_dict()
             req_body['profileImage'] = profile_image_url
             print(profile_image_url)
-        else:
-            req_body = request.get_json()
 
-        print("PRINTING REQ_BODY")
-        print(req_body)
         valid_data = None
-
         try:
             valid_data = user_schema.load(req_body, partial=True)
         except ValidationError as err:
@@ -92,6 +97,8 @@ class UserResource(Resource):
 
         user.update(valid_data)
         data = {
-            "User successfully edited": user_schema.dump(user)
+            "user": user_schema.dump(user),
+            "message": "Succesfully Edited."
         }
+
         return custom_json_response(data, 200)
