@@ -18,6 +18,7 @@ requests = "*"
 python-dotenv = "*"
 flask-migrate = "*"
 flask-script = "*"
+faker = "*"
 
 [requires]
 python_version = "3.8"
