@@ -54,7 +54,7 @@ const ChefSearch = ({ coords }) => {
           maxDistance: distanceFilter > 0 ? distanceFilter : null,
         },
       });
-      setChefs(data["Search Result"]);
+      setChefs(data["results"]);
       console.log(data);
     } catch (error) {
       console.log(error.response.data.message);

@@ -4,12 +4,6 @@ import { Context as AlertContext } from "contexts/AlertContext";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    // case "createMeal":
-    //   return {
-    //     ...state,
-    //     menuItems: action.payload.data,
-    //     errorMessage: "",
-    //   };
     default:
       return state;
   }
