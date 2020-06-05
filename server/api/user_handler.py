@@ -64,8 +64,13 @@ class UserResource(Resource):
     @jwt_required
     def put(self):
         req_body = request.get_json()
-        valid_data = None
 
+        if req_body.get('email'):
+            return custom_json_response({
+                "error": "Cannot use this route to update email address."
+            }, 403)
+
+        valid_data = None
         try:
             valid_data = user_schema.load(req_body, partial=True)
         except ValidationError as err:

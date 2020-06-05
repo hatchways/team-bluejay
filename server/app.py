@@ -1,12 +1,14 @@
 from flask import Flask
 from marshmallow import Schema
 from flask_restful import Api
+from config import DB_URL
 
 from api.login_handler import LoginResource
 from api.user_handler import UserResource
 from api.chef_handler import ChefResource
 from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
+from api.cuisine_handler import CuisineResource
 
 
 from flask_jwt_extended import (
@@ -15,7 +17,6 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from models import db
-
 
 
 def create_app():
@@ -32,15 +33,6 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = 'team-bluejay'
     jwt = JWTManager(app)
 
-    # Database variables
-    user = 'postgres'
-    pw = '123456'
-    url = 'localhost:5432'
-    db_name = 'team-bluejay'
-
-    DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
-        user=user, pw=pw, url=url, db=db_name)
-
     app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -52,5 +44,6 @@ def create_app():
     api.add_resource(LoginResource, '/users/login')
     api.add_resource(MealItemResource, '/meal_items')
     api.add_resource(LogoutResource, '/users/logout')
+    api.add_resource(CuisineResource, '/cuisines')
 
     return app
