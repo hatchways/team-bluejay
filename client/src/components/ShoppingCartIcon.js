@@ -10,10 +10,9 @@ const ShoppingCartIcon = () => {
   const { createMeal } = useContext(UserContext);
   const {
     state: { shoppingCart },
-    addItem,
   } = useContext(MealContext);
   const classes = useStyles();
-  addItem({ meal: "1" });
+
   const handleClick = ({ ...mealObject }) => {
     createMeal(mealObject);
     setDialogOpen(false);

@@ -19,7 +19,7 @@ class User(db.Model):
     longitude = db.Column(db.Float)
 
     aboutMe = db.Column(db.Text)
-    chefDescription = db.Column(db.Text)
+    chefProfile = db.Column(db.Text)
 
     mealItems = db.relationship("MealItem")
 

@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   editMealButton: {
     width: "fit-content",
     position: "absolute",
-    right: "5%",
+    margin: theme.spacing(0.5, 0, 0, 0.5),
   },
 }));
 
