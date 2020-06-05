@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import API from "api/index";
 import {
   Grid,
   Paper,
@@ -14,24 +15,52 @@ import {
   CardContent,
 } from "@material-ui/core";
 import { LocationOn, Clear } from "@material-ui/icons";
+import ChefFilters from "components/ChefFilters";
 import { makeStyles } from "@material-ui/core/styles";
 import { addressToCoords, coordsToAddress } from "api/googleMaps";
-import imgSushiChef from "images/sushiChef.png";
-import imgBurgerChef from "images/burgerChef.png";
-import imgPastaChef from "images/pastaChef.png";
+import chefImage from "images/chef.png";
 import chefPlaceholder from "images/chefPlaceholder.jpeg";
 
 const ChefSearch = ({ coords }) => {
-  const [chefs, setChefs] = useState([]);
+  const [chefs, setChefs] = useState([
+    {
+      name: "Sushi Chef",
+      cuisine: ["Japanese"],
+      location: "Toronto, Canada",
+      description:
+        "Sushi Master. 20 Years of experience working under Sushi Masters in Japan.",
+      img: chefImage,
+    },
+    {
+      name: "Pasta Chef",
+      cuisine: ["Italian", "American"],
+      location: "Toronto, Canada",
+      description: "Pasta Master",
+      img: chefImage,
+    },
+  ]);
+  const [cuisineTypes, setCuisineTypes] = useState([
+    "Japanese",
+    "Chinese",
+    "American",
+    "French",
+    "Mexican",
+    "Italian",
+  ]);
   const [userAddress, setUserAddress] = useState("");
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [selectedCuisines, setSelectedCuisines] = useState([]);
-  const [cuisineTypes, setCuisineTypes] = useState([]);
+  const [distanceFilter, setDistanceFilter] = useState(null);
+
   const classes = useStyles();
   useEffect(() => {
     // do api call
-
+    searchChefs();
     // to change later
+    setDummyData();
+  }, [userAddress, userCoordinates, selectedCuisines, distanceFilter]);
+
+  const setDummyData = () => {
     // dummy cuisine types
     setCuisineTypes([
       "Japanese",
@@ -42,164 +71,48 @@ const ChefSearch = ({ coords }) => {
       "Italian",
     ]);
     // dummy chefs
-    setChefs([
-      {
-        name: "Sushi Chef",
-        cuisine: ["Japanese"],
-        location: "Toronto, Canada",
-        description:
-          "Sushi Master. 20 Years of experience working under Sushi Masters in Japan.",
-        img: imgSushiChef,
-      },
-      {
-        name: "Pasta Chef",
-        cuisine: ["Italian", "American"],
-        location: "Toronto, Canada",
-        description: "Pasta Master",
-        img: imgPastaChef,
-      },
-      {
-        name: "Burger Maker",
-        cuisine: ["American", "Chinese", "Mexican"],
-        location: "Toronto, Canada",
-        description: "Burger Master",
-        img: imgBurgerChef,
-      },
-    ]);
-  }, []);
+  };
 
-  const getLocation = () => {
-    const success = (pos) => {
-      const { latitude, longitude } = pos.coords;
-
-      setUserCoordinates({ latitude, longitude });
-      coordsToAddress(latitude, longitude).then((data) => {
-        setUserAddress(data);
+  const searchChefs = async () => {
+    try {
+      const { data } = await API.get("/chefs", {
+        // chef has stub cuisines of ""Japanese, Chinese, Mexican""
+        params: {
+          userCuisines: selectedCuisines.join(","),
+          userLat: userCoordinates ? userCoordinates.latitude : null,
+          userLon: userCoordinates ? userCoordinates.longitude : null,
+          maxDistance: distanceFilter > 0 ? distanceFilter : null,
+        },
       });
-    };
-    const error = (err) => {
-      console.log(err);
-    };
-    navigator.geolocation.getCurrentPosition(success, error);
+      setChefs(data["Search Result"]);
+      console.log(data);
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
   };
-
-  const handleChange = (e) => {
-    setUserAddress(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addressToCoords(userAddress).then(({ address, coordinates }) => {
-      if (address && coordinates) {
-        const { latitude, longitude } = coordinates;
-        setUserCoordinates({ latitude, longitude });
-        setUserAddress(address);
-      } else {
-        alert("failed to find address");
-      }
-    });
-  };
-
-  const addSelectedCuisine = (cuisine) => {
-    setSelectedCuisines([...selectedCuisines, cuisine]);
-  };
-
-  const removeSelectedCuisine = (cuisine) => {
-    let filteredCuisines = selectedCuisines.filter((c) => c !== cuisine);
-    setSelectedCuisines(filteredCuisines);
-  };
-
-  const ChefFilters = () => (
-    <Grid
-      item
-      xs={12}
-      sm={4}
-      md={3}
-      component={Paper}
-      variant="outlined"
-      square
-    >
-      <Box className={classes.filters}>
-        <Box className={classes.filterGroup}>
-          <Typography component="h6" variant="h6">
-            Location
-          </Typography>
-          <form className={classes.locationBox} onSubmit={handleSubmit}>
-            <Input
-              id="my-input"
-              aria-describedby="my-helper-text"
-              onChange={handleChange}
-              value={userAddress}
-              disableUnderline
-            />
-            <LocationOn
-              className={classes.locationIcon}
-              color={userCoordinates ? "primary" : "lightgrey"}
-              onClick={getLocation}
-            />
-          </form>
-        </Box>
-        <Box className={classes.filterGroup}>
-          <Typography component="h6" variant="h6">
-            Cuisine:
-          </Typography>
-          <Box className={classes.selectedCuisines}>
-            {selectedCuisines.map((cuisine) => (
-              <Button
-                className={classes.button}
-                color="primary"
-                variant="contained"
-                key={cuisine}
-              >
-                {cuisine}
-                <Clear onClick={() => removeSelectedCuisine(cuisine)} />
-              </Button>
-            ))}
-          </Box>
-        </Box>
-        <Box className={classes.filterGroup}>
-          <Box className={classes.cuisineTypes}>
-            {cuisineTypes
-              .filter((cuisine) => !selectedCuisines.includes(cuisine))
-              .map((cuisine) => (
-                <Button
-                  className={classes.button}
-                  color="error"
-                  variant="contained"
-                  key={cuisine}
-                  onClick={() => addSelectedCuisine(cuisine)}
-                >
-                  {cuisine}
-                </Button>
-              ))}
-          </Box>
-        </Box>
-      </Box>
-    </Grid>
-  );
 
   return (
     <Grid container component="main" className={classes.root}>
-      <ChefFilters />
-      <Grid item xs={12} sm={8} md={9}>
+      <ChefFilters
+        userAddress={userAddress}
+        setUserAddress={setUserAddress}
+        userCoordinates={userCoordinates}
+        setUserCoordinates={setUserCoordinates}
+        selectedCuisines={selectedCuisines}
+        setSelectedCuisines={setSelectedCuisines}
+        cuisineTypes={cuisineTypes}
+        distanceFilter={distanceFilter}
+        setDistanceFilter={setDistanceFilter}
+      />
+      <Grid item sm={12} md={9}>
         <Box className={classes.chefsPage}>
           <Typography component="h4" variant="h4">
             Available Chefs:
           </Typography>
           <Box className={classes.chefTileArea}>
-            {/* {chefs.map((chef) => (
+            {chefs.map((chef) => (
               <CustomCard chef={chef} />
-            ))} */}
-            {chefs
-              .filter(({ cuisine }) => {
-                if (selectedCuisines.length >= 1) {
-                  return cuisine.some((c) => selectedCuisines.includes(c));
-                }
-                return true;
-              })
-              .map((chef) => (
-                <CustomCard chef={chef} />
-              ))}
+            ))}
           </Box>
         </Box>
       </Grid>
@@ -209,12 +122,12 @@ const ChefSearch = ({ coords }) => {
 
 const CustomCard = ({ chef }) => {
   const classes = useStyles();
-  const { name, location, cuisine, description, img } = chef;
+  const { name, generalLocation, chefProfile } = chef;
   return (
     <Card className={classes.chefTile}>
       <CardMedia
         className={classes.chefImage}
-        image={chef.img}
+        image={chefImage}
         title="Chef Image"
       />
       <CardContent>
@@ -222,13 +135,15 @@ const CustomCard = ({ chef }) => {
           {name}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary" component="p">
-          {location}
+          {generalLocation || "City, Country"}
         </Typography>
-        {chef.cuisine.map((c) => (
+        {["American", "Japanese", "Mexican"].map((c) => (
           <Chip className={classes.chip} color="primary" label={c} />
         ))}
-        {/* gabriel */}
-        <Typography color="textSecondary">{description}</Typography>
+
+        <Typography variant="body" color="textSecondary" component="p">
+          {chefProfile ? chefProfile : "Chef Profile"}
+        </Typography>
       </CardContent>
     </Card>
   );
@@ -267,36 +182,12 @@ const useStyles = makeStyles((theme) => ({
   },
   chefsPage: {
     padding: theme.spacing(8, 10, 0, 8),
-    // width: "100%", //Gabriel note
-  },
-  filterGroup: {
-    marginTop: theme.spacing(2),
-  },
-  cuisineTypes: {
-    display: "inline-block",
-  },
-  selectedCuisines: {
-    display: "inline-block",
-  },
-  locationBox: {
-    padding: theme.spacing(1, 1),
-    display: "inline-block",
-    border: `1px solid ${"lightgrey"}`,
-  },
-  locationIcon: {
-    float: "right",
-  },
-  button: {
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(3),
-    padding: theme.spacing(1, 0),
-    minWidth: theme.spacing(15),
+    width: "100%",
   },
   root: {
     height: "100vh",
-  },
-  filters: {
-    margin: theme.spacing(8, 1, 1, 8),
+    display: "flex",
+    flexWrap: "wrap",
   },
 }));
 
