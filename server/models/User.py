@@ -18,6 +18,7 @@ class User(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
 
+    profileImage = db.Column(db.Text)
     aboutMe = db.Column(db.Text)
     chefDescription = db.Column(db.Text)
     formattedAddress = db.Column(db.String)
@@ -108,6 +109,7 @@ class UserSchema(Schema):
     address = fields.String()
     generalLocation = fields.String()
 
+    profileImage = fields.String()
     aboutMe = fields.String()
     chefProfile = fields.String()
 

@@ -63,21 +63,24 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
-        if 'image' in request.files:
-            req_body = request.form.to_dict()
+        current_userid = get_jwt_identity()
 
-            file = request.files['image']
-            saved_image_url = upload_profile_picture(file, req_body.get('id'))
+        if 'profileImage' in request.files:
+            req_image = request.files['profileImage']
+            profile_image_url = upload_profile_picture(
+                req_image, current_userid['id'])
 
-            if saved_image_url == False:
+            if not profile_image_url:
                 return custom_json_response("Error with uploading image", 400)
 
-            print(saved_image_url)
+            req_body = request.form.to_dict()
+            req_body['profileImage'] = profile_image_url
+            print(profile_image_url)
         else:
             req_body = request.get_json()
 
+        print("PRINTING REQ_BODY")
         print(req_body)
-
         valid_data = None
 
         try:
@@ -85,7 +88,6 @@ class UserResource(Resource):
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
-        current_userid = get_jwt_identity()
         user = User.get_by_id(current_userid)
 
         user.update(valid_data)
