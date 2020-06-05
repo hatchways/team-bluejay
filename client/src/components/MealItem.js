@@ -53,7 +53,7 @@ const MealItem = ({ meal, editable }) => {
             variant="contained"
             size="small"
             className={classes.addToCart}
-            onClick={() => addToCart("hi")}
+            onClick={() => addToCart(meal)}
           >
             Add to Cart
           </Button>

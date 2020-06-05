@@ -19,7 +19,7 @@ const ShoppingCartIcon = () => {
   };
 
   const Icon = shoppingCart.length ? (
-    <Badge badgeContent={4} color="primary">
+    <Badge badgeContent={shoppingCart.length} color="primary">
       <ShoppingCartOutlined />
     </Badge>
   ) : (

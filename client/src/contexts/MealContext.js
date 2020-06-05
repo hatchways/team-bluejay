@@ -6,8 +6,8 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "addToCart":
       return {
-        shoppingCart: [...state.shoppingCart, { item: "1" }],
         ...state,
+        shoppingCart: [...state.shoppingCart, action.payload.item],
       };
     default:
       return state;
@@ -38,8 +38,8 @@ const Provider = ({ children }) => {
 
   const addToCart = (mealItem) => {
     try {
-      alert("add");
-      // dispatch({ type: "addItem", payload: { item: mealItem } });
+      dispatch({ type: "addToCart", payload: { item: mealItem } });
+      console.log(state);
     } catch (error) {
       console.log(error);
     }
