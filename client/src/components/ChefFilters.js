@@ -138,7 +138,7 @@ const ChefFilters = ({
             {selectedCuisines.map((cuisine) => (
               <Button
                 className={classes.button}
-                color="secondary"
+                color="primary"
                 variant="contained"
                 key={cuisine}
               >
