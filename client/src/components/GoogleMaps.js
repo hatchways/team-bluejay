@@ -26,5 +26,5 @@ const MapContainer = ({ google }) => {
 };
 
 export default GoogleApiWrapper({
-  apiKey: process.env.MOSHES_GOOGLE_MAPS_API_KEY,
+  apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
 })(MapContainer);

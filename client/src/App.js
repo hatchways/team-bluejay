@@ -18,7 +18,6 @@ import { Provider as MealProvider } from "contexts/MealContext";
 import { Provider as AlertProvider } from "contexts/AlertContext";
 
 import "App.css";
-import ChefProfile from "components/ChefProfile";
 
 function App() {
   return (
