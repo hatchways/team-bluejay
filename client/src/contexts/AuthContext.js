@@ -18,8 +18,6 @@ const reducer = (state, action) => {
       return { ...state, errorMessage: "" };
     case "refreshUser":
       return { user: action.payload.user, errorMessage: "" };
-    case "updateUser":
-      return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
   }
@@ -30,7 +28,6 @@ const Context = React.createContext();
 const Provider = ({ children }) => {
   const { alert } = useContext(AlertContext);
   const [state, dispatch] = useReducer(reducer, {
-    menuItems: [],
     user: null,
     errorMessage: "",
   });
@@ -101,6 +98,15 @@ const Provider = ({ children }) => {
     }
   };
 
+  const createMeal = async (meal) => {
+    try {
+      await API.post("/meal_items", meal);
+      refreshLoggedInUser();
+    } catch (error) {
+      handleErrorResponse(error);
+    }
+  };
+
   return (
     <Context.Provider
       value={{
@@ -111,6 +117,7 @@ const Provider = ({ children }) => {
         signOut,
         updateUser,
         refreshLoggedInUser,
+        createMeal,
       }}
     >
       {children}

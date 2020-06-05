@@ -24,15 +24,6 @@ const Provider = ({ children }) => {
     errorMessage: "",
   });
 
-  const createMeal = async (meal) => {
-    try {
-      const { data } = await API.post("/meal_items", meal);
-      return data.meal;
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
-
   const getMenuItems = async (userId) => {
     try {
       const { data } = await API.get("/meal_items", {
@@ -47,7 +38,7 @@ const Provider = ({ children }) => {
   };
 
   return (
-    <Context.Provider value={{ state, createMeal, getMenuItems }}>
+    <Context.Provider value={{ state, getMenuItems }}>
       {children}
     </Context.Provider>
   );
