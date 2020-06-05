@@ -55,8 +55,9 @@ const BecomeChefButton = ({ loggedInUser }) => {
   ];
 
   const handleSubmit = async ({ ...mealObject }) => {
-    await createMeal(mealObject);
-    refreshLoggedInUser();
+    const createdMeal = await createMeal(mealObject);
+    loggedInUser.isChef = true;
+    loggedInUser.mealItems = [createdMeal];
     setDialogOpen(false);
   };
 

@@ -26,7 +26,8 @@ const Provider = ({ children }) => {
 
   const createMeal = async (meal) => {
     try {
-      await API.post("/meal_items", meal);
+      const { data } = await API.post("/meal_items", meal);
+      return data.meal;
     } catch (error) {
       alert(error.response.data.message);
     }

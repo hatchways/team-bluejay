@@ -19,7 +19,7 @@ const EditMealButton = () => {
       <Button
         className={classes.editMealButton}
         variant="outlined"
-        size="large"
+        size="small"
         onClick={() => setDialogOpen(true)}
       >
         <Edit />
@@ -36,6 +36,8 @@ const EditMealButton = () => {
 const useStyles = makeStyles((theme) => ({
   editMealButton: {
     width: "fit-content",
+    position: "absolute",
+    right: "5%",
   },
 }));
 

@@ -15,8 +15,8 @@ const MealItem = ({ meal, editable }) => {
 
   return (
     <Card className={classes.root} elevation={2}>
+      {editable && <EditMealButton />}
       <div className={classes.details}>
-        {editable && <EditMealButton />}
         <CardContent className={classes.content}>
           <Chip
             label={`Meal for ${meal.servings}`}
@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(35),
     display: "flex",
     padding: theme.spacing(5),
+    position: "relative",
   },
   image: {
     width: "40%",
