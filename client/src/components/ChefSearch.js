@@ -2,51 +2,23 @@ import React, { useState, useEffect } from "react";
 import API from "api/index";
 import {
   Grid,
-  Paper,
-  Button,
   Box,
-  Input,
   Typography,
   Chip,
   Card,
   CardActionArea,
-  CardActions,
   CardMedia,
   CardContent,
 } from "@material-ui/core";
-import { LocationOn, Clear } from "@material-ui/icons";
 import ChefFilters from "components/ChefFilters";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { addressToCoords, coordsToAddress } from "api/googleMaps";
+// to remove later
 import chefImage from "images/chef.png";
-import chefPlaceholder from "images/chefPlaceholder.jpeg";
 
 const ChefSearch = ({ coords }) => {
-  const [chefs, setChefs] = useState([
-    {
-      name: "Sushi Chef",
-      cuisine: ["Japanese"],
-      location: "Toronto, Canada",
-      description:
-        "Sushi Master. 20 Years of experience working under Sushi Masters in Japan.",
-      img: chefImage,
-    },
-    {
-      name: "Pasta Chef",
-      cuisine: ["Italian", "American"],
-      location: "Toronto, Canada",
-      description: "Pasta Master",
-      img: chefImage,
-    },
-  ]);
-  const [cuisineTypes, setCuisineTypes] = useState([
-    "Japanese",
-    "Chinese",
-    "American",
-    "French",
-    "Mexican",
-    "Italian",
-  ]);
+  const [chefs, setChefs] = useState([]);
+  const [cuisineTypes, setCuisineTypes] = useState([]);
   const [userAddress, setUserAddress] = useState("");
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [selectedCuisines, setSelectedCuisines] = useState([]);
@@ -54,7 +26,6 @@ const ChefSearch = ({ coords }) => {
 
   const classes = useStyles();
   useEffect(() => {
-    // do api call
     searchChefs();
     // to change later
     setDummyData();
@@ -70,7 +41,6 @@ const ChefSearch = ({ coords }) => {
       "Mexican",
       "Italian",
     ]);
-    // dummy chefs
   };
 
   const searchChefs = async () => {
@@ -84,7 +54,7 @@ const ChefSearch = ({ coords }) => {
           maxDistance: distanceFilter > 0 ? distanceFilter : null,
         },
       });
-      setChefs(data["Search Result"]);
+      setChefs(data["results"]);
       console.log(data);
     } catch (error) {
       console.log(error.response.data.message);
@@ -122,7 +92,8 @@ const ChefSearch = ({ coords }) => {
 
 const CustomCard = ({ chef }) => {
   const classes = useStyles();
-  const { name, generalLocation, chefProfile } = chef;
+  const history = useHistory();
+  const { id, name, generalLocation, chefProfile } = chef;
   return (
     <Card className={classes.chefTile}>
       <CardMedia
@@ -130,21 +101,23 @@ const CustomCard = ({ chef }) => {
         image={chefImage}
         title="Chef Image"
       />
-      <CardContent>
-        <Typography variant="h5" component="h5">
-          {name}
-        </Typography>
-        <Typography variant="subtitle2" color="textSecondary" component="p">
-          {generalLocation || "City, Country"}
-        </Typography>
-        {["American", "Japanese", "Mexican"].map((c) => (
-          <Chip className={classes.chip} color="primary" label={c} />
-        ))}
+      <CardActionArea onClick={() => history.push(`/chefs/${id}`)}>
+        <CardContent>
+          <Typography variant="h5" component="h5">
+            {name}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary" component="p">
+            {generalLocation || "City, Country"}
+          </Typography>
+          {["American", "Japanese", "Mexican"].map((c) => (
+            <Chip className={classes.chip} color="primary" label={c} />
+          ))}
 
-        <Typography variant="body" color="textSecondary" component="p">
-          {chefProfile ? chefProfile : "Chef Profile"}
-        </Typography>
-      </CardContent>
+          <Typography variant="body" color="textSecondary" component="p">
+            {chefProfile ? chefProfile : "Chef Profile"}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };

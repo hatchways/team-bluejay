@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
 import EditProfileButton from "components/EditProfileButton";
 import GoogleMaps from "components/GoogleMaps";
+import ChefProfile from "components/ChefProfile";
 import { Context as UserContext } from "contexts/AuthContext";
 
 const Profile = ({ props }) => {
@@ -23,7 +24,12 @@ const Profile = ({ props }) => {
   // TODO: Remove stub data and receive data from backend
   user.cuisines = ["French", "Japanese"];
 
-  const loggedInUser = true;
+  const googleCoords =
+    user.latitude && user.longitude
+      ? { lat: user.latitude, lng: user.longitude }
+      : null;
+
+  if (user.isChef) return <ChefProfile user={user} />;
 
   return (
     <Grid
@@ -49,9 +55,9 @@ const Profile = ({ props }) => {
           {user.name}
         </Typography>
         <Typography variant="subtitle1" className={classes.location}>
-          {user.state}, {user.country}
+          {user.generalLocation}
         </Typography>
-        {loggedInUser ? (
+        {user ? (
           <EditProfileButton />
         ) : (
           <Button variant="outlined" color="primary" size="large">
@@ -88,7 +94,7 @@ const Profile = ({ props }) => {
         /* for google-maps-react size must be set with inline-styles on parent container */
         style={{ position: "relative", height: "60vh" }}
       >
-        <GoogleMaps />
+        <GoogleMaps coords={googleCoords} />
       </Grid>
     </Grid>
   );

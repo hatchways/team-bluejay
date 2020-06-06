@@ -76,11 +76,12 @@ class UserResource(Resource):
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
-        current_userid = get_jwt_identity()
-        user = User.get_by_id(current_userid)
+        current_user = get_jwt_identity()
+        user = User.get_by_id(current_user.get("id"))
 
         user.update(valid_data)
         data = {
-            "User successfully edited": user_schema.dump(user)
+            "user": user_schema.dump(user),
+            "message": "Succesfully Edited."
         }
         return custom_json_response(data, 200)

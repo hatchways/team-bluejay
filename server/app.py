@@ -42,7 +42,7 @@ def create_app():
     api.add_resource(UserResource, '/users')
     api.add_resource(ChefResource, '/chefs', '/chefs/<id>')
     api.add_resource(LoginResource, '/users/login')
-    api.add_resource(MealItemResource, '/meal_items')
+    api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
     api.add_resource(LogoutResource, '/users/logout')
     api.add_resource(CuisineResource, '/cuisines')
 

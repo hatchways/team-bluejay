@@ -36,9 +36,22 @@ class MealItem(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self, data):
+        for key, item in data.items():
+            setattr(self, key, item)
+        db.session.commit()
+
+    @staticmethod
+    def get_by_id(id):
+        return MealItem.query.get(id)
+
     @staticmethod
     def get_all_meals():
         return MealItem.query.all()
+
+    @staticmethod
+    def get_meals_by_userId(userId):
+        return MealItem.query.filter(MealItem.userId == userId).all()
 
 
 class MealItemSchema(Schema):

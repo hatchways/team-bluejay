@@ -1,4 +1,3 @@
-from flask import request
 import os
 import requests
 

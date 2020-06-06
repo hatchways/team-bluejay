@@ -16,17 +16,18 @@ class User(db.Model):
 
     address = db.Column(db.Text)
     generalLocation = db.Column(db.Text)
+
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     aboutMe = db.Column(db.Text)
     chefProfile = db.Column(db.Text)
 
+    mealItems = db.relationship("MealItem", back_populates="user")
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
                                back_populates='users'
                                )
-    mealItems = db.relationship("MealItem", back_populates="user")
-
+  
     def __init__(self, name, email, password, **kwargs):
         self.name = name
         self.email = email
@@ -117,12 +118,11 @@ class UserSchema(Schema):
     aboutMe = fields.String()
     chefProfile = fields.String()
 
+    mealItems = fields.List(fields.Nested(
+        "MealItemSchema", exclude=("userId",)))
     # When schema is from another file it must be in quotes to prevent circular imports. Marshmallow automatically searches other Schemas from other files in this directory and finds one called "CuisineSchema"
     cuisines = fields.List(fields.Nested(
         "CuisineSchema", exclude=("users",)))
-
-    mealItems = fields.List(fields.Nested(
-        "MealItemSchema", exclude=("user",)))
 
     @validates_schema
     def validate_password(self, data, **kwargs):
@@ -142,5 +142,5 @@ class UserSchema(Schema):
     @validates("address")
     def validate_address(self, address):
         data = address_to_data(address)
-        if not data.get("access_points"):
+        if not data or not data.get("access_points"):
             raise ValidationError("Location not found for address")

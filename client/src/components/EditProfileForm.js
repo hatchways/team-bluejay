@@ -21,20 +21,6 @@ const EditProfileForm = ({ onSubmit }) => {
     state: { user },
   } = useContext(UserContext);
 
-  // added by kareem for the sake of the demo only
-  // replacing the actual logged in user with a fake user
-  const fakeUser = {
-    name: "Atsushi Mikazuki",
-    aboutMe: "I am a nice person who likes expensive food at a cheap price",
-    address: "123 Merry lane",
-    city: "Pirate Bay",
-    state: "Toronto",
-    zipcode: "M4B 1B3",
-    country: "Canada",
-    cuisines: ["Japanese", "Chinese"],
-  };
-  user = fakeUser;
-
   const { register, handleSubmit, errors, control } = useForm({
     reValidateMode: "onChange",
     validateCriteriaMode: "all",
@@ -61,9 +47,15 @@ const EditProfileForm = ({ onSubmit }) => {
       defaultValue: user.aboutMe,
       multiline: true,
       rows: 5,
-      validation: {
-        required: "Please provide a description about you",
-      },
+    },
+    {
+      component: TextField,
+      name: "chefProfile",
+      label: "Chef Profile",
+      inputClass: "largeWidth",
+      defaultValue: user.chefProfile,
+      multiline: true,
+      rows: 5,
     },
     {
       component: TextField,
@@ -75,44 +67,11 @@ const EditProfileForm = ({ onSubmit }) => {
         required: "Address is required.",
       },
     },
-    {
-      component: TextField,
-      name: "city",
-      label: "City",
-      defaultValue: user.city,
-      inputClass: "mediumWidth",
-      validation: {
-        required: "City is required.",
-      },
-    },
-    {
-      component: TextField,
-      name: "state",
-      label: "State",
-      defaultValue: user.state,
-      inputClass: "smallWidth",
-    },
-    {
-      component: TextField,
-      name: "zipcode",
-      label: "Zipcode",
-      defaultValue: user.zipcode,
-      inputClass: "smallWidth",
-      validation: {
-        required: "Zipcode is required.",
-      },
-    },
-    {
-      component: TextField,
-      inputClass: "mediumWidth",
-      name: "country",
-      label: "Country",
-      defaultValue: user.country,
-      validation: {
-        required: "Country is required.",
-      },
-    },
-  ];
+  ].filter((field) => {
+    // remove chefProfile field is user is not a chef
+    return user.isChef ? true : field.name !== "chefProfile";
+  });
+
   const cuisines = [
     "Japanese",
     "Martian",

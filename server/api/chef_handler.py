@@ -56,7 +56,7 @@ class ChefResource(Resource):
             ]
 
         data = {
-            "Search Result": ser_chefs,
+            "results": ser_chefs,
             "Applied Filters": ",".join(filters)
         }
         return custom_json_response(data, 200)
