@@ -9,7 +9,6 @@ const Context = React.createContext();
 
 const Provider = ({ children }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [pending, setPending] = useState(false);
 
   const { alert } = useContext(AlertContext);
 
@@ -20,20 +19,32 @@ const Provider = ({ children }) => {
     updateFromLocalStorage();
   }, []);
 
+  useEffect(() => {
+    updateToLocalStorage();
+  }, [chefId, shoppingCart]);
+
   const updateFromLocalStorage = () => {
-    const lsItems = JSON.parse(localStorage.getItem("shoppingCart"));
-    const lsChefId = JSON.parse(localStorage.getItem("chefId"));
-    if (lsItems && lsChefId) {
-      setChefId(lsChefId);
-      setShoppingCart(lsItems);
+    try {
+      const lsItems = JSON.parse(localStorage.getItem("shoppingCart"));
+      const lsChefId = JSON.parse(localStorage.getItem("chefId"));
+      if (lsItems && lsChefId) {
+        setChefId(lsChefId);
+        setShoppingCart(lsItems);
+      }
+      console.info("updated cart from localstorage");
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const updateToLocalStorage = () => {
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-    localStorage.setItem("chefId", JSON.stringify(chefId));
-    console.log(shoppingCart);
-    console.log(chefId);
+    if (chefId && shoppingCart) {
+      localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+      localStorage.setItem("chefId", JSON.stringify(chefId));
+    } else {
+      localStorage.removeItem("shoppingCart");
+      localStorage.removeItem("chefId");
+    }
   };
 
   const getMenuItems = async (userId) => {
@@ -54,33 +65,31 @@ const Provider = ({ children }) => {
       addToCart(mealItem, id);
     } else {
       setDialogOpen(true);
-      setPending({ mealItem, id });
-      console.log(pending);
     }
   };
 
-  const addToCart = async (mealItem, chefId) => {
-    setShoppingCart([...shoppingCart, mealItem]);
-    setChefId(chefId);
-    alert("Added to cart", "success");
-    updateToLocalStorage();
+  const addToCart = (mealItem, id) => {
+    setChefId(id);
+    setShoppingCart([mealItem, ...shoppingCart]);
+
+    alert("Added to cart", "info");
   };
 
-  const replaceCart = async (items = [], chefId) => {
-    setShoppingCart(items);
-    setChefId(chefId);
-    updateToLocalStorage();
+  const emptyCart = () => {
+    setChefId(null);
+    setShoppingCart([]);
+    localStorage.removeItem("shoppingCart");
+    localStorage.removeItem("chefId");
+    alert("Cart has been emptied", "info");
   };
 
   const handleCancel = () => {
     setDialogOpen(false);
-    setPending(null);
     alert("Item not added to cart", "info");
   };
 
-  const handleConfirm = () => {
-    replaceCart([pending.mealItem], pending.chefId);
-    setPending(null);
+  const handleEmpty = () => {
+    emptyCart();
     setDialogOpen(false);
   };
 
@@ -90,14 +99,12 @@ const Provider = ({ children }) => {
       <Dialog
         isOpen={dialogOpen}
         handleClose={handleCancel}
-        title="Are you sure? You have items from another chef, these will be emptied and replaced."
+        title="You have items from another chef, please empty your cart first."
       >
-        <Button color="primary" onClick={handleConfirm}>
-          Go ahead
-        </Button>
-        <Button color="secondary" onClick={handleCancel}>
+        <Button color="primary" onClick={handleCancel}>
           Cancel
         </Button>
+        <Button onClick={handleEmpty}>Empty My Cart</Button>
       </Dialog>
     </Context.Provider>
   );
