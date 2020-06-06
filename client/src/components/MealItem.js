@@ -41,7 +41,7 @@ const MealItem = ({ meal, editable }) => {
           <Typography classes={{ root: classes.boldCapitalText }}>
             Requirements:
           </Typography>
-          <Typography>{meal.requirements}</Typography>
+          <Typography>{meal.required_items}</Typography>
         </CardContent>
       </div>
       <CardMedia className={classes.image} image={image} />
