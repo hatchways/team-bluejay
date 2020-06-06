@@ -1,29 +1,19 @@
 import React, { useState, useContext } from "react";
 import { Button, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Context as UserContext } from "contexts/AuthContext";
 import { Context as MealContext } from "contexts/MealContext";
 import { ShoppingCartOutlined, ShoppingCart } from "@material-ui/icons";
 
 const ShoppingCartIcon = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const { createMeal } = useContext(UserContext);
-  const {
-    state: { shoppingCart },
-  } = useContext(MealContext);
+  const { shoppingCart } = useContext(MealContext);
   const classes = useStyles();
-
-  const handleClick = ({ ...mealObject }) => {
-    createMeal(mealObject);
-    setDialogOpen(false);
-  };
 
   const Icon = shoppingCart.length ? (
     <Badge badgeContent={shoppingCart.length} color="primary">
-      <ShoppingCartOutlined />
+      <ShoppingCart />
     </Badge>
   ) : (
-    <ShoppingCart color="secondary" />
+    <ShoppingCartOutlined color="secondary" />
   );
 
   return <Button className={classes.shoppingCart}>{Icon}</Button>;

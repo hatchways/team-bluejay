@@ -13,9 +13,9 @@ import { Context as MealContext } from "contexts/MealContext";
 
 import foodImg from "images/makisushi.jpg";
 
-const MealItem = ({ meal, editable }) => {
+const MealItem = ({ meal, editable, chefId }) => {
   const classes = useStyles();
-  const { addToCart } = useContext(MealContext);
+  const { checkCartStatus } = useContext(MealContext);
   // const { image } = meal;
   // todo: remove when images are implemented
   const image = foodImg;
@@ -53,7 +53,7 @@ const MealItem = ({ meal, editable }) => {
             variant="contained"
             size="small"
             className={classes.addToCart}
-            onClick={() => addToCart(meal)}
+            onClick={() => checkCartStatus(meal, chefId)}
           >
             Add to Cart
           </Button>
