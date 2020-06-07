@@ -1,9 +1,6 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
-
 import { theme } from "themes/theme";
-
-import Bootstrapper from "components/Bootstrapper";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
@@ -15,9 +12,7 @@ const RootProvider = ({ children }) => {
     <MuiThemeProvider theme={theme}>
       <AlertProvider>
         <AuthProvider>
-          <Bootstrapper>
-            <MealProvider>{children}</MealProvider>
-          </Bootstrapper>
+          <MealProvider>{children}</MealProvider>
         </AuthProvider>
       </AlertProvider>
     </MuiThemeProvider>

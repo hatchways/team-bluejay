@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer, useContext, useEffect } from "react";
 import API from "api/index";
 import { useHistory, useLocation } from "react-router-dom";
 import { Context as AlertContext } from "contexts/AlertContext";
@@ -31,6 +31,11 @@ const Provider = ({ children }) => {
     user: null,
     errorMessage: "",
   });
+
+  useEffect(() => {
+    // Check if user is logged in on first visit to application
+    refreshLoggedInUser("login");
+  }, []);
 
   let history = useHistory();
   let location = useLocation();
@@ -88,12 +93,12 @@ const Provider = ({ children }) => {
     }
   };
 
-  const refreshLoggedInUser = async () => {
+  const refreshLoggedInUser = async (action = "refresh") => {
     try {
       const { data } = await API.get("/users/login");
       dispatch({ type: "refreshUser", payload: { user: data.user } });
     } catch (error) {
-      alert("Unable to refresh user");
+      alert(`Unable to ${action} user`);
       return;
     }
   };
