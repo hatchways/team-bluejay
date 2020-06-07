@@ -47,7 +47,7 @@ const ChefFilters = ({
   };
 
   const removeSelectedCuisine = (cuisine) => {
-    let filteredCuisines = selectedCuisines.filter((c) => c !== cuisine);
+    const filteredCuisines = selectedCuisines.filter((c) => c !== cuisine);
     setSelectedCuisines(filteredCuisines);
   };
 
@@ -61,6 +61,7 @@ const ChefFilters = ({
       if (address && coordinates) {
         const { latitude, longitude } = coordinates;
         setUserCoordinates({ latitude, longitude });
+        console.info("location found: ", coordinates);
         setDistanceFilter(5);
         setUserAddress(address);
       } else {
@@ -137,7 +138,7 @@ const ChefFilters = ({
             {selectedCuisines.map((cuisine) => (
               <Button
                 className={classes.button}
-                color="secondary"
+                color="primary"
                 variant="contained"
                 key={cuisine}
               >

@@ -1,13 +1,9 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useContext } from "react";
 import API from "api/index";
+import { Context as AlertContext } from "contexts/AlertContext";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "createMeal":
-      return {
-        meals: [...state.meals, action.payload.createdMeal],
-        errorMessage: "",
-      };
     default:
       return state;
   }
@@ -16,25 +12,27 @@ const reducer = (state, action) => {
 const Context = React.createContext();
 
 const Provider = ({ children }) => {
+  const { alert } = useContext(AlertContext);
   const [state, dispatch] = useReducer(reducer, {
-    meals: [],
+    shoppingCart: [],
     errorMessage: "",
   });
 
-  const createMeal = async (meal) => {
+  const getMenuItems = async (userId) => {
     try {
-      const { data } = await API.post("/meal_items", meal);
-      dispatch({
-        type: "createMeal",
-        payload: { createdMeal: meal },
+      const { data } = await API.get("/meal_items", {
+        params: {
+          chefId: userId,
+        },
       });
+      return data;
     } catch (error) {
-      console.log(error.response.data.message);
+      alert(error);
     }
   };
 
   return (
-    <Context.Provider value={{ state, createMeal }}>
+    <Context.Provider value={{ state, getMenuItems }}>
       {children}
     </Context.Provider>
   );

@@ -29,9 +29,8 @@ instance/
 # VSCode
 .vscode
 
-#TODO add .env to your gitignore
-.env
+# SQL database migrations folder
+migrations
 
 client/.env
 server/.env
-

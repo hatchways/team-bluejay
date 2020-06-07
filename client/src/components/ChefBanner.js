@@ -12,8 +12,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import Image from "material-ui-image";
 import ChefBannerBackground from "images/chef_banner.png";
+import EditProfileButton from "components/EditProfileButton";
 
-const ChefBanner = ({ chef }) => {
+const ChefBanner = ({ chef, editable }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -35,7 +36,7 @@ const ChefBanner = ({ chef }) => {
             <Typography>{chef.location}</Typography>
           </Box>
           <Divider classes={{ root: classes.divider }} variant="middle" />
-          <Typography>{chef.bio}</Typography>
+          <Typography>{chef.chefProfile}</Typography>
           <Button
             fullWidth
             variant="contained"
@@ -44,6 +45,7 @@ const ChefBanner = ({ chef }) => {
           >
             Send Request
           </Button>
+          {editable && <EditProfileButton />}
         </Grid>
       </Paper>
     </Grid>

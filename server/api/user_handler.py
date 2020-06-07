@@ -63,6 +63,8 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
+        # SEE IF THIS IS VALID:
+        # current_userid = get_jwt_identity().get('id')
         current_userid = get_jwt_identity()
         print(current_userid)
 
@@ -87,18 +89,22 @@ class UserResource(Resource):
             req_body['profileImage'] = profile_image_url
             print(profile_image_url)
 
+        if req_body.get('email'):
+            return custom_json_response({
+                "error": "Cannot use this route to update email address."
+            }, 403)
+
         valid_data = None
         try:
             valid_data = user_schema.load(req_body, partial=True)
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
-        user = User.get_by_id(current_userid)
+        user = User.get_by_id(current_userid['id'])
 
         user.update(valid_data)
         data = {
             "user": user_schema.dump(user),
             "message": "Succesfully Edited."
         }
-
         return custom_json_response(data, 200)

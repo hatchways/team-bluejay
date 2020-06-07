@@ -12,13 +12,13 @@ import SignUp from "pages/SignUp";
 import Home from "pages/Home";
 import Profile from "pages/Profile";
 import Chefs from "pages/Chefs";
+import ChefProfile from "components/ChefProfile";
 
 import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
 import { Provider as AlertProvider } from "contexts/AlertContext";
 
 import "App.css";
-import ChefProfile from "components/ChefProfile";
 
 function App() {
   return (
@@ -29,7 +29,6 @@ function App() {
             <Bootstrapper>
               <MealProvider>
                 <Switch>
-                  <Route path="/chefs" component={Chefs} />
                   <Route path="/login" component={LoginPage} />
                   <Route path="/signup" component={SignUp} />
                   <ProtectedRoute path="/" component={LoggedInContainer} />
@@ -48,8 +47,13 @@ const LoggedInContainer = () => {
     <React.Fragment>
       <Navbar />
       <Switch>
-        <Route path="/Profile" render={(props) => <Profile {...props} />} />
-        <Route path="/" render={(props) => <Home {...props} />} />
+        <Route
+          path="/chefs/:chefId"
+          render={(props) => <ChefProfile {...props} />}
+        />
+        <Route path="/chefs" component={Chefs} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/" component={Chefs} />
       </Switch>
     </React.Fragment>
   );

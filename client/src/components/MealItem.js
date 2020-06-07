@@ -7,17 +7,19 @@ import {
   Chip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import EditMealButton from "components/EditMealButton";
 
-const MealItem = ({ meal }) => {
+const MealItem = ({ meal, editable }) => {
   const classes = useStyles();
   const { image } = meal;
-  console.log(meal);
+
   return (
     <Card className={classes.root} elevation={2}>
+      {editable && <EditMealButton />}
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Chip
-            label={meal.tagLine}
+            label={`Meal for ${meal.servings}`}
             color="primary"
             className={classes.tagLine}
           />
@@ -39,7 +41,7 @@ const MealItem = ({ meal }) => {
           <Typography classes={{ root: classes.boldCapitalText }}>
             Requirements:
           </Typography>
-          <Typography>{meal.requirements}</Typography>
+          <Typography>{meal.required_items}</Typography>
         </CardContent>
       </div>
       <CardMedia className={classes.image} image={image} />
@@ -53,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(35),
     display: "flex",
     padding: theme.spacing(5),
+    position: "relative",
   },
   image: {
     width: "40%",

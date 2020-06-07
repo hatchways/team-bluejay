@@ -6,21 +6,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Edit } from "@material-ui/icons";
 import { Context as UserContext } from "contexts/AuthContext";
 
-const EditProfileButton = () => {
+const EditMealButton = () => {
   const classes = useStyles();
-  const { updateUser } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = (profileData) => {
-    updateUser(profileData);
-    setDialogOpen(false);
+    // todo
   };
 
   return (
     <>
       <Button
+        className={classes.editMealButton}
         variant="outlined"
-        size="large"
+        size="small"
         onClick={() => setDialogOpen(true)}
       >
         <Edit />
@@ -28,12 +27,18 @@ const EditProfileButton = () => {
       </Button>
 
       <Dialog isOpen={dialogOpen} handleClose={() => setDialogOpen(false)}>
-        <EditProfileForm onSubmit={handleSubmit} />
+        {/* // todo */}
       </Dialog>
     </>
   );
 };
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  editMealButton: {
+    width: "fit-content",
+    position: "absolute",
+    right: "5%",
+  },
+}));
 
-export default EditProfileButton;
+export default EditMealButton;
