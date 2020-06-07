@@ -36,7 +36,7 @@ const ChefBanner = ({ chef, editable }) => {
             <Typography>{chef.location}</Typography>
           </Box>
           <Divider classes={{ root: classes.divider }} variant="middle" />
-          <Typography>{chef.bio}</Typography>
+          <Typography>{chef.chefProfile}</Typography>
           <Button
             fullWidth
             variant="contained"

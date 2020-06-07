@@ -1,5 +1,7 @@
 from . import db, bcrypt
 from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
+
+from models.Cuisine import Cuisine, favorite_cuisines_table
 from helpers.google import address_to_data
 
 
@@ -17,12 +19,15 @@ class User(db.Model):
 
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-
     aboutMe = db.Column(db.Text)
     chefProfile = db.Column(db.Text)
 
-    mealItems = db.relationship("MealItem")
-
+    mealItems = db.relationship("MealItem", back_populates="user")
+    cuisines = db.relationship('Cuisine',
+                               secondary=favorite_cuisines_table,
+                               back_populates='users'
+                               )
+  
     def __init__(self, name, email, password, **kwargs):
         self.name = name
         self.email = email
@@ -44,6 +49,9 @@ class User(db.Model):
         for key, item in data.items():
             if key == 'password':
                 self.password = self.__generate_hash(item)
+            elif key == 'cuisines':
+                list_of_ids = list(map(lambda cuisine: cuisine['id'], item))
+                self.cuisines = Cuisine.get_cuisines_by_ids(list_of_ids)
             elif key == 'address':
                 data = address_to_data(item)
                 if data.get("access_points"):
@@ -107,18 +115,29 @@ class UserSchema(Schema):
 
     address = fields.String()
     generalLocation = fields.String()
-
     aboutMe = fields.String()
     chefProfile = fields.String()
 
     mealItems = fields.List(fields.Nested(
         "MealItemSchema", exclude=("userId",)))
+    # When schema is from another file it must be in quotes to prevent circular imports. Marshmallow automatically searches other Schemas from other files in this directory and finds one called "CuisineSchema"
+    cuisines = fields.List(fields.Nested(
+        "CuisineSchema", exclude=("users",)))
 
     @validates_schema
     def validate_password(self, data, **kwargs):
         if (data.get("password") and data.get("confirmPassword")) and (data.get("password") != data.get("confirmPassword")):
             # For all validation errors, Marshmallow raises its own error type called ValidationError
             raise ValidationError("Passwords do not match")
+
+    @validates("cuisines")
+    def validates_cuisines(self, cuisines):
+        list_of_ids = list(map(lambda cuisine: cuisine.get('id'), cuisines))
+        valid_cuisines = Cuisine.get_cuisines_by_ids(list_of_ids)
+        # Todo: if all cuisines are valid then replace the list of cuisine ids with the list of cuisines itself. This would save us from needing to rerun the query later
+        if (len(cuisines) != len(valid_cuisines)):
+            raise ValidationError(
+                "One your cuisine ids is not a valid cuisine registered within our database")
 
     @validates("address")
     def validate_address(self, address):
