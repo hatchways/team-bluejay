@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Typography,
@@ -13,7 +13,29 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDropzone } from "react-dropzone";
 import { Context as UserContext } from "contexts/AuthContext";
+
+function MyDropzone() {
+  const onDrop = useCallback((acceptedFiles) => {
+    console.log(acceptedFiles);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+  });
+
+  return (
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      {isDragActive ? (
+        <p>Drop the files here ...</p>
+      ) : (
+        <p>Drag 'n' drop some files here, or click to select files</p>
+      )}
+    </div>
+  );
+}
 
 const EditProfileForm = ({ onSubmit }) => {
   const classes = useStyles();
