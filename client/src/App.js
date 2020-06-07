@@ -9,6 +9,7 @@ import Navbar from "components/Navbar";
 import ProtectedRoute from "common/ProtectedRoute";
 import LoginPage from "pages/Login";
 import SignUp from "pages/SignUp";
+import Checkout from "pages/Checkout";
 import Home from "pages/Home";
 import Profile from "pages/Profile";
 import Chefs from "pages/Chefs";
@@ -51,6 +52,7 @@ const LoggedInContainer = () => {
           path="/chefs/:chefId"
           render={(props) => <ChefProfile {...props} />}
         />
+        <Route path="/checkout" component={Checkout} />
         <Route path="/chefs" component={Chefs} />
         <Route path="/profile" component={Profile} />
         <Route path="/" component={Chefs} />
