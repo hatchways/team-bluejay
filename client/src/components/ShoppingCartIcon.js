@@ -5,11 +5,17 @@ import { Context as MealContext } from "contexts/MealContext";
 import { ShoppingCartOutlined, ShoppingCart } from "@material-ui/icons";
 
 const ShoppingCartIcon = () => {
-  const { shoppingCart } = useContext(MealContext);
+  const {
+    state: { shoppingCart },
+  } = useContext(MealContext);
   const classes = useStyles();
 
-  const Icon = shoppingCart.length ? (
-    <Badge badgeContent={shoppingCart.length} color="primary">
+  const Icon = shoppingCart ? (
+    // reduce to accumulate quantity from shopping cart
+    <Badge
+      badgeContent={shoppingCart.reduce((acc, item) => acc + item.quantity, 0)}
+      color="primary"
+    >
       <ShoppingCart />
     </Badge>
   ) : (

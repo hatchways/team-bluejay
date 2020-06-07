@@ -5,6 +5,37 @@ import Dialog from "common/Dialog";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "addToCart":
+      const { shoppingCart } = state;
+      const { mealItem, chefId } = action.payload;
+      if (shoppingCart.find((item) => item.id === mealItem.id)) {
+        const updatedCart = shoppingCart.map((item) => {
+          if (item.id === mealItem.id) item.quantity += 1;
+          return item;
+        });
+        return { shoppingCart: updatedCart, chefId };
+      } else {
+        mealItem.quantity = 1;
+        return { shoppingCart: [...shoppingCart, mealItem], chefId };
+      }
+    case "emptyCart":
+      return {
+        shoppingCart: [],
+        chefId: null,
+      };
+    case "replaceCart":
+      return {
+        shoppingCart: action.payload.shoppingCart,
+        chefId: action.payload.chefId,
+      };
+
+    default:
+      return state;
+  }
+};
+
 const Context = React.createContext();
 
 const Provider = ({ children }) => {
@@ -12,8 +43,13 @@ const Provider = ({ children }) => {
 
   const { alert } = useContext(AlertContext);
 
-  const [chefId, setChefId] = useState(null);
-  const [shoppingCart, setShoppingCart] = useState([]);
+  // const [chefId, setChefId] = useState(null);
+  // const [shoppingCart, setShoppingCart] = useState([]);
+
+  const [state, dispatch] = useReducer(reducer, {
+    shoppingCart: [],
+    chefId: "",
+  });
 
   useEffect(() => {
     updateFromLocalStorage();
@@ -21,15 +57,18 @@ const Provider = ({ children }) => {
 
   useEffect(() => {
     updateToLocalStorage();
-  }, [chefId, shoppingCart]);
+    console.log(state);
+  }, [state.chefId, state.shoppingCart]);
 
   const updateFromLocalStorage = () => {
     try {
       const lsItems = JSON.parse(localStorage.getItem("shoppingCart"));
       const lsChefId = JSON.parse(localStorage.getItem("chefId"));
       if (lsItems && lsChefId) {
-        setChefId(lsChefId);
-        setShoppingCart(lsItems);
+        dispatch({
+          type: "replaceCart",
+          payload: { shoppingCart: lsItems, chefId: lsChefId },
+        });
       }
       console.info("updated cart from localstorage");
     } catch (e) {
@@ -38,6 +77,7 @@ const Provider = ({ children }) => {
   };
 
   const updateToLocalStorage = () => {
+    const { chefId, shoppingCart } = state;
     if (chefId && shoppingCart) {
       localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
       localStorage.setItem("chefId", JSON.stringify(chefId));
@@ -61,6 +101,7 @@ const Provider = ({ children }) => {
   };
 
   const checkCartStatus = (mealItem, id) => {
+    const { chefId } = state;
     if (id === chefId || !chefId) {
       addToCart(mealItem, id);
     } else {
@@ -69,17 +110,12 @@ const Provider = ({ children }) => {
   };
 
   const addToCart = (mealItem, id) => {
-    setChefId(id);
-    setShoppingCart([mealItem, ...shoppingCart]);
-
+    dispatch({ type: "addToCart", payload: { mealItem, chefId: id } });
     alert("Added to cart", "info");
   };
 
   const emptyCart = () => {
-    setChefId(null);
-    setShoppingCart([]);
-    localStorage.removeItem("shoppingCart");
-    localStorage.removeItem("chefId");
+    dispatch({ type: "emptyCart" });
     alert("Cart has been emptied", "info");
   };
 
@@ -94,7 +130,7 @@ const Provider = ({ children }) => {
   };
 
   return (
-    <Context.Provider value={{ shoppingCart, getMenuItems, checkCartStatus }}>
+    <Context.Provider value={{ state, getMenuItems, checkCartStatus }}>
       {children}
       <Dialog
         isOpen={dialogOpen}
