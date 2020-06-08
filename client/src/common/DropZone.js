@@ -2,11 +2,11 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@material-ui/core";
 
-function Dropzone({ setImage }) {
+function Dropzone({ setImageFile, setPreviewImage }) {
   const onDrop = useCallback((acceptedFiles) => {
-    setImage(acceptedFiles[0]);
-    console.log("added a file");
-    console.log(acceptedFiles);
+    const file = acceptedFiles[0];
+    setImageFile(file);
+    setPreviewImage(URL.createObjectURL(file));
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

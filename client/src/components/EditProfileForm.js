@@ -50,6 +50,7 @@ const EditProfileForm = ({ onSubmit }) => {
 
   const [cuisines, setCuisines] = useState([]);
   const [profileImage, setProfileImage] = useState();
+  const [previewImage, setPreviewImage] = useState("");
 
   const fields = [
     {
@@ -109,12 +110,21 @@ const EditProfileForm = ({ onSubmit }) => {
       >
         <Avatar
           // TODO: Have newly uploaded profile images show in edit profile form
-          src={user.profileImage ? user.profileImage : ""}
+          src={
+            previewImage
+              ? previewImage
+              : user.profileImage
+              ? user.profileImage
+              : ""
+          }
           alt="profile"
           className={classes.avatar}
         />
 
-        <Dropzone setImage={setProfileImage} />
+        <Dropzone
+          setImageFile={setProfileImage}
+          setPreviewImage={setPreviewImage}
+        />
 
         {fields.map(
           (

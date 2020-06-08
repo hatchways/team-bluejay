@@ -72,8 +72,6 @@ const Provider = ({ children }) => {
 
   const updateUser = async (updatedUser) => {
     try {
-      console.log(updatedUser);
-
       const formData = new FormData();
       for (const [key, value] of Object.entries(updatedUser)) {
         //Objects such as arrays need to be stringifed when sending as multipart/form-data
@@ -88,7 +86,7 @@ const Provider = ({ children }) => {
 
       // add date to imageUrl so react sees that the image has changed and will rerender it
       data.user.profileImage = `${data.user.profileImage}?${Date.now()}`;
-      console.log(data);
+
       dispatch({ type: "updateUser", payload: { user: data.user } });
     } catch (error) {
       handleErrorResponse(error);
