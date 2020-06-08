@@ -5,14 +5,16 @@ import { theme } from "themes/theme";
 import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
 import { Provider as AlertProvider } from "contexts/AlertContext";
+import { DialogProvider } from "contexts/DialogContext";
 
-import "App.css";
 const RootProvider = ({ children }) => {
   return (
     <MuiThemeProvider theme={theme}>
       <AlertProvider>
         <AuthProvider>
-          <MealProvider>{children}</MealProvider>
+          <MealProvider>
+            <DialogProvider>{children}</DialogProvider>
+          </MealProvider>
         </AuthProvider>
       </AlertProvider>
     </MuiThemeProvider>
