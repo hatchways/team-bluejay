@@ -54,8 +54,8 @@ class User(db.Model):
                 self.cuisines = Cuisine.get_cuisines_by_ids(list_of_ids)
             elif key == 'address':
                 data = address_to_data(item)
-                if data.get("access_points"):
-                    coordinates = data.get("access_points")[0].get("location")
+                if data:
+                    coordinates = data.get("geometry").get("location")
                     self.latitude = float(coordinates.get("latitude"))
                     self.longitude = float(coordinates.get("longitude"))
                     self.address = data.get("formatted_address")
@@ -142,5 +142,5 @@ class UserSchema(Schema):
     @validates("address")
     def validate_address(self, address):
         data = address_to_data(address)
-        if not data or not data.get("access_points"):
+        if not data or not data.get("geometry").get("location"):
             raise ValidationError("Location not found for address")
