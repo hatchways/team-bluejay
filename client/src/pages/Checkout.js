@@ -33,6 +33,8 @@ const Checkout = () => {
     0
   );
 
+  const formattedPrice = (Math.round(totalPrice * 100) / 100).toFixed(2);
+
   return (
     <div className={classes.root}>
       <Grid container>
@@ -69,7 +71,7 @@ const Checkout = () => {
                 Total :
               </Typography>
               <Typography variant="h4" display="inline-flex">
-                {`$ ${totalPrice}`}
+                {`$ ${formattedPrice}`}
               </Typography>
             </Box>
           </Paper>
