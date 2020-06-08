@@ -73,6 +73,10 @@ class UserResource(Resource):
         print("PRINTING MULTIPART FORM")
         print(req_body)
 
+        # convert cuisines from stringified json list to a python list
+        if req_body.get('cuisines') and isinstance(req_body['cuisines'], str):
+            req_body['cuisines'] = json.loads(req_body['cuisines'])
+
         print(req_body)
 
         # Needed for Postman requests as Postman submits files in request.files
