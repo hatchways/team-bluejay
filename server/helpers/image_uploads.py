@@ -13,7 +13,7 @@ def upload_profile_picture(file, profile_id):
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
                       aws_secret_access_key=AWS_SECRET_KEY)
 
-    # Todo: put hosting location of imageUrl into config file and read from there, "S3_LOCATION"
+    # Todo: minor optimization: put hosting location of imageUrl into config file and read from there, "S3_LOCATION="
     imageUrl = f'https://team-bluejay.s3.amazonaws.com/{s3_file_path}'
     try:
         s3.upload_fileobj(file, bucket, s3_file_path,
