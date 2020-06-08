@@ -6,10 +6,10 @@ import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const reducer = (state, action) => {
+  const { shoppingCart } = state;
+  const { mealItem, chefId } = action.payload;
   switch (action.type) {
     case "addToCart":
-      const { shoppingCart } = state;
-      const { mealItem, chefId } = action.payload;
       if (shoppingCart.find((item) => item.id === mealItem.id)) {
         const updatedCart = shoppingCart.map((item) => {
           if (item.id === mealItem.id) item.quantity += 1;
@@ -20,6 +20,19 @@ const reducer = (state, action) => {
         mealItem.quantity = 1;
         return { shoppingCart: [...shoppingCart, mealItem], chefId };
       }
+    case "removeFromCart":
+      const filteredCart = [];
+      shoppingCart.forEach((item) => {
+        if (item.id === mealItem.id) {
+          item.quantity -= 1;
+        }
+        if (item.quantity > 0) {
+          filteredCart.push(item);
+        }
+      });
+      if (!filteredCart.length) return { shoppingCart: [], chefId: null };
+      return { ...state, shoppingCart: filteredCart };
+
     case "emptyCart":
       return {
         shoppingCart: [],
@@ -30,7 +43,6 @@ const reducer = (state, action) => {
         shoppingCart: action.payload.shoppingCart,
         chefId: action.payload.chefId,
       };
-
     default:
       return state;
   }
@@ -48,7 +60,7 @@ const Provider = ({ children }) => {
 
   const [state, dispatch] = useReducer(reducer, {
     shoppingCart: [],
-    chefId: "",
+    chefId: null,
   });
 
   useEffect(() => {
@@ -114,8 +126,12 @@ const Provider = ({ children }) => {
     alert("Added to cart", "info");
   };
 
+  const removeFromCart = (mealItem) => {
+    dispatch({ type: "removeFromCart", payload: { mealItem } });
+  };
+
   const emptyCart = () => {
-    dispatch({ type: "emptyCart" });
+    dispatch({ type: "emptyCart", payload: {} });
     alert("Cart has been emptied", "info");
   };
 
@@ -130,7 +146,9 @@ const Provider = ({ children }) => {
   };
 
   return (
-    <Context.Provider value={{ state, getMenuItems, checkCartStatus }}>
+    <Context.Provider
+      value={{ state, getMenuItems, checkCartStatus, removeFromCart }}
+    >
       {children}
       <Dialog
         isOpen={dialogOpen}

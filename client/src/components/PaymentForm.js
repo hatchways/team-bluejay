@@ -48,6 +48,11 @@ const PaymentForm = () => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // to do api call
+  };
+
   return (
     <div id="PaymentForm">
       <Box className={classes.paymentBox}>
@@ -59,7 +64,7 @@ const PaymentForm = () => {
         />
       </Box>
       <Box className={classes.paymentBox}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <TextField
             value={state.number}
             type="number"
@@ -141,6 +146,9 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.up("md")]: {
         width: "50%",
       },
+    },
+    "& div:nth-child(1)": {
+      margin: 0,
     },
     margin: theme.spacing(2, 0, 2, 0),
   },

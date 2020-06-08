@@ -25,8 +25,13 @@ import foodImg from "images/makisushi.jpg";
 const Checkout = () => {
   const classes = useStyles();
   const {
-    state: { shoppingCart },
+    state: { shoppingCart, chefId },
   } = useContext(MealContext);
+
+  const totalPrice = shoppingCart.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
   return (
     <div className={classes.root}>
@@ -56,16 +61,17 @@ const Checkout = () => {
             </Box>
             <Box>
               {shoppingCart.map((item) => (
-                <OrderCard key={item.id} mealItem={item} />
+                <OrderCard key={item.id} mealItem={item} chefId={chefId} />
               ))}
             </Box>
-
-            <Typography variant="h4" display="inline">
-              Total :
-            </Typography>
-            <Typography variant="h4" display="inline">
-              $ 90
-            </Typography>
+            <Box display="flex" justifyContent="space-between">
+              <Typography variant="h4" display="inline-flex">
+                Total :
+              </Typography>
+              <Typography variant="h4" display="inline-flex">
+                {`$ ${totalPrice}`}
+              </Typography>
+            </Box>
           </Paper>
         </Grid>
       </Grid>
@@ -73,17 +79,27 @@ const Checkout = () => {
   );
 };
 
-const OrderCard = ({ mealItem }) => {
+const OrderCard = ({ mealItem, chefId }) => {
+  const { checkCartStatus, removeFromCart } = useContext(MealContext);
+
   const classes = useStyles();
   const { name, id, quantity, price } = mealItem;
+
+  const handleAdd = () => {
+    checkCartStatus(mealItem, chefId);
+  };
+
+  const handleRemove = () => {
+    removeFromCart(mealItem);
+  };
   return (
     <Card className={classes.mealItemCard}>
       <CardMedia className={classes.mealItemPic} image={foodImg} title={name} />
       <CardContent className={classes.cardContent}>
         <Typography variant="body1">{name}</Typography>
         <Typography variant="h6">{`$${price} x ${quantity}`}</Typography>
-        <AddCircle />
-        <RemoveCircle />
+        <AddCircle onClick={handleAdd} />
+        <RemoveCircle onClick={handleRemove} />
       </CardContent>
     </Card>
   );
@@ -127,11 +143,10 @@ const useStyles = makeStyles((theme) => ({
     },
     "& h4": {
       margin: theme.spacing(3, 2, 3, 2),
-      lineHeight: "3em",
-      color: theme.palette.primary.main,
     },
-    "& h4:nth-child(2)": {
+    "& h4:nth-of-type(2)": {
       color: theme.palette.primary.main,
+      fontWeight: "bold",
     },
   },
   root: {
