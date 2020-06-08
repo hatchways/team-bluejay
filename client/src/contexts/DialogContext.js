@@ -1,15 +1,16 @@
-// How Dialog Context is Used:
+// Code Sample of How Dialog Context is Used:
+/*
+// ComponentWithButton.js
+const { openDialog } = useContext(DialogContext);
+<Button onClick={() => openDialog(<SampleForm />)} />;
 
-// Profile.js
-const { openDialog } = useContext(dialogContext);
-<Button onClick={() => openDialog(<EditProfileForm />)} />;
-
-//EditProfileForm.js
-const { closeDialog } = useContext(dialogContext);
+// SampleForm.js
+const { closeDialog } = useContext(DialogContext);
 const onSubmitForm = (formData) => {
   // ...code to run on form submission
   closeDialog();
 };
+*/
 
 //DialogContext
 
@@ -18,9 +19,9 @@ import React, { useState } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import { Dialog, DialogActions, DialogContent } from "@material-ui/core";
 
-const Context = React.createContext();
+const DialogContext = React.createContext();
 
-const Provider = ({ children }) => {
+const DialogProvider = ({ children }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [StuffInsideDialogue, setStuffInsideDialog] = useState(null);
 
@@ -35,7 +36,7 @@ const Provider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ openDialog, closeDialog }}>
+    <DialogContext.Provider value={{ openDialog, closeDialog }}>
       <Dialog
         fullWidth
         maxWidth="md"
@@ -46,14 +47,11 @@ const Provider = ({ children }) => {
         <DialogActions>
           <CloseIcon onClick={closeDialog} color="primary" />
         </DialogActions>
-        <DialogContent>
-          {/* Problem:  Throws error that useEffect and useState hooks from StuffInsideDialogue must be called on top level of component*/}
-          {StuffInsideDialogue && <StuffInsideDialogue />}
-        </DialogContent>
+        <DialogContent>{StuffInsideDialogue}</DialogContent>
       </Dialog>
       {children}
-    </Context.Provider>
+    </DialogContext.Provider>
   );
 };
 
-export { Provider, Context };
+export { DialogProvider, DialogContext };

@@ -5,31 +5,22 @@ import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Edit } from "@material-ui/icons";
 import { Context as UserContext } from "contexts/AuthContext";
+import { DialogContext } from "contexts/DialogContext";
 
 const EditProfileButton = () => {
   const classes = useStyles();
-  const { updateUser } = useContext(UserContext);
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  const handleSubmit = (profileData) => {
-    updateUser(profileData);
-    setDialogOpen(false);
-  };
+  const { openDialog } = useContext(DialogContext);
 
   return (
     <>
       <Button
         variant="outlined"
         size="large"
-        onClick={() => setDialogOpen(true)}
+        onClick={() => openDialog(<EditProfileForm />)}
       >
         <Edit />
         Edit
       </Button>
-
-      <Dialog isOpen={dialogOpen} handleClose={() => setDialogOpen(false)}>
-        <EditProfileForm onSubmit={handleSubmit} />
-      </Dialog>
     </>
   );
 };
