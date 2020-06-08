@@ -15,6 +15,11 @@ import Dropzone from "common/DropZone";
 import API from "api";
 
 const EditProfileForm = ({ onSubmit }) => {
+  const classes = useStyles();
+  let {
+    state: { user },
+  } = useContext(UserContext);
+
   useEffect(() => {
     (async function getCuisines() {
       const { data: allCuisines } = await API.get("/cuisines");
@@ -27,8 +32,9 @@ const EditProfileForm = ({ onSubmit }) => {
     validateCriteriaMode: "all",
   });
 
-  const [selectedCuisines, setSelectedCuisines] = useState([]);
-  console.log(selectedCuisines);
+  const [selectedCuisines, setSelectedCuisines] = useState(
+    user.cuisines.map((cuisine) => cuisine.id)
+  );
 
   useEffect(() => {
     register("cuisines");
@@ -44,11 +50,6 @@ const EditProfileForm = ({ onSubmit }) => {
 
   const [cuisines, setCuisines] = useState([]);
   const [profileImage, setProfileImage] = useState();
-
-  const classes = useStyles();
-  let {
-    state: { user },
-  } = useContext(UserContext);
 
   const fields = [
     {
@@ -164,7 +165,6 @@ const EditProfileForm = ({ onSubmit }) => {
         </Typography>
         {cuisines.map((cuisine) => {
           const isSelected = selectedCuisines.includes(cuisine.id);
-          //console.log(cuisine.name, cuisine.id, isSelected);
           return (
             <Button
               className={classes.button}
