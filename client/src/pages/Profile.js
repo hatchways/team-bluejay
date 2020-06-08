@@ -9,7 +9,6 @@ import {
   Chip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
 import EditProfileButton from "components/EditProfileButton";
 import GoogleMaps from "components/GoogleMaps";
 import ChefProfile from "components/ChefProfile";
@@ -20,8 +19,6 @@ const Profile = ({ props }) => {
   const {
     state: { user },
   } = useContext(UserContext);
-
-  // TODO: Remove stub data and receive data from backend
 
   const googleCoords =
     user.latitude && user.longitude

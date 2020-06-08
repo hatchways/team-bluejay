@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 import {
   Typography,
@@ -11,8 +11,8 @@ import {
 import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as UserContext } from "contexts/AuthContext";
+import Dropzone from "common/DropZone";
 import API from "api";
-import Dropzone from "react-dropzone";
 
 const EditProfileForm = ({ onSubmit }) => {
   useEffect(() => {
@@ -107,30 +107,13 @@ const EditProfileForm = ({ onSubmit }) => {
         noValidate
       >
         <Avatar
+          // TODO: Have newly uploaded profile images show in edit profile form
           src={user.profileImage ? user.profileImage : ""}
           alt="profile"
           className={classes.avatar}
         />
 
-        <Dropzone
-          onDrop={(acceptedFiles) => setProfileImage(acceptedFiles[0])}
-          multiple={false}
-        >
-          {({ getRootProps, getInputProps }) => (
-            <section>
-              <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                <Button
-                  className={classes.dragNDrop}
-                  color="default"
-                  variant="contained"
-                >
-                  Drag 'n' drop your profile picture here, or click to select
-                </Button>
-              </div>
-            </section>
-          )}
-        </Dropzone>
+        <Dropzone setImage={setProfileImage} />
 
         {fields.map(
           (
@@ -256,12 +239,6 @@ const useStyles = makeStyles((theme) => ({
     border: "solid white 5px",
     boxShadow: "0 0 10px lightgrey",
     marginBottom: theme.spacing(3),
-  },
-  dragNDrop: {
-    background: "grey",
-    color: "white",
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
   },
 }));
 
