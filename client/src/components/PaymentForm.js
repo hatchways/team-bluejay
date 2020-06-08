@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,6 +19,9 @@ import {
   Button,
   FormHelperText,
 } from "@material-ui/core";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+
+import API from "api/index";
 
 const PaymentForm = () => {
   const [state, setState] = useState({
@@ -29,7 +32,34 @@ const PaymentForm = () => {
     number: "",
   });
 
+  const [succeeded, setSucceeded] = useState(false);
+  const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState("");
+  const [disabled, setDisabled] = useState(true);
+  const [clientSecret, setClientSecret] = useState("");
+  const stripe = useStripe();
+  const elements = useElements();
+
   const classes = useStyles();
+
+  useEffect(() => {
+    window
+      .fetch("/create-payment-intent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+      })
+      .then((res) => {
+        console.log(res);
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setClientSecret(data.clientSecret);
+      });
+  }, []);
 
   const handleInputFocus = (e) => {
     const { name } = e.target;
@@ -48,24 +78,43 @@ const PaymentForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // to do api call
+    setProcessing(true);
+    console.log("stripe");
+    const payload = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: {
+          name: "Gabriel",
+        },
+      },
+    });
+    console.log(payload);
+    if (payload.error) {
+      setError(`Payment failed ${payload.error.message}`);
+      setProcessing(false);
+    } else {
+      setError(null);
+      setProcessing(false);
+      setSucceeded(true);
+    }
   };
 
   return (
     <div id="PaymentForm">
       <Box className={classes.paymentBox}>
-        <Cards
+        {/* <Cards
           cvc={state.cvc}
           expiry={state.expiry}
           name={state.name}
           number={state.number}
-        />
+        /> */}
       </Box>
       <Box className={classes.paymentBox}>
         <form onSubmit={handleSubmit}>
-          <TextField
+          {/* <TextField
             value={state.number}
             type="number"
             name="number"
@@ -114,17 +163,19 @@ const PaymentForm = () => {
             variant="outlined"
             required
             className={classes.cardInput}
-          />
+          /> */}
           <Button
             type="submit"
             size="large"
             variant="contained"
             color="primary"
+            disabled={!stripe}
           >
             Checkout
           </Button>
         </form>
       </Box>
+      <CardSection />
     </div>
   );
 };
@@ -156,5 +207,32 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 0, 1, 0),
   },
 }));
+
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      color: "#32325d",
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: "antialiased",
+      fontSize: "16px",
+      "::placeholder": {
+        color: "#aab7c4",
+      },
+    },
+    invalid: {
+      color: "#fa755a",
+      iconColor: "#fa755a",
+    },
+  },
+};
+
+function CardSection() {
+  return (
+    <label>
+      Card details
+      <CardElement options={CARD_ELEMENT_OPTIONS} />
+    </label>
+  );
+}
 
 export default PaymentForm;

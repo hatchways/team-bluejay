@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, json, jsonify, request
 from marshmallow import Schema
 from flask_restful import Api
 
@@ -16,7 +16,15 @@ from flask_jwt_extended import (
 )
 from models import db
 
+import stripe
+# This is your real test secret API key.
+stripe.api_key = "sk_test_51GrWMVIfJQEqnwoE91kKx1S89IoCd4qVN1MapVNLSblmTUn2gKhTi4g90pj47rDMQxKgzLT4qpeEfxDQUi4H2aHv00uo26QHbB"
 
+def calculate_order_amount(items):
+    # Replace this constant with a calculation of the order's amount
+    # Calculate the order total on the server to prevent
+    # people from directly manipulating the amount on the client
+    return 1400
 
 def create_app():
     app = Flask(__name__)
@@ -52,5 +60,19 @@ def create_app():
     api.add_resource(LoginResource, '/users/login')
     api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
     api.add_resource(LogoutResource, '/users/logout')
+
+    @app.route('/create-payment-intent', methods=['POST'])
+    def create_payment():
+        try:
+            data = json.loads(request.data)
+            intent = stripe.PaymentIntent.create(
+                amount=calculate_order_amount(data['items']),
+                currency='usd'
+            )
+            return jsonify({
+                'clientSecret': intent['client_secret']
+            })
+        except Exception as e:
+            return jsonify(error=str(e)), 403
 
     return app

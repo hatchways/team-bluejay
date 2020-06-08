@@ -15,6 +15,7 @@ flask-bcrypt = "*"
 sqlalchemy = "*"
 flask-jwt-extended = "*"
 requests = "*"
+stripe = "*"
 
 [requires]
 python_version = "3.8"
