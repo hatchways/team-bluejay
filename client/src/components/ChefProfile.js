@@ -29,7 +29,7 @@ const ChefProfile = ({ user }) => {
         <Grid container>
           <ChefBanner chef={chef} editable={editable} />
           <MealItemList
-            chefName={chef.name}
+            chef={chef}
             meals={chef.mealItems}
             editable={editable}
           />

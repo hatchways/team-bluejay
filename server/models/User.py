@@ -56,8 +56,8 @@ class User(db.Model):
                 data = address_to_data(item)
                 if data:
                     coordinates = data.get("geometry").get("location")
-                    self.latitude = float(coordinates.get("latitude"))
-                    self.longitude = float(coordinates.get("longitude"))
+                    self.latitude = float(coordinates.get("lat"))
+                    self.longitude = float(coordinates.get("lng"))
                     self.address = data.get("formatted_address")
                     location = []
                     for component in data.get("address_components"):

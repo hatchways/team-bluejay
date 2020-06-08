@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
 import BecomeChefButton from "components/BecomeChefButton";
+import ShoppingCartIcon from "components/ShoppingCartIcon";
 
 const TopNavigationBar = ({ loggedInUser, signOut }) => {
   const classes = useStyles();
@@ -41,6 +42,7 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
           Dishes
         </Button>
         <div className={classes.grow} />
+        <ShoppingCartIcon />
         <BecomeChefButton loggedInUser={loggedInUser} />
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />

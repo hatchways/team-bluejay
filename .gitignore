@@ -29,8 +29,11 @@ instance/
 # VSCode
 .vscode
 
+# env vars
+.env
+server/.env
+client/.env
+
 # SQL database migrations folder
 migrations
-
-client/.env
-server/.env
+server/migrations
