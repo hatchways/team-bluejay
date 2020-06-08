@@ -2,14 +2,12 @@
 
 // Profile.js
 const { openDialog } = useContext(dialogContext);
-// edit profile button withing Profile.js
 <Button onClick={() => openDialog(<EditProfileForm />)} />;
 
 //EditProfileForm.js
 const { closeDialog } = useContext(dialogContext);
-// function that runs on form submit
-const submitForm = (profileData) => {
-  updateUser(profileData);
+const onSubmitForm = (formData) => {
+  // ...code to run on form submission
   closeDialog();
 };
 
