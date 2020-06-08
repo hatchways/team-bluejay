@@ -1,7 +1,5 @@
 import boto3
-
-ACCESS_KEY = 'AKIAJOFIZZ6SI5AZRWAA'
-SECRET_KEY = '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'
+from config import AWS_ACCESS_KEY, AWS_SECRET_KEY
 
 
 def upload_profile_picture(file, profile_id):
@@ -12,8 +10,8 @@ def upload_profile_picture(file, profile_id):
     bucket_folder = 'profile_pictures'
     s3_file_path = f'{bucket_folder}/UserID-{str(profile_id)}.jpg'
 
-    s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-                      aws_secret_access_key=SECRET_KEY)
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                      aws_secret_access_key=AWS_SECRET_KEY)
 
     # Todo: put hosting location of imageUrl into config file and read from there, "S3_LOCATION"
     imageUrl = f'https://team-bluejay.s3.amazonaws.com/{s3_file_path}'
