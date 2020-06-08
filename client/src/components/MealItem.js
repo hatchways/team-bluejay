@@ -48,7 +48,7 @@ const MealItem = ({ meal, editable, chefId }) => {
           <Typography classes={{ root: classes.boldCapitalText }}>
             Requirements:
           </Typography>
-          <Typography>{meal.requirements}</Typography>
+          <Typography>{meal.required_items}</Typography>
           <Button
             variant="contained"
             size="small"
