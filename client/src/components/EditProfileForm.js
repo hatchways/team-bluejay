@@ -232,16 +232,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
     maxWidth: 300,
   },
-  chips: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  chip: {
-    margin: 2,
-  },
-  cuisinesInput: {
-    minHeight: theme.spacing(6),
-  },
   avatar: {
     width: theme.spacing(25),
     height: theme.spacing(25),
