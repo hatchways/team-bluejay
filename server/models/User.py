@@ -21,13 +21,14 @@ class User(db.Model):
     longitude = db.Column(db.Float)
     aboutMe = db.Column(db.Text)
     chefProfile = db.Column(db.Text)
+    profileImage = db.Column(db.Text)
 
     mealItems = db.relationship("MealItem", back_populates="user")
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
                                back_populates='users'
                                )
-  
+
     def __init__(self, name, email, password, **kwargs):
         self.name = name
         self.email = email
@@ -56,8 +57,8 @@ class User(db.Model):
                 data = address_to_data(item)
                 if data:
                     coordinates = data.get("geometry").get("location")
-                    self.latitude = float(coordinates.get("latitude"))
-                    self.longitude = float(coordinates.get("longitude"))
+                    self.latitude = float(coordinates.get("lat"))
+                    self.longitude = float(coordinates.get("lng"))
                     self.address = data.get("formatted_address")
                     location = []
                     for component in data.get("address_components"):
@@ -117,6 +118,7 @@ class UserSchema(Schema):
     generalLocation = fields.String()
     aboutMe = fields.String()
     chefProfile = fields.String()
+    profileImage = fields.String()
 
     mealItems = fields.List(fields.Nested(
         "MealItemSchema", exclude=("userId",)))
