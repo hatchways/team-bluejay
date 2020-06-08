@@ -11,8 +11,8 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_refresh_token_required
 )
-from helpers.api import custom_json_response
-from helpers.image_uploads import upload_profile_picture
+from helpers.api import custom_json_response, get_req_image
+from helpers.image_uploads import upload_picture
 from datetime import timedelta
 from marshmallow import ValidationError
 import os
@@ -64,28 +64,23 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
-        current_userid = get_jwt_identity()
+        current_userid = get_jwt_identity().get('id')
         req_body = request.form.to_dict()
 
         # convert cuisines from stringified json list to a python list
         if req_body.get('cuisines') and isinstance(req_body['cuisines'], str):
             req_body['cuisines'] = json.loads(req_body['cuisines'])
 
-        # Needed for Postman requests as Postman submits files in request.files
-        if 'profileImage' in request.files:
-            req_image = request.files['profileImage']
-        else:
-            req_image = req_body.get('profileImage')
+        req_image = get_req_image(request, 'profileImage')
 
         if req_image:
-            profile_image_url = upload_profile_picture(
-                req_image, current_userid['id'])
+            profile_image_url = upload_picture(
+                req_image, current_userid, 'UserID', 'profile_pictures')
 
             if not profile_image_url:
                 return custom_json_response("Error with uploading image", 400)
 
             req_body['profileImage'] = profile_image_url
-            print(profile_image_url)
 
         if req_body.get('email'):
             return custom_json_response({
@@ -98,7 +93,7 @@ class UserResource(Resource):
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
-        user = User.get_by_id(current_userid['id'])
+        user = User.get_by_id(current_userid)
 
         user.update(valid_data)
         data = {

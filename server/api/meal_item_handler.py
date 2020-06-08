@@ -9,7 +9,8 @@ from flask_jwt_extended import (
 )
 from marshmallow import ValidationError
 from helpers.database import save_to_database
-
+from helpers.api import get_req_image
+from helpers.image_uploads import upload_picture
 meal_item_schema = MealItemSchema()
 
 
@@ -29,8 +30,20 @@ class MealItemResource(Resource):
 
     @jwt_required
     def post(self):
-        req_data = request.get_json()
         user_id = get_jwt_identity().get("id")
+
+        req_data = request.form.to_dict()
+        req_image = get_req_image(request, 'image')
+
+        if req_image:
+            # todo: SHOULD PUT MEAL ITEM ID!!
+            image_url = upload_picture(req_image, user_id, 'MealID', 'meals')
+
+            if not image_url:
+                return custom_json_response("Error with uploading image", 400)
+
+            req_data['image'] = image_url
+
         req_data["userId"] = user_id
 
         try:
