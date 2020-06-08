@@ -33,27 +33,28 @@ class MealItemResource(Resource):
         user_id = get_jwt_identity().get("id")
 
         req_data = request.form.to_dict()
-        req_image = get_req_image(request, 'image')
-
-        if req_image:
-            # todo: SHOULD PUT MEAL ITEM ID!!
-            image_url = upload_picture(req_image, user_id, 'MealID', 'meals')
-
-            if not image_url:
-                return custom_json_response("Error with uploading image", 400)
-
-            req_data['image'] = image_url
-
         req_data["userId"] = user_id
+
+        req_image = get_req_image(request, 'image')
+        if req_data.get('image'):
+            del req_data['image']
 
         try:
             meal_data = meal_item_schema.load(req_data)
-            meal_data['userId'] = user_id
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
         new_meal = MealItem(**meal_data)
         new_meal.save()
+
+        if req_image:
+            image_url = upload_picture(
+                req_image, new_meal.id, 'MealID', 'meals')
+
+            if not image_url:
+                return custom_json_response("Error with uploading image", 400)
+
+            new_meal.update({'image': image_url})
 
         curr_user = User.get_by_id(user_id)
         curr_user.chef_flag_true()
