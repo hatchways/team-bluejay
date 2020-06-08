@@ -1,20 +1,17 @@
-import React, { useContext, useCallback } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useEffect, useContext, useCallback } from "react";
+import { useForm } from "react-hook-form";
 import {
   Typography,
   TextField,
-  Select,
-  Input,
-  InputLabel,
-  MenuItem,
   FormControl,
-  Chip,
   Button,
   FormHelperText,
 } from "@material-ui/core";
+import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDropzone } from "react-dropzone";
 import { Context as UserContext } from "contexts/AuthContext";
+import API from "api";
 
 function MyDropzone() {
   const onDrop = useCallback((acceptedFiles) => {
@@ -38,17 +35,36 @@ function MyDropzone() {
 }
 
 const EditProfileForm = ({ onSubmit }) => {
+  useEffect(() => {
+    (async function getCuisines() {
+      const { data: allCuisines } = await API.get("/cuisines");
+      setCuisines(allCuisines);
+    })();
+  }, []);
+
+  const { register, handleSubmit, errors, setValue } = useForm({
+    reValidateMode: "onChange",
+    validateCriteriaMode: "all",
+  });
+
+  const [selectedCuisines, setSelectedCuisines] = useState([]);
+  console.log(selectedCuisines);
+
+  useEffect(() => register("cuisines"));
+  useEffect(() =>
+    setValue(
+      "cuisines",
+      selectedCuisines.map((cuisineId) => ({ id: cuisineId }))
+    )
+  );
+
+  const [cuisines, setCuisines] = useState([]);
+
   const classes = useStyles();
   let {
     state: { user },
   } = useContext(UserContext);
 
-  const { register, handleSubmit, errors, control } = useForm({
-    reValidateMode: "onChange",
-    validateCriteriaMode: "all",
-  });
-
-  // TODO: Add validation to street, address, location, city, state, country, zipcode fields to ensure it is a proper address on google maps
   const fields = [
     {
       component: TextField,
@@ -94,21 +110,12 @@ const EditProfileForm = ({ onSubmit }) => {
     return user.isChef ? true : field.name !== "chefProfile";
   });
 
-  const cuisines = [
-    "Japanese",
-    "Martian",
-    "American",
-    "Chinese",
-    "Middle Eastern",
-  ];
-
   return (
     <>
       <Typography component="h1" variant="h5">
         Edit your profile
       </Typography>
-      {/* TODO:  add fullWidth to all input components (so that they expand the whole dialog)
-                 use Grids for some of the components so that entire form width will expand equally the width of the dialog*/}
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className={classes.form}
@@ -158,51 +165,34 @@ const EditProfileForm = ({ onSubmit }) => {
             </FormControl>
           )
         )}
-        {/* TODO: Add option to add customized cuisines */}
-        <div>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-mutiple-chip-label">
-              Favorite Cuisines
-            </InputLabel>
-            <Controller
-              as={
-                <Select
-                  labelId="cuisines-label"
-                  id="cuisines"
-                  multiple
-                  input={<Input id="select-multiple-chip" />}
-                  renderValue={(selected) => (
-                    <div className={classes.chips}>
-                      {selected.map((value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          className={classes.chip}
-                          color="primary"
-                        />
-                      ))}
-                    </div>
-                  )}
-                  MenuProps={MenuProps}
-                >
-                  {cuisines.map((cuisine) => (
-                    <MenuItem
-                      key={cuisine}
-                      value={cuisine}
-                      className={classes.menuItem}
-                    >
-                      {cuisine}
-                    </MenuItem>
-                  ))}
-                </Select>
+        <Typography component="h6" variant="h6">
+          Favorite Cuisines:
+        </Typography>
+        {cuisines.map((cuisine) => {
+          const isSelected = selectedCuisines.includes(cuisine.id);
+          //console.log(cuisine.name, cuisine.id, isSelected);
+          return (
+            <Button
+              className={classes.button}
+              color={isSelected ? "primary" : "default"}
+              variant="contained"
+              key={cuisine.id}
+              onClick={() =>
+                isSelected
+                  ? setSelectedCuisines(
+                      selectedCuisines.filter(
+                        (cuisineId) => cuisineId !== cuisine.id
+                      )
+                    )
+                  : setSelectedCuisines([...selectedCuisines, cuisine.id])
               }
-              name="cuisines"
-              rules={{ required: "Please list at least one cuisine" }}
-              control={control}
-              defaultValue={user.cuisines}
-            />
-          </FormControl>
-        </div>
+            >
+              {cuisine.name}
+              {isSelected && <Clear />}
+            </Button>
+          );
+        })}
+
         <div>
           <Button
             type="submit"
@@ -229,16 +219,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     padding: theme.spacing(2, 10),
   },
-  shortWidth: {
-    [theme.breakpoints.up("md")]: {
-      width: "25ch",
-    },
-  },
-  mediumWidth: {
-    [theme.breakpoints.up("md")]: {
-      width: "50ch",
-    },
-  },
   largeWidth: {
     [theme.breakpoints.up("md")]: {
       width: "75ch",
@@ -256,20 +236,12 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
+  cuisinesInput: {
+    minHeight: theme.spacing(6),
+  },
   menuItem: {
     fontWeight: theme.typography.fontWeightRegular,
   },
 }));
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
 
 export default EditProfileForm;

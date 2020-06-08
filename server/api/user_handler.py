@@ -16,6 +16,7 @@ from helpers.image_uploads import upload_profile_picture
 from datetime import timedelta
 from marshmallow import ValidationError
 import os
+import json
 
 
 user_schema = UserSchema()
@@ -69,7 +70,9 @@ class UserResource(Resource):
         print(current_userid)
 
         req_body = request.form.to_dict()
-        print("PRINTING MULTIOART FORM")
+        print("PRINTING MULTIPART FORM")
+        print(req_body)
+
         print(req_body)
 
         # Needed for Postman requests as Postman submits files in request.files

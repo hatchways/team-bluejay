@@ -17,6 +17,7 @@ const reducer = (state, action) => {
     case "clearErrorMessage":
       return { ...state, errorMessage: "" };
     case "refreshUser":
+    case "updateUser":
       return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
@@ -75,6 +76,15 @@ const Provider = ({ children }) => {
       delete updatedUser.cuisines;
       const { data } = await API.put("/users", {
         ...updatedUser,
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(updatedUser)) {
+        //Objects such as arrays need to be stringifed when sending as multipart/form-data
+        if (key === "cuisines") formData.set(key, JSON.stringify(value));
+        else formData.set(key, value);
+      }
+
+      const { data } = await API.put("/users", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       dispatch({ type: "updateUser", payload: { user: data.user } });
     } catch (error) {

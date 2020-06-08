@@ -22,7 +22,6 @@ const Profile = ({ props }) => {
   } = useContext(UserContext);
 
   // TODO: Remove stub data and receive data from backend
-  user.cuisines = ["French", "Japanese"];
 
   const googleCoords =
     user.latitude && user.longitude
@@ -82,7 +81,7 @@ const Profile = ({ props }) => {
             FAVORITE CUISINE:
           </Typography>
           {user.cuisines.map((cuisine, i) => (
-            <Chip label={cuisine} color="primary" key={i} />
+            <Chip label={cuisine.name} color="primary" key={i} />
           ))}
         </Box>
       </Grid>
