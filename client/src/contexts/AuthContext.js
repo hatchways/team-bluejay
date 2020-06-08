@@ -72,13 +72,12 @@ const Provider = ({ children }) => {
 
   const updateUser = async (updatedUser) => {
     try {
-      //remove when cuisines has been implemented
-      delete updatedUser.cuisines;
-      const { data } = await API.put("/users", {
-        ...updatedUser,
+      console.log(updatedUser);
+
       const formData = new FormData();
       for (const [key, value] of Object.entries(updatedUser)) {
         //Objects such as arrays need to be stringifed when sending as multipart/form-data
+        if (key === "profileImage" && value === undefined) continue;
         if (key === "cuisines") formData.set(key, JSON.stringify(value));
         else formData.set(key, value);
       }
@@ -86,11 +85,14 @@ const Provider = ({ children }) => {
       const { data } = await API.put("/users", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
+      console.log(data);
       dispatch({ type: "updateUser", payload: { user: data.user } });
     } catch (error) {
       handleErrorResponse(error);
     }
   };
+
   const clearErrorMessage = () => dispatch({ type: "clearErrorMessage" });
 
   const signOut = async () => {

@@ -6,33 +6,13 @@ import {
   FormControl,
   Button,
   FormHelperText,
+  Avatar,
 } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDropzone } from "react-dropzone";
 import { Context as UserContext } from "contexts/AuthContext";
 import API from "api";
-
-function MyDropzone() {
-  const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false,
-  });
-
-  return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
-      )}
-    </div>
-  );
-}
+import Dropzone from "react-dropzone";
 
 const EditProfileForm = ({ onSubmit }) => {
   useEffect(() => {
@@ -50,15 +30,20 @@ const EditProfileForm = ({ onSubmit }) => {
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   console.log(selectedCuisines);
 
-  useEffect(() => register("cuisines"));
-  useEffect(() =>
+  useEffect(() => {
+    register("cuisines");
+    register("profileImage");
+  });
+  useEffect(() => {
     setValue(
       "cuisines",
       selectedCuisines.map((cuisineId) => ({ id: cuisineId }))
-    )
-  );
+    );
+    setValue("profileImage", profileImage);
+  });
 
   const [cuisines, setCuisines] = useState([]);
+  const [profileImage, setProfileImage] = useState();
 
   const classes = useStyles();
   let {
@@ -121,6 +106,32 @@ const EditProfileForm = ({ onSubmit }) => {
         className={classes.form}
         noValidate
       >
+        <Avatar
+          src={user.profileImage ? user.profileImage : ""}
+          alt="profile"
+          className={classes.avatar}
+        />
+
+        <Dropzone
+          onDrop={(acceptedFiles) => setProfileImage(acceptedFiles[0])}
+          multiple={false}
+        >
+          {({ getRootProps, getInputProps }) => (
+            <section>
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <Button
+                  className={classes.dragNDrop}
+                  color="default"
+                  variant="contained"
+                >
+                  Drag 'n' drop your profile picture here, or click to select
+                </Button>
+              </div>
+            </section>
+          )}
+        </Dropzone>
+
         {fields.map(
           (
             {
@@ -239,8 +250,18 @@ const useStyles = makeStyles((theme) => ({
   cuisinesInput: {
     minHeight: theme.spacing(6),
   },
-  menuItem: {
-    fontWeight: theme.typography.fontWeightRegular,
+  avatar: {
+    width: theme.spacing(25),
+    height: theme.spacing(25),
+    border: "solid white 5px",
+    boxShadow: "0 0 10px lightgrey",
+    marginBottom: theme.spacing(3),
+  },
+  dragNDrop: {
+    background: "grey",
+    color: "white",
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
 }));
 
