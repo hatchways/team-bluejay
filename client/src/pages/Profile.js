@@ -69,11 +69,12 @@ const Profile = ({ props }) => {
           </Typography>
           <Box mb={6}>
             {/* Todo: See if paragraph splitting works on Mac */}
-            {user.aboutMe.split(/(\r\n|\n|\r)/gm).map((p, i) => (
-              <Typography variant="body1" paragraph key={i}>
-                {p}
-              </Typography>
-            ))}
+            {user.aboutMe &&
+              user.aboutMe.split(/(\r\n|\n|\r)/gm).map((p, i) => (
+                <Typography variant="body1" paragraph key={i}>
+                  {p}
+                </Typography>
+              ))}
           </Box>
 
           <Typography variant="h6" paragraph className={classes.bold}>
