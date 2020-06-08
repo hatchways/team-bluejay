@@ -21,13 +21,14 @@ class User(db.Model):
     longitude = db.Column(db.Float)
     aboutMe = db.Column(db.Text)
     chefProfile = db.Column(db.Text)
+    profileImage = db.Column(db.Text)
 
     mealItems = db.relationship("MealItem", back_populates="user")
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
                                back_populates='users'
                                )
-  
+
     def __init__(self, name, email, password, **kwargs):
         self.name = name
         self.email = email
@@ -117,6 +118,7 @@ class UserSchema(Schema):
     generalLocation = fields.String()
     aboutMe = fields.String()
     chefProfile = fields.String()
+    profileImage = fields.String()
 
     mealItems = fields.List(fields.Nested(
         "MealItemSchema", exclude=("userId",)))

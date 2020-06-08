@@ -155,7 +155,7 @@ const ChefFilters = ({
               .map((cuisine) => (
                 <Button
                   className={classes.button}
-                  color="error"
+                  color="default"
                   variant="contained"
                   key={cuisine}
                   onClick={() => addSelectedCuisine(cuisine)}
