@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer, useContext, useEffect } from "react";
 import API from "api/index";
 import { useHistory, useLocation } from "react-router-dom";
 import { Context as AlertContext } from "contexts/AlertContext";
@@ -17,6 +17,7 @@ const reducer = (state, action) => {
     case "clearErrorMessage":
       return { ...state, errorMessage: "" };
     case "refreshUser":
+    case "updateUser":
       return { user: action.payload.user, errorMessage: "" };
     default:
       return state;
@@ -31,6 +32,11 @@ const Provider = ({ children }) => {
     user: null,
     errorMessage: "",
   });
+
+  useEffect(() => {
+    // Check if user is logged in on first visit to application
+    refreshLoggedInUser("login");
+  }, []);
 
   let history = useHistory();
   let location = useLocation();
@@ -66,16 +72,27 @@ const Provider = ({ children }) => {
 
   const updateUser = async (updatedUser) => {
     try {
-      //remove when cuisines has been implemented
-      delete updatedUser.cuisines;
-      const { data } = await API.put("/users", {
-        ...updatedUser,
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(updatedUser)) {
+        //Objects such as arrays need to be stringifed when sending as multipart/form-data
+        if (key === "profileImage" && value === undefined) continue;
+        if (key === "cuisines") formData.set(key, JSON.stringify(value));
+        else formData.set(key, value);
+      }
+
+      const { data } = await API.put("/users", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
+
+      // add date to imageUrl so react sees that the image has changed and will rerender it
+      data.user.profileImage = `${data.user.profileImage}?${Date.now()}`;
+
       dispatch({ type: "updateUser", payload: { user: data.user } });
     } catch (error) {
       handleErrorResponse(error);
     }
   };
+
   const clearErrorMessage = () => dispatch({ type: "clearErrorMessage" });
 
   const signOut = async () => {
@@ -88,12 +105,12 @@ const Provider = ({ children }) => {
     }
   };
 
-  const refreshLoggedInUser = async () => {
+  const refreshLoggedInUser = async (action = "refresh") => {
     try {
       const { data } = await API.get("/users/login");
       dispatch({ type: "refreshUser", payload: { user: data.user } });
     } catch (error) {
-      alert("Unable to refresh user");
+      alert(`Unable to ${action} user`);
       return;
     }
   };

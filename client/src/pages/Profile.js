@@ -9,7 +9,6 @@ import {
   Chip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import BackgroundImage from "images/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png";
 import EditProfileButton from "components/EditProfileButton";
 import GoogleMaps from "components/GoogleMaps";
 import ChefProfile from "components/ChefProfile";
@@ -20,9 +19,6 @@ const Profile = ({ props }) => {
   const {
     state: { user },
   } = useContext(UserContext);
-
-  // TODO: Remove stub data and receive data from backend
-  user.cuisines = ["French", "Japanese"];
 
   const googleCoords =
     user.latitude && user.longitude
@@ -47,7 +43,7 @@ const Profile = ({ props }) => {
         className={classes.paper}
       >
         <Avatar
-          src={BackgroundImage}
+          src={user.profileImage ? user.profileImage : ""}
           alt="profile"
           className={classes.avatar}
         />
@@ -72,17 +68,20 @@ const Profile = ({ props }) => {
             ABOUT ME:
           </Typography>
           <Box mb={6}>
-            <Typography variant="body1" paragraph>
-              {/*TODO: Have multipline about me paragraphs get split up into multiple lines */}
-              {user.aboutMe}
-            </Typography>
+            {/* Todo: See if paragraph splitting works on Mac */}
+            {user.aboutMe &&
+              user.aboutMe.split(/(\r\n|\n|\r)/gm).map((p, i) => (
+                <Typography variant="body1" paragraph key={i}>
+                  {p}
+                </Typography>
+              ))}
           </Box>
 
           <Typography variant="h6" paragraph className={classes.bold}>
             FAVORITE CUISINE:
           </Typography>
           {user.cuisines.map((cuisine, i) => (
-            <Chip label={cuisine} color="primary" key={i} />
+            <Chip label={cuisine.name} color="primary" key={i} />
           ))}
         </Box>
       </Grid>

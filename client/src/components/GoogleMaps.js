@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Map, GoogleApiWrapper, Circle } from "google-maps-react";
 
 const MapContainer = ({ google, coords }) => {
@@ -9,7 +9,7 @@ const MapContainer = ({ google, coords }) => {
     return <Map google={google} zoom={15} />;
   }
   return (
-    <Map google={google} zoom={15} initialCenter={coords}>
+    <Map google={google} zoom={15} initialCenter={coords} center={coords}>
       {[outerCircle, innerCircle].map(({ radius, fillOpacity }, i) => (
         <Circle
           radius={radius}
