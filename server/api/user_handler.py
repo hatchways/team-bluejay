@@ -64,28 +64,19 @@ class UserResource(Resource):
 
     @jwt_required
     def put(self):
-        # SEE IF THIS IS VALID:
-        # current_userid = get_jwt_identity().get('id')
         current_userid = get_jwt_identity()
-        print(current_userid)
-
         req_body = request.form.to_dict()
-        print("PRINTING MULTIPART FORM")
-        print(req_body)
 
         # convert cuisines from stringified json list to a python list
         if req_body.get('cuisines') and isinstance(req_body['cuisines'], str):
             req_body['cuisines'] = json.loads(req_body['cuisines'])
-
-        print(req_body)
 
         # Needed for Postman requests as Postman submits files in request.files
         if 'profileImage' in request.files:
             req_image = request.files['profileImage']
         else:
             req_image = req_body.get('profileImage')
-        print("PRINTING REQ_IMAGE")
-        print(req_image)
+
         if req_image:
             profile_image_url = upload_profile_picture(
                 req_image, current_userid['id'])

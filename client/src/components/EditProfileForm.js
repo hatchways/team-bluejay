@@ -109,7 +109,6 @@ const EditProfileForm = ({ onSubmit }) => {
         noValidate
       >
         <Avatar
-          // TODO: Have newly uploaded profile images show in edit profile form
           src={
             previewImage
               ? previewImage
