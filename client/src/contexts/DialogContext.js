@@ -3,7 +3,7 @@
 // Profile.js
 const { openDialog } = useContext(dialogContext);
 // edit profile button withing Profile.js
-<Button onClick={() => openDialog(<EditProfileButton />)} />;
+<Button onClick={() => openDialog(<EditProfileForm />)} />;
 
 //EditProfileForm.js
 const { closeDialog } = useContext(dialogContext);
