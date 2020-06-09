@@ -17,6 +17,7 @@ for cuisine in cuisines:
 for i in range(1,11):
     chef = User(f'chef{i}', f'chef{i}@chef.com', 'p@ssword1')
     chef.isChef = True
+    chef.chefCuisine = random.choice(cuisines)
     db.session.add(chef)
 
 #create 10 users

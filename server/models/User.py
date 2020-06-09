@@ -21,6 +21,7 @@ class User(db.Model):
     longitude = db.Column(db.Float)
     aboutMe = db.Column(db.Text)
     chefProfile = db.Column(db.Text)
+    chefCuisine = db.Column(db.String(128))
     profileImage = db.Column(db.Text)
 
     mealItems = db.relationship("MealItem", back_populates="user")
@@ -48,6 +49,7 @@ class User(db.Model):
 
     def update(self, data):
         for key, item in data.items():
+
             if key == 'password':
                 self.password = self.__generate_hash(item)
             elif key == 'cuisines':
@@ -118,6 +120,7 @@ class UserSchema(Schema):
     generalLocation = fields.String()
     aboutMe = fields.String()
     chefProfile = fields.String()
+    chefCuisine = fields.String()
     profileImage = fields.String()
 
     mealItems = fields.List(fields.Nested(

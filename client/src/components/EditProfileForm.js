@@ -7,6 +7,7 @@ import {
   Button,
   FormHelperText,
   Avatar,
+  Box,
 } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,10 +18,16 @@ import API from "api";
 
 const EditProfileForm = () => {
   const classes = useStyles();
+
   let {
     state: { user },
     updateUser,
   } = useContext(UserContext);
+
+  const [cuisines, setCuisines] = useState([]);
+  const [profileImage, setProfileImage] = useState();
+  const [previewImage, setPreviewImage] = useState("");
+  const [chefCuisine, setChefCuisine] = useState(user.chefCuisine);
 
   const { closeDialog } = useContext(DialogContext);
 
@@ -47,6 +54,7 @@ const EditProfileForm = () => {
 
   useEffect(() => {
     register("cuisines");
+    register("chefCuisine");
     register("profileImage");
   });
   useEffect(() => {
@@ -54,12 +62,9 @@ const EditProfileForm = () => {
       "cuisines",
       selectedCuisines.map((cuisineId) => ({ id: cuisineId }))
     );
+    setValue("chefCuisine", chefCuisine);
     setValue("profileImage", profileImage);
   });
-
-  const [cuisines, setCuisines] = useState([]);
-  const [profileImage, setProfileImage] = useState();
-  const [previewImage, setPreviewImage] = useState("");
 
   const fields = [
     {
@@ -181,30 +186,48 @@ const EditProfileForm = () => {
         <Typography component="h6" variant="h6">
           Favorite Cuisines:
         </Typography>
-        {cuisines.map((cuisine) => {
-          const isSelected = selectedCuisines.includes(cuisine.id);
-          return (
-            <Button
-              className={classes.button}
-              color={isSelected ? "primary" : "default"}
-              variant="contained"
-              key={cuisine.id}
-              onClick={() =>
-                isSelected
-                  ? setSelectedCuisines(
-                      selectedCuisines.filter(
-                        (cuisineId) => cuisineId !== cuisine.id
+        <Box>
+          {cuisines.map((cuisine) => {
+            const isSelected = selectedCuisines.includes(cuisine.id);
+            return (
+              <Button
+                className={classes.button}
+                color={isSelected ? "primary" : "default"}
+                variant="contained"
+                key={cuisine.id}
+                onClick={() =>
+                  isSelected
+                    ? setSelectedCuisines(
+                        selectedCuisines.filter(
+                          (cuisineId) => cuisineId !== cuisine.id
+                        )
                       )
-                    )
-                  : setSelectedCuisines([...selectedCuisines, cuisine.id])
-              }
-            >
-              {cuisine.name}
-              {isSelected && <Clear />}
-            </Button>
-          );
-        })}
-
+                    : setSelectedCuisines([...selectedCuisines, cuisine.id])
+                }
+              >
+                {cuisine.name}
+                {isSelected && <Clear />}
+              </Button>
+            );
+          })}
+        </Box>
+        {user.isChef && (
+          <Box>
+            <Typography component="h6" variant="h6">
+              Chef Cuisine
+            </Typography>
+            {cuisines.map((cuisine) => (
+              <Button
+                className={classes.button}
+                color={cuisine.name === chefCuisine ? "primary" : "default"}
+                variant="contained"
+                onClick={() => setChefCuisine(cuisine.name)}
+              >
+                {cuisine.name}
+              </Button>
+            ))}
+          </Box>
+        )}
         <div>
           <Button
             type="submit"
@@ -221,6 +244,9 @@ const EditProfileForm = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(1),
+  },
   form: {
     marginTop: theme.spacing(1),
     "& > *": {
