@@ -25,26 +25,16 @@ const ChefProfile = ({ user }) => {
 
   if (chef) {
     return (
-      <div className={classes.root}>
-        <Grid container>
-          <ChefBanner chef={chef} editable={editable} />
-          <MealItemList
-            chef={chef}
-            meals={chef.mealItems}
-            editable={editable}
-          />
-        </Grid>
-      </div>
+      <Grid container>
+        <ChefBanner chef={chef} editable={editable} />
+        <MealItemList chef={chef} meals={chef.mealItems} editable={editable} />
+      </Grid>
     );
   } else {
     return <div>Loading...</div>;
   }
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: theme.spacing(10),
-  },
-}));
+const useStyles = makeStyles((theme) => ({}));
 
 export default ChefProfile;

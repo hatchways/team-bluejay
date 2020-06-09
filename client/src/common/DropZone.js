@@ -14,7 +14,7 @@ function Dropzone({ setImageFile, setPreviewImage }) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
-    accept: "image/png, image/jpg, image/jpeg, image/gif",
+    accept: "image/png, image/jpg, image/jpeg",
   });
 
   return (

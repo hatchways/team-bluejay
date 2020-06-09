@@ -6,26 +6,24 @@ import {
   FormControl,
   Button,
   FormHelperText,
-  Avatar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as UserContext } from "contexts/AuthContext";
 import { DialogContext } from "contexts/DialogContext";
 import Dropzone from "common/DropZone";
 import API from "api";
+import imagePlaceholder from "images/imagePlaceholder.jpg";
 
-const CreateMealForm = () => {
+const CreateMealForm = ({ meal }) => {
+  const mealId = meal ? meal.id : "";
   const classes = useStyles();
-  let {
-    state: { user },
-    createMeal,
-  } = useContext(UserContext);
+  let { createMeal, editMeal } = useContext(UserContext);
 
   const { closeDialog } = useContext(DialogContext);
 
   const onFormSubmit = (meal) => {
-    console.log(meal);
-    createMeal(meal);
+    if (mealId) editMeal(mealId, meal);
+    else createMeal(meal);
     closeDialog();
   };
 
@@ -46,6 +44,7 @@ const CreateMealForm = () => {
     {
       name: "name",
       label: "Meal Name",
+      defaultValue: meal.name,
       validation: {
         required: "Meal Name is required.",
       },
@@ -53,6 +52,7 @@ const CreateMealForm = () => {
     {
       name: "price",
       label: "Price",
+      defaultValue: meal.price,
       validation: {
         required: "Price is required.",
         pattern: {
@@ -64,6 +64,7 @@ const CreateMealForm = () => {
     {
       name: "servings",
       label: "Servings",
+      defaultValue: meal.servings,
       validation: {
         required: "Servings is required.",
         pattern: {
@@ -75,16 +76,19 @@ const CreateMealForm = () => {
     {
       name: "description",
       label: "Description",
+      defaultValue: meal.description,
       multiline: true,
       rows: 2,
     },
     {
       name: "ingredients",
       label: "Ingredients",
+      defaultValue: meal.ingredients,
     },
     {
       name: "required_items",
       label: "Required Items",
+      defaultValue: meal.required_items,
     },
   ];
 
@@ -99,17 +103,24 @@ const CreateMealForm = () => {
         className={classes.form}
         noValidate
       >
-        <Avatar
-          src={previewImage || user.profileImage || ""}
+        <img
+          className={classes.image}
+          src={previewImage || meal.image || imagePlaceholder}
           alt="meal"
-          className={classes.avatar}
         />
 
         <Dropzone setImageFile={setImage} setPreviewImage={setPreviewImage} />
 
         {fields.map(
           (
-            { name, label, defaultValue, validation, multiline = false, rows },
+            {
+              name,
+              label,
+              defaultValue = "",
+              validation,
+              multiline = false,
+              rows,
+            },
             index
           ) => (
             <FormControl key={index}>
@@ -178,13 +189,14 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
     maxWidth: 300,
   },
-  avatar: {
-    width: theme.spacing(25),
-    height: theme.spacing(25),
-    border: "solid white 5px",
-    boxShadow: "0 0 10px lightgrey",
-    marginBottom: theme.spacing(3),
+  image: {
+    width: "40%",
+    margin: theme.spacing(3, 5, 3, 0),
   },
 }));
+
+CreateMealForm.defaultProps = {
+  meal: {},
+};
 
 export default CreateMealForm;

@@ -136,6 +136,24 @@ const Provider = ({ children }) => {
     }
   };
 
+  const editMeal = async (mealId, meal) => {
+    try {
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(meal)) {
+        if (key === "image" && value === undefined) continue;
+        else formData.set(key, value);
+      }
+
+      await API.put(`/meal_items/${mealId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      refreshLoggedInUser();
+    } catch (error) {
+      handleErrorResponse(error);
+    }
+  };
+
   return (
     <Context.Provider
       value={{
@@ -147,6 +165,7 @@ const Provider = ({ children }) => {
         updateUser,
         refreshLoggedInUser,
         createMeal,
+        editMeal,
       }}
     >
       {children}
