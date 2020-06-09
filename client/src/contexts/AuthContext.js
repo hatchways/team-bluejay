@@ -19,6 +19,27 @@ const reducer = (state, action) => {
     case "refreshUser":
     case "updateUser":
       return { user: action.payload.user, errorMessage: "" };
+    case "createMeal":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          isChef: true,
+          mealItems: [action.payload.meal, ...state.user.mealItems],
+        },
+      };
+    case "editMeal":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          mealItems: state.user.mealItems.map((mealItem) =>
+            mealItem.id !== action.payload.meal.id
+              ? mealItem
+              : action.payload.meal
+          ),
+        },
+      };
     default:
       return state;
   }
@@ -118,37 +139,46 @@ const Provider = ({ children }) => {
     }
   };
 
-  const createMeal = async (meal) => {
+  const createMeal = async (newMeal) => {
     try {
       const formData = new FormData();
-      for (const [key, value] of Object.entries(meal)) {
+      for (const [key, value] of Object.entries(newMeal)) {
         if (key === "image" && value === undefined) continue;
         else formData.set(key, value);
       }
 
-      await API.post("/meal_items", formData, {
+      const {
+        data: { meal },
+      } = await API.post("/meal_items", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      refreshLoggedInUser();
+      dispatch({ type: "createMeal", payload: { meal } });
     } catch (error) {
       handleErrorResponse(error);
     }
   };
 
-  const editMeal = async (mealId, meal) => {
+  const editMeal = async (mealId, updatedMeal) => {
     try {
       const formData = new FormData();
-      for (const [key, value] of Object.entries(meal)) {
+      for (const [key, value] of Object.entries(updatedMeal)) {
         if (key === "image" && value === undefined) continue;
         else formData.set(key, value);
       }
 
-      await API.put(`/meal_items/${mealId}`, formData, {
+      const {
+        data: { meal },
+      } = await API.put(`/meal_items/${mealId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      refreshLoggedInUser();
+      if (meal.image) {
+        const cacheBuster = Date.now();
+        meal.image = `${meal.image}?${cacheBuster}`;
+      }
+
+      dispatch({ type: "editMeal", payload: { meal } });
     } catch (error) {
       handleErrorResponse(error);
     }

@@ -14,14 +14,18 @@ import { DialogContext } from "contexts/DialogContext";
 import Dropzone from "common/DropZone";
 import API from "api";
 import imagePlaceholder from "images/imagePlaceholder.jpg";
+import { Context as AuthContext } from "contexts/AuthContext";
 
 const CreateMealForm = ({ meal }) => {
-  const mealId = meal ? meal.id : "";
+  const mealId = meal ? meal.id : null;
   const classes = useStyles();
   let { createMeal, editMeal, updateUser } = useContext(UserContext);
 
   const [cuisines, setCuisines] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState(null);
+  const {
+    state: { user },
+  } = useContext(UserContext);
 
   useEffect(() => {
     (async function getCuisines() {
@@ -33,9 +37,21 @@ const CreateMealForm = ({ meal }) => {
   const { closeDialog } = useContext(DialogContext);
 
   const onFormSubmit = (meal) => {
-    if (mealId) editMeal(mealId, meal);
+    if (!user.isChef) {
+      /*
+      BUG: When a user creates a meal and becomes a chef, the meal shows up twice in user.mealitems in UserContext
+      This is because createMeal updates context's user.mealItems state
+      updateUser also updates context's user.mealItems state
+      We are dispatching two actions simultaneously which update the same piece of state and that is causing the conflict
+      The backend works fine. Its just the front end context which has a duplicate meal in user.mealItems
+
+      NOTE: The bug would be avoided if we do not allow user to select a cuisine when first becoming a chef
+      */
+      createMeal(meal);
+      updateUser({ chefCuisine: selectedCuisine });
+    } else if (mealId) editMeal(mealId, meal);
     else createMeal(meal);
-    updateUser({ isChef: true, chefCuisine: selectedCuisine });
+
     closeDialog();
   };
 

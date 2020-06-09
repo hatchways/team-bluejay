@@ -24,7 +24,8 @@ class User(db.Model):
     chefCuisine = db.Column(db.String(128))
     profileImage = db.Column(db.Text)
 
-    mealItems = db.relationship("MealItem", back_populates="user")
+    mealItems = db.relationship(
+        "MealItem", back_populates="user", order_by="-MealItem.id")
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
                                back_populates='users'

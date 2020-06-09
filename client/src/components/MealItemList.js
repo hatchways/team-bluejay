@@ -38,8 +38,7 @@ const MealItemList = ({ chef, meals, editable }) => {
       )}
 
       <Grid item className={classes.menuList}>
-        {/* Todo: Add ability for chef to edit order of their meal items */}
-        {/* Todo: Prevent editing of menu items from changing order of meal items returned by backend */}
+        {/* Todo: Add ability for chef to drag 'n' drop to edit order of their meal items */}
         {meals &&
           meals.map((meal) => {
             return (
