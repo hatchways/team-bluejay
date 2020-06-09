@@ -74,8 +74,8 @@ class UserResource(Resource):
         req_image = get_req_image(request, 'profileImage')
 
         if req_image:
-            profile_image_url = upload_picture(
-                req_image, current_userid, 'UserID', 'profile_pictures')
+            s3_file_path = f'users/{current_userid}/profile_pic'
+            profile_image_url = upload_picture(req_image, s3_file_path)
 
             if not profile_image_url:
                 return custom_json_response("Error with uploading image", 400)

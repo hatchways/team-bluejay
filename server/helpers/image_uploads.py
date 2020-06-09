@@ -2,12 +2,11 @@ import boto3
 from config import AWS_ACCESS_KEY, AWS_SECRET_KEY
 
 
-def upload_picture(file, item_id, itemType, bucket_folder):
+def upload_picture(file, s3_file_path):
     if not is_image_file(file.filename):
         return False
 
     bucket = 'team-bluejay'
-    s3_file_path = f'{bucket_folder}/{itemType}-{str(item_id)}.jpg'
 
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
                       aws_secret_access_key=AWS_SECRET_KEY)

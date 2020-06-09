@@ -47,8 +47,8 @@ class MealItemResource(Resource):
         new_meal.save()
 
         if req_image:
-            image_url = upload_picture(
-                req_image, new_meal.id, 'MealID', 'meals')
+            s3_file_path = f'meal/{new_meal.id}/meal_pic'
+            image_url = upload_picture(req_image, s3_file_path)
 
             if not image_url:
                 return custom_json_response("Error with uploading image", 400)
@@ -78,8 +78,8 @@ class MealItemResource(Resource):
         req_image = get_req_image(request, 'image')
 
         if req_image:
-            image_url = upload_picture(
-                req_image, meal_item.id, 'MealID', 'meals')
+            s3_file_path = f'meal/{meal_item.id}/meal_pic'
+            image_url = upload_picture(req_image, s3_file_path)
 
             if not image_url:
                 return custom_json_response("Error with uploading image", 400)
