@@ -78,9 +78,7 @@ const Checkout = () => {
                 ))}
               </Box>
               <Box display="inline-flex">
-                <Typography display="inline-flex" variant="h5">
-                  Arrival Time:
-                </Typography>
+                <Typography variant="h5">Arrival Time:</Typography>
                 <KeyboardDateTimePicker
                   variant="inline"
                   minutesStep={30}
