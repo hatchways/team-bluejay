@@ -9,19 +9,19 @@ import API from "api/index";
 const ChefProfile = ({ user }) => {
   const classes = useStyles();
   const { chefId } = useParams();
-  const [chef, setChef] = useState(user);
+
+  const [chef, setChef] = useState();
   const editable = user ? true : false;
 
-  const fetchChef = async () => {
-    const { data } = await API.get(`/chefs/${chefId}`);
-    setChef(data);
-  };
-
   useEffect(() => {
-    if (!chef) {
-      fetchChef();
+    if (user) setChef(user);
+    else {
+      (async function fetchChef() {
+        const { data } = await API.get(`/chefs/${chefId}`);
+        setChef(data);
+      })();
     }
-  }, []);
+  }, [user, chefId]);
 
   if (chef) {
     return (

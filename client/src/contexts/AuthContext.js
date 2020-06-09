@@ -80,14 +80,17 @@ const Provider = ({ children }) => {
         else formData.set(key, value);
       }
 
-      const { data } = await API.put("/users", formData, {
+      const {
+        data: { user },
+      } = await API.put("/users", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const cacheBuster = Date.now();
-      data.user.profileImage = `${data.user.profileImage}?${cacheBuster}`;
-
-      dispatch({ type: "updateUser", payload: { user: data.user } });
+      if (user.profileImage) {
+        const cacheBuster = Date.now();
+        user.profileImage = `${user.profileImage}?${cacheBuster}`;
+      }
+      dispatch({ type: "updateUser", payload: { user } });
     } catch (error) {
       handleErrorResponse(error);
     }

@@ -100,14 +100,8 @@ const CreateMealForm = () => {
         noValidate
       >
         <Avatar
-          src={
-            previewImage
-              ? previewImage
-              : user.profileImage
-              ? user.profileImage
-              : ""
-          }
-          alt="profile"
+          src={previewImage || user.profileImage || ""}
+          alt="meal"
           className={classes.avatar}
         />
 

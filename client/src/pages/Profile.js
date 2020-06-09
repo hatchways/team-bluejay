@@ -43,7 +43,7 @@ const Profile = ({ props }) => {
         className={classes.paper}
       >
         <Avatar
-          src={user.profileImage ? user.profileImage : ""}
+          src={user.profileImage || ""}
           alt="profile"
           className={classes.avatar}
         />

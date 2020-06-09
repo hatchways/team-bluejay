@@ -118,13 +118,7 @@ const EditProfileForm = () => {
         noValidate
       >
         <Avatar
-          src={
-            previewImage
-              ? previewImage
-              : user.profileImage
-              ? user.profileImage
-              : ""
-          }
+          src={previewImage || user.profileImage || ""}
           alt="profile"
           className={classes.avatar}
         />
