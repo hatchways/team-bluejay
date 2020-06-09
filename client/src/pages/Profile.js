@@ -80,9 +80,10 @@ const Profile = ({ props }) => {
           <Typography variant="h6" paragraph className={classes.bold}>
             FAVORITE CUISINE:
           </Typography>
-          {user.cuisines.map((cuisine, i) => (
-            <Chip label={cuisine.name} color="primary" key={i} />
-          ))}
+          {user.cuisines &&
+            user.cuisines.map((cuisine, i) => (
+              <Chip label={cuisine.name} color="primary" key={i} />
+            ))}
         </Box>
       </Grid>
       <Grid
