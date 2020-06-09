@@ -93,7 +93,7 @@ class UserResource(Resource):
             }, 403)
 
         try:
-            valid_data = user_schema.load(request.get_json(), partial=True)
+            valid_data = user_schema.load(req_body, partial=True)
             
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
