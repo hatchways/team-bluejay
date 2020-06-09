@@ -19,7 +19,13 @@ import {
   Button,
   FormHelperText,
 } from "@material-ui/core";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import {
+  useStripe,
+  useElements,
+  CardElement,
+  CardNumberElement,
+  CardExpiryElement,
+} from "@stripe/react-stripe-js";
 
 import API from "api/index";
 
@@ -52,11 +58,9 @@ const PaymentForm = () => {
         body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
       })
       .then((res) => {
-        console.log(res);
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setClientSecret(data.clientSecret);
       });
   }, []);
@@ -87,7 +91,7 @@ const PaymentForm = () => {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: "Gabriel",
+          name: "Gariel",
         },
       },
     });
@@ -175,7 +179,7 @@ const PaymentForm = () => {
           </Button>
         </form>
       </Box>
-      <CardSection />
+      <CardSection onChange={() => alert("hi")} />
     </div>
   );
 };
