@@ -39,7 +39,7 @@ const ChefBanner = ({ chef, editable }) => {
           <Typography>{chef.chefProfile}</Typography>
           <Chip
             className={classes.cuisineChip}
-            size="large"
+            size="medium"
             label={`${chef.chefCuisine}`}
           />
           <Button

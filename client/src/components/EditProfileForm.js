@@ -68,7 +68,6 @@ const EditProfileForm = () => {
 
   const fields = [
     {
-      component: TextField,
       name: "name",
       label: "Full Name",
       inputClass: "largeWidth",
@@ -78,26 +77,8 @@ const EditProfileForm = () => {
         maxLength: { value: 50, message: "Too many characters (max: 50)." },
       },
     },
+
     {
-      component: TextField,
-      name: "aboutMe",
-      label: "About Me",
-      inputClass: "largeWidth",
-      defaultValue: user.aboutMe,
-      multiline: true,
-      rows: 5,
-    },
-    {
-      component: TextField,
-      name: "chefProfile",
-      label: "Chef Profile",
-      inputClass: "largeWidth",
-      defaultValue: user.chefProfile,
-      multiline: true,
-      rows: 5,
-    },
-    {
-      component: TextField,
       name: "address",
       label: "Address",
       defaultValue: user.address,
@@ -106,10 +87,27 @@ const EditProfileForm = () => {
         required: "Address is required.",
       },
     },
-  ].filter((field) => {
-    // remove chefProfile field is user is not a chef
-    return user.isChef ? true : field.name !== "chefProfile";
-  });
+  ];
+
+  const aboutMeField = {
+    name: "aboutMe",
+    label: "About Me",
+    inputClass: "largeWidth",
+    defaultValue: user.aboutMe,
+    multiline: true,
+    rows: 5,
+  };
+
+  const chefProfileField = {
+    name: "chefProfile",
+    label: "Chef Profile",
+    inputClass: "largeWidth",
+    defaultValue: user.chefProfile,
+    multiline: true,
+    rows: 5,
+  };
+
+  fields.splice(1, 0, user.isChef ? chefProfileField : aboutMeField);
 
   return (
     <>
@@ -136,7 +134,6 @@ const EditProfileForm = () => {
         {fields.map(
           (
             {
-              component: Component = TextField,
               inputClass = "",
               name,
               label,
@@ -149,7 +146,7 @@ const EditProfileForm = () => {
             index
           ) => (
             <FormControl key={index}>
-              <Component
+              <TextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -177,45 +174,50 @@ const EditProfileForm = () => {
             </FormControl>
           )
         )}
-        <Typography component="h6" variant="h6">
-          Favorite Cuisines:
-        </Typography>
-        <Box>
-          {cuisines.map((cuisine) => {
-            const isSelected = selectedCuisines.includes(cuisine.id);
-            return (
-              <Button
-                className={classes.button}
-                color={isSelected ? "primary" : "default"}
-                variant="contained"
-                key={cuisine.id}
-                onClick={() =>
-                  isSelected
-                    ? setSelectedCuisines(
-                        selectedCuisines.filter(
-                          (cuisineId) => cuisineId !== cuisine.id
-                        )
-                      )
-                    : setSelectedCuisines([...selectedCuisines, cuisine.id])
-                }
-              >
-                {cuisine.name}
-                {isSelected && <Clear />}
-              </Button>
-            );
-          })}
-        </Box>
+        {!user.isChef && (
+          <>
+            <Typography component="h6" variant="h6">
+              Favorite Cuisines:
+            </Typography>
+            <Box>
+              {cuisines.map((cuisine) => {
+                const isSelected = selectedCuisines.includes(cuisine.id);
+                return (
+                  <Button
+                    className={classes.button}
+                    color={isSelected ? "primary" : "default"}
+                    variant="contained"
+                    key={cuisine.id}
+                    onClick={() =>
+                      isSelected
+                        ? setSelectedCuisines(
+                            selectedCuisines.filter(
+                              (cuisineId) => cuisineId !== cuisine.id
+                            )
+                          )
+                        : setSelectedCuisines([...selectedCuisines, cuisine.id])
+                    }
+                  >
+                    {cuisine.name}
+                    {isSelected && <Clear />}
+                  </Button>
+                );
+              })}
+            </Box>
+          </>
+        )}
         {user.isChef && (
           <Box>
             <Typography component="h6" variant="h6">
               Chef Cuisine
             </Typography>
-            {cuisines.map((cuisine) => (
+            {cuisines.map((cuisine, i) => (
               <Button
                 className={classes.button}
                 color={cuisine.name === chefCuisine ? "primary" : "default"}
                 variant="contained"
                 onClick={() => setChefCuisine(cuisine.name)}
+                key={i}
               >
                 {cuisine.name}
               </Button>

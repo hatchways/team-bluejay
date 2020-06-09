@@ -6,6 +6,7 @@ import {
   FormControl,
   Button,
   FormHelperText,
+  Box,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as UserContext } from "contexts/AuthContext";
@@ -17,13 +18,24 @@ import imagePlaceholder from "images/imagePlaceholder.jpg";
 const CreateMealForm = ({ meal }) => {
   const mealId = meal ? meal.id : "";
   const classes = useStyles();
-  let { createMeal, editMeal } = useContext(UserContext);
+  let { createMeal, editMeal, updateUser } = useContext(UserContext);
+
+  const [cuisines, setCuisines] = useState([]);
+  const [selectedCuisine, setSelectedCuisine] = useState(null);
+
+  useEffect(() => {
+    (async function getCuisines() {
+      const { data: allCuisines } = await API.get("/cuisines");
+      setCuisines(allCuisines);
+    })();
+  }, []);
 
   const { closeDialog } = useContext(DialogContext);
 
   const onFormSubmit = (meal) => {
     if (mealId) editMeal(mealId, meal);
     else createMeal(meal);
+    updateUser({ isChef: true, chefCuisine: selectedCuisine });
     closeDialog();
   };
 
@@ -94,15 +106,30 @@ const CreateMealForm = ({ meal }) => {
 
   return (
     <>
-      <Typography component="h1" variant="h5">
-        Add your first meal to become a chef
-      </Typography>
-
       <form
         onSubmit={handleSubmit(onFormSubmit)}
         className={classes.form}
         noValidate
       >
+        <Typography variant="h5" component="h3">
+          Select a Cuisine for your Chef Profile
+        </Typography>
+        <Box display="inline" wrap="flex-wrap">
+          {cuisines.map((c, i) => (
+            <Button
+              color={c.name === selectedCuisine ? "primary" : "default"}
+              variant="contained"
+              className={classes.cuisineButton}
+              onClick={() => setSelectedCuisine(c.name)}
+              key={i}
+            >
+              {c.name}
+            </Button>
+          ))}
+        </Box>
+        <Typography variant="h5" component="h3" className={classes.mealTitle}>
+          Add your first meal
+        </Typography>
         <img
           className={classes.image}
           src={previewImage || meal.image || imagePlaceholder}
@@ -189,9 +216,15 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
     maxWidth: 300,
   },
+  mealTitle: {
+    marginTop: theme.spacing(5),
+  },
   image: {
     width: "40%",
     margin: theme.spacing(3, 5, 3, 0),
+  },
+  cuisineButton: {
+    margin: theme.spacing(1),
   },
 }));
 
