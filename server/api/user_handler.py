@@ -87,9 +87,9 @@ class UserResource(Resource):
                 "error": "Cannot use this route to update email address."
             }, 403)
 
-        valid_data = None
         try:
             valid_data = user_schema.load(req_body, partial=True)
+
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 

@@ -28,25 +28,15 @@ const ChefSearch = ({ coords }) => {
   useEffect(() => {
     searchChefs();
     // to change later
-    setDummyData();
+    (async function getCuisines() {
+      const { data: allCuisines } = await API.get("/cuisines");
+      setCuisineTypes(allCuisines.map((c) => c.name));
+    })();
   }, [userAddress, userCoordinates, selectedCuisines, distanceFilter]);
-
-  const setDummyData = () => {
-    // dummy cuisine types
-    setCuisineTypes([
-      "Japanese",
-      "Chinese",
-      "American",
-      "French",
-      "Mexican",
-      "Italian",
-    ]);
-  };
 
   const searchChefs = async () => {
     try {
       const { data } = await API.get("/chefs", {
-        // chef has stub cuisines of ""Japanese, Chinese, Mexican""
         params: {
           userCuisines: selectedCuisines.join(","),
           userLat: userCoordinates ? userCoordinates.latitude : null,
@@ -93,7 +83,7 @@ const ChefSearch = ({ coords }) => {
 const CustomCard = ({ chef }) => {
   const classes = useStyles();
   const history = useHistory();
-  const { id, name, generalLocation, chefProfile } = chef;
+  const { id, name, generalLocation, chefProfile, chefCuisine } = chef;
   return (
     <Card className={classes.chefTile}>
       <CardMedia
@@ -109,12 +99,18 @@ const CustomCard = ({ chef }) => {
           <Typography variant="subtitle2" color="textSecondary" component="p">
             {generalLocation || "City, Country"}
           </Typography>
-          {["American", "Japanese", "Mexican"].map((c, i) => (
-            <Chip className={classes.chip} color="primary" label={c} key={i} />
-          ))}
 
-          <Typography variant="body1" color="textSecondary" component="p">
-            {chefProfile ? chefProfile : "Chef Profile"}
+          {chefCuisine && (
+            <Chip
+              className={classes.chip}
+              color="primary"
+              variant="large"
+              label={chefCuisine}
+            />
+          )}
+
+          <Typography variant="body" color="textSecondary" component="p">
+            {chefProfile}
           </Typography>
         </CardContent>
       </CardActionArea>
