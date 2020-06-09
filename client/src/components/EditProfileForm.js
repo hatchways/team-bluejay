@@ -12,12 +12,16 @@ import {
 import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as UserContext } from "contexts/AuthContext";
+import { DialogContext } from "contexts/DialogContext";
 import Dropzone from "common/DropZone";
 import API from "api";
 
-const EditProfileForm = ({ onSubmit }) => {
+const EditProfileForm = () => {
+  const classes = useStyles();
+
   let {
     state: { user },
+    updateUser,
   } = useContext(UserContext);
 
   const [cuisines, setCuisines] = useState([]);
@@ -25,7 +29,12 @@ const EditProfileForm = ({ onSubmit }) => {
   const [previewImage, setPreviewImage] = useState("");
   const [chefCuisine, setChefCuisine] = useState(user.chefCuisine);
 
-  const classes = useStyles();
+  const { closeDialog } = useContext(DialogContext);
+
+  const onFormSubmit = (profileData) => {
+    updateUser(profileData);
+    closeDialog();
+  };
 
   useEffect(() => {
     (async function getCuisines() {
@@ -109,7 +118,7 @@ const EditProfileForm = ({ onSubmit }) => {
       </Typography>
 
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onFormSubmit)}
         className={classes.form}
         noValidate
       >
