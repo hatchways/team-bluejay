@@ -49,6 +49,7 @@ class User(db.Model):
 
     def update(self, data):
         for key, item in data.items():
+
             if key == 'password':
                 self.password = self.__generate_hash(item)
             elif key == 'cuisines':

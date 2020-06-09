@@ -66,7 +66,7 @@ class UserResource(Resource):
     def put(self):
         current_userid = get_jwt_identity()
         req_body = request.form.to_dict()
-
+        
         # convert cuisines from stringified json list to a python list
         if req_body.get('cuisines') and isinstance(req_body['cuisines'], str):
             req_body['cuisines'] = json.loads(req_body['cuisines'])
@@ -92,14 +92,14 @@ class UserResource(Resource):
                 "error": "Cannot use this route to update email address."
             }, 403)
 
-        valid_data = None
         try:
-            valid_data = user_schema.load(req_body, partial=True)
+            valid_data = user_schema.load(request.get_json(), partial=True)
+            
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
 
         user = User.get_by_id(current_userid['id'])
-
+        
         user.update(valid_data)
         data = {
             "user": user_schema.dump(user),
