@@ -117,7 +117,16 @@ const Provider = ({ children }) => {
 
   const createMeal = async (meal) => {
     try {
-      await API.post("/meal_items", meal);
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(meal)) {
+        if (key === "image" && value === undefined) continue;
+        else formData.set(key, value);
+      }
+
+      await API.post("/meal_items", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       refreshLoggedInUser();
     } catch (error) {
       handleErrorResponse(error);

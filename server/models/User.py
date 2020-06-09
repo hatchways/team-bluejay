@@ -34,6 +34,10 @@ class User(db.Model):
         self.email = email
         self.password = self.__generate_hash(password)
         self.isChef = False
+        self.aboutMe = ""
+        self.address = ""
+        self.profileImage = ""
+        self.cuisines = []
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
@@ -121,7 +125,7 @@ class UserSchema(Schema):
     profileImage = fields.String()
 
     mealItems = fields.List(fields.Nested(
-        "MealItemSchema", exclude=("userId",)))
+        "MealItemSchema", exclude=("user",)))
     # When schema is from another file it must be in quotes to prevent circular imports. Marshmallow automatically searches other Schemas from other files in this directory and finds one called "CuisineSchema"
     cuisines = fields.List(fields.Nested(
         "CuisineSchema", exclude=("users",)))
