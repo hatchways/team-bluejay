@@ -11,14 +11,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import EditMealButton from "components/EditMealButton";
 import { Context as MealContext } from "contexts/MealContext";
 
-import foodImg from "images/makisushi.jpg";
-
 const MealItem = ({ meal, editable, chefId }) => {
   const classes = useStyles();
   const { checkCartStatus } = useContext(MealContext);
-  // const { image } = meal;
-  // todo: remove when images are implemented
-  const image = foodImg;
 
   return (
     <Card className={classes.root} elevation={2}>
@@ -59,7 +54,7 @@ const MealItem = ({ meal, editable, chefId }) => {
           </Button>
         </CardContent>
       </div>
-      <CardMedia className={classes.image} image={image} />
+      <CardMedia className={classes.image} image={meal.image} />
     </Card>
   );
 };
