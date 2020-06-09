@@ -36,8 +36,7 @@ class MealItemResource(Resource):
         req_data["userId"] = user_id
 
         req_image = get_req_image(request, 'image')
-        if req_data.get('image'):
-            del req_data['image']
+        req_data.pop('image', None)
 
         try:
             meal_data = meal_item_schema.load(req_data)
@@ -68,20 +67,28 @@ class MealItemResource(Resource):
 
     @jwt_required
     def put(self, id):
-        req_body = request.get_json()
+        user_id = get_jwt_identity().get("id")
 
+        meal_item = MealItem.get_by_id(id)
+        if not meal_item or meal_item.userId != user_id:
+            return custom_json_response(
+                {"message": "You do not own that meal"}, 400)
+
+        req_data = request.form.to_dict()
+        req_image = get_req_image(request, 'image')
+
+        if req_image:
+            image_url = upload_picture(
+                req_image, meal_item.id, 'MealID', 'meals')
+
+            if not image_url:
+                return custom_json_response("Error with uploading image", 400)
+
+            req_data['image'] = image_url
         try:
-            valid_data = meal_item_schema.load(req_body, partial=True)
+            valid_data = meal_item_schema.load(req_data, partial=True)
         except ValidationError as err:
             return custom_json_response(err.messages, 400)
-
-        current_user = get_jwt_identity()
-        meal_item = MealItem.get_by_id(id)
-
-        if not meal_item or meal_item.userId != current_user.get("id"):
-            return custom_json_response(
-                {"message": "You do not own that meal"}
-            , 400)
 
         # prevent userId from being edited
         valid_data.pop("userId", None)

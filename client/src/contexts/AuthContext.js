@@ -84,8 +84,8 @@ const Provider = ({ children }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // add date to imageUrl so react sees that the image has changed and will rerender it
-      data.user.profileImage = `${data.user.profileImage}?${Date.now()}`;
+      const cacheBuster = Date.now();
+      data.user.profileImage = `${data.user.profileImage}?${cacheBuster}`;
 
       dispatch({ type: "updateUser", payload: { user: data.user } });
     } catch (error) {
