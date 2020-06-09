@@ -37,7 +37,6 @@ const ChefSearch = ({ coords }) => {
   const searchChefs = async () => {
     try {
       const { data } = await API.get("/chefs", {
-        // chef has stub cuisines of ""Japanese, Chinese, Mexican""
         params: {
           userCuisines: selectedCuisines.join(","),
           userLat: userCoordinates ? userCoordinates.latitude : null,
