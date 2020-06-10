@@ -25,6 +25,8 @@ class User(db.Model):
     profileImage = db.Column(db.Text)
 
     mealItems = db.relationship("MealItem", back_populates="user")
+    notifications = db.relationship(
+        "Notification", back_populates="user")
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
                                back_populates='users'
