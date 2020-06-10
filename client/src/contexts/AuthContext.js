@@ -19,6 +19,16 @@ const reducer = (state, action) => {
     case "refreshUser":
     case "updateUser":
       return { user: action.payload.user, errorMessage: "" };
+    case "becomeChef":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          chefCuisine: action.payload.chefCuisine,
+          isChef: true,
+          mealItems: [action.payload.meal],
+        },
+      };
     case "createMeal":
       return {
         ...state,
@@ -139,6 +149,27 @@ const Provider = ({ children }) => {
     }
   };
 
+  const becomeChef = async (chefCuisineStr, firstMeal) => {
+    try {
+      const formData = new FormData();
+      formData.set("chefCuisine", chefCuisineStr);
+      for (const [key, value] of Object.entries(firstMeal)) {
+        if (key === "image" && value === undefined) continue;
+        else formData.set(key, value);
+      }
+
+      const {
+        data: { meal, chefCuisine },
+      } = await API.post("/chefs", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      dispatch({ type: "becomeChef", payload: { meal, chefCuisine } });
+    } catch (error) {
+      handleErrorResponse(error);
+    }
+  };
+
   const createMeal = async (newMeal) => {
     try {
       const formData = new FormData();
@@ -194,6 +225,7 @@ const Provider = ({ children }) => {
         signOut,
         updateUser,
         refreshLoggedInUser,
+        becomeChef,
         createMeal,
         editMeal,
       }}

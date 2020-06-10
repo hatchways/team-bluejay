@@ -10,11 +10,11 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-from helpers.api import custom_json_response
+from helpers.api import custom_json_response, get_req_image
 from helpers.database import save_to_database
 from sqlalchemy import exc, or_
 from helpers.distance import distance
-from controllers.meal import create_meal
+from controllers.meal import create_meal, become_chef
 import json
 
 user_schema = UserSchema()
@@ -69,9 +69,8 @@ class ChefResource(Resource):
         curr_user.update(updated_chef_fields)
 
         # create meal
-        meal = json.loads(req_data.get('meal'))
-        meal["userId"] = user_id
-        # Todo: figure out how to send an image in this route using postman
-        req_image = meal.get('image')
-        meal.pop('image', None)
-        return create_meal(meal, req_image)
+        req_data.pop("chefCuisine", None)
+        req_data["userId"] = user_id
+        req_image = get_req_image(request, 'image')
+        req_data.pop('image', None)
+        return become_chef(req_data, chef_cuisine, req_image)
