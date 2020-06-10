@@ -37,13 +37,11 @@ const ChefBanner = ({ chef, editable }) => {
           </Typography>
           <Divider classes={{ root: classes.divider }} variant="middle" />
           <Typography>{chef.chefProfile}</Typography>
-          {chef.chefCuisine !== "null" && (
-            <Chip
-              className={classes.cuisineChip}
-              size="medium"
-              label={`${chef.chefCuisine}`}
-            />
-          )}
+          <Chip
+            className={classes.cuisineChip}
+            size="medium"
+            label={`${chef.chefCuisine}`}
+          />
           <Button
             fullWidth
             variant="contained"
