@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Paper, Typography, Box, Button } from "@material-ui/core";
-import {
-  useStripe,
-  useElements,
-  CardElement,
-  CardNumberElement,
-  CardExpiryElement,
-} from "@stripe/react-stripe-js";
+import { Box, Button } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { Context as UserContext } from "contexts/AuthContext";
+import { Context as MealContext } from "contexts/MealContext";
+import { Context as AlertContext } from "contexts/AlertContext";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
 import API from "api/index";
 
@@ -15,9 +13,17 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState("");
-  const [clientSecret, setClientSecret] = useState("");
+  const [clientSecret, setClientSecret] = useState(null);
   const stripe = useStripe();
   const elements = useElements();
+
+  const {
+    state: { user },
+  } = useContext(UserContext);
+  const { emptyCart } = useContext(MealContext);
+  const { alert } = useContext(AlertContext);
+
+  const history = useHistory();
 
   const classes = useStyles();
 
@@ -27,8 +33,7 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
         orderedItems: shoppingCart,
         arrivalDate: arrivalDate,
       });
-      setClientSecret(clientSecret);
-      console.log(data);
+      setClientSecret(data.clientSecret);
     };
 
     getClientSecret();
@@ -41,7 +46,7 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: "Gariel",
+          name: user.name,
         },
       },
     });
@@ -49,10 +54,14 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
     if (payload.error) {
       setError(`Payment failed ${payload.error.message}`);
       setProcessing(false);
+      alert(payload.error.message);
     } else {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
+      emptyCart();
+      history.push("/");
+      alert("Order Placed", "success");
     }
   };
 
@@ -66,7 +75,7 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
         size="large"
         variant="contained"
         color="primary"
-        disabled={!stripe || !arrivalDate}
+        disabled={!stripe || !arrivalDate || !clientSecret}
         onClick={handleSubmit}
       >
         Checkout

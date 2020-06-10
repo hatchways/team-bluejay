@@ -147,7 +147,13 @@ const Provider = ({ children }) => {
 
   return (
     <Context.Provider
-      value={{ state, getMenuItems, checkCartStatus, removeFromCart }}
+      value={{
+        state,
+        getMenuItems,
+        checkCartStatus,
+        removeFromCart,
+        emptyCart,
+      }}
     >
       {children}
       <Dialog

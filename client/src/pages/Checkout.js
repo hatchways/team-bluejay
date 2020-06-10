@@ -4,32 +4,16 @@ import {
   Paper,
   Typography,
   Box,
-  TextField,
-  Select,
-  Input,
-  MenuItem,
-  FormControl,
-  Chip,
   Card,
   CardMedia,
   CardContent,
-  Button,
-  FormHelperText,
 } from "@material-ui/core";
 import { AddCircle, RemoveCircle } from "@material-ui/icons";
 import PaymentForm from "components/PaymentForm";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as MealContext } from "contexts/MealContext";
 import DateFnsUtils from "@date-io/date-fns";
-import {
-  KeyboardDateTimePicker,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-  DatePicker,
-  TimePicker,
-  DateTimePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import foodImg from "images/makisushi.jpg";
 
 const Checkout = () => {
