@@ -29,7 +29,7 @@ import {
 
 import API from "api/index";
 
-const PaymentForm = () => {
+const PaymentForm = ({ shoppingCart }) => {
   const [state, setState] = useState({
     cvc: "",
     expiry: "",
@@ -49,21 +49,16 @@ const PaymentForm = () => {
   const classes = useStyles();
 
   useEffect(() => {
-    window
-      .fetch("/create-payment-intent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
-      })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setClientSecret(data.clientSecret);
+    const getClientSecret = async () => {
+      const { data } = await API.post("/create-payment-intent", {
+        orderedItems: shoppingCart,
       });
-  }, []);
+      setClientSecret(clientSecret);
+      console.log(data);
+    };
+
+    getClientSecret();
+  }, [shoppingCart]);
 
   const handleInputFocus = (e) => {
     const { name } = e.target;
@@ -109,65 +104,7 @@ const PaymentForm = () => {
   return (
     <div id="PaymentForm">
       <Box className={classes.paymentBox}>
-        {/* <Cards
-          cvc={state.cvc}
-          expiry={state.expiry}
-          name={state.name}
-          number={state.number}
-        /> */}
-      </Box>
-      <Box className={classes.paymentBox}>
         <form onSubmit={handleSubmit}>
-          {/* <TextField
-            value={state.number}
-            type="number"
-            name="number"
-            placeholder="Card Number"
-            label="Card Number"
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            variant="outlined"
-            fullWidth
-            required
-            className={classes.cardInput}
-          />
-          <TextField
-            value={state.name}
-            type="text"
-            name="name"
-            label="Cardholder's Name"
-            placeholder="Cardholder's Name"
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            variant="outlined"
-            fullWidth
-            required
-            className={classes.cardInput}
-          />
-          <TextField
-            value={state.expiry}
-            type="number"
-            name="expiry"
-            label="Expiry"
-            placeholder="MM/YY"
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            variant="outlined"
-            required
-            className={classes.cardInput}
-          />
-          <TextField
-            value={state.cvc}
-            type="number"
-            name="cvc"
-            label="cvc"
-            placeholder="CVC"
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            variant="outlined"
-            required
-            className={classes.cardInput}
-          /> */}
           <Button
             type="submit"
             size="large"

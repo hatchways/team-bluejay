@@ -49,22 +49,6 @@ const Checkout = () => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <div className={classes.root}>
         <Grid container>
-          <Grid item xs={12} sm={12} md={8} lg={8}>
-            <Paper className={classes.checkoutPaper} elevation={0}>
-              <Box className={classes.checkoutBox}>
-                <Typography variant="h4" component="h1">
-                  Checkout
-                </Typography>
-              </Box>
-              <hr />
-              <Box className={classes.checkoutBox}>
-                <Typography variant="h6" component="h3">
-                  Enter your payment details
-                </Typography>
-                <PaymentForm />
-              </Box>
-            </Paper>
-          </Grid>
           <Grid item xs={12} sm={12} md={4} lg={4}>
             <Paper className={classes.checkoutPaper} elevation={2}>
               <Box className={classes.yourOrdersHeader}>
@@ -99,6 +83,22 @@ const Checkout = () => {
               </Box>
             </Paper>
           </Grid>
+          <Grid item xs={12} sm={12} md={8} lg={8}>
+            <Paper className={classes.checkoutPaper} elevation={0}>
+              <Box className={classes.checkoutBox}>
+                <Typography variant="h4" component="h1">
+                  Checkout
+                </Typography>
+              </Box>
+              <hr />
+              <Box className={classes.checkoutBox}>
+                <Typography variant="h6" component="h3">
+                  Enter your payment details
+                </Typography>
+                <PaymentForm shoppingCart={shoppingCart} />
+              </Box>
+            </Paper>
+          </Grid>
         </Grid>
       </div>
     </MuiPickersUtilsProvider>
@@ -119,7 +119,7 @@ const OrderCard = ({ mealItem, chefId }) => {
     removeFromCart(mealItem);
   };
   return (
-    <Card className={classes.mealItemCard}>
+    <Card className={classes.mealItemCard} key={id}>
       <CardMedia className={classes.mealItemPic} image={foodImg} title={name} />
       <CardContent className={classes.cardContent}>
         <Typography variant="body1">{name}</Typography>
@@ -177,6 +177,9 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     marginTop: theme.spacing(1),
+    "& div:nth-child(1)": {
+      flexDirection: "row-reverse",
+    },
   },
 }));
 

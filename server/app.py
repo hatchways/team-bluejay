@@ -7,6 +7,7 @@ from api.user_handler import UserResource
 from api.chef_handler import ChefResource
 from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
+from api.StripeResource import StripeResource
 
 
 from flask_jwt_extended import (
@@ -15,16 +16,6 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from models import db
-
-import stripe
-# This is your real test secret API key.
-stripe.api_key = "sk_test_51GrWMVIfJQEqnwoE91kKx1S89IoCd4qVN1MapVNLSblmTUn2gKhTi4g90pj47rDMQxKgzLT4qpeEfxDQUi4H2aHv00uo26QHbB"
-
-def calculate_order_amount(items):
-    # Replace this constant with a calculation of the order's amount
-    # Calculate the order total on the server to prevent
-    # people from directly manipulating the amount on the client
-    return 1400
 
 def create_app():
     app = Flask(__name__)
@@ -60,19 +51,6 @@ def create_app():
     api.add_resource(LoginResource, '/users/login')
     api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
     api.add_resource(LogoutResource, '/users/logout')
-
-    @app.route('/create-payment-intent', methods=['POST'])
-    def create_payment():
-        try:
-            data = json.loads(request.data)
-            intent = stripe.PaymentIntent.create(
-                amount=calculate_order_amount(data['items']),
-                currency='usd'
-            )
-            return jsonify({
-                'clientSecret': intent['client_secret']
-            })
-        except Exception as e:
-            return jsonify(error=str(e)), 403
+    api.add_resource(StripeResource, '/create-payment-intent')
 
     return app
