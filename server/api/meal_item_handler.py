@@ -3,15 +3,13 @@ from models.User import User
 from flask import request, Response, json
 from flask_restful import Resource
 from helpers.api import custom_json_response
-from flask_jwt_extended import (
-    get_jwt_identity,
-    jwt_required
-)
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
 from helpers.database import save_to_database
 from helpers.api import get_req_image
 from helpers.image_uploads import upload_picture
 meal_item_schema = MealItemSchema()
+from controllers.meal import create_meal, edit_meal
 
 
 class MealItemResource(Resource):
@@ -38,32 +36,7 @@ class MealItemResource(Resource):
         req_image = get_req_image(request, 'image')
         req_data.pop('image', None)
 
-        try:
-            meal_data = meal_item_schema.load(req_data)
-        except ValidationError as err:
-            return custom_json_response(err.messages, 400)
-
-        new_meal = MealItem(**meal_data)
-        new_meal.save()
-
-        if req_image:
-            s3_file_path = f'meal/{new_meal.id}/meal_pic'
-            image_url = upload_picture(req_image, s3_file_path)
-
-            if not image_url:
-                return custom_json_response("Error with uploading image", 400)
-
-            new_meal.update({'image': image_url})
-
-        curr_user = User.get_by_id(user_id)
-        curr_user.chef_flag_true()
-        curr_user.save()
-
-        data = {
-            "message": "Created",
-            "meal": meal_item_schema.dump(new_meal)
-        }
-        return custom_json_response(data, 201)
+        return create_meal(req_data, req_image)
 
     @jwt_required
     def put(self, id):
@@ -74,27 +47,6 @@ class MealItemResource(Resource):
             return custom_json_response(
                 {"message": "You do not own that meal"}, 400)
 
-        req_data = request.form.to_dict()
+        meal = request.form.to_dict()
         req_image = get_req_image(request, 'image')
-
-        if req_image:
-            s3_file_path = f'meal/{meal_item.id}/meal_pic'
-            image_url = upload_picture(req_image, s3_file_path)
-
-            if not image_url:
-                return custom_json_response("Error with uploading image", 400)
-
-            req_data['image'] = image_url
-        try:
-            valid_data = meal_item_schema.load(req_data, partial=True)
-        except ValidationError as err:
-            return custom_json_response(err.messages, 400)
-
-        # prevent userId from being edited
-        valid_data.pop("userId", None)
-        meal_item.update(valid_data)
-        data = {
-            "meal": meal_item_schema.dump(meal_item),
-            "message": "Succesfully Edited."
-        }
-        return custom_json_response(data, 200)
+        return edit_meal(meal, meal_item, req_image)

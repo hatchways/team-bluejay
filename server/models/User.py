@@ -44,10 +44,6 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
 
-    def chef_flag_true(self):
-        self.isChef = True
-        return
-
     def save(self):
         db.session.add(self)
         db.session.commit()
