@@ -24,7 +24,9 @@ class StripeResource(Resource):
             return jsonify({
                 'clientSecret': intent['client_secret'],
                 'totalAmount': total_amount_cents / 100,
-                'arrivalDate': data.get("arrivalDate")
+                'arrivalDate': data.get("arrivalDate"),
+                'chefId': data.get("chefId"),
+                'userId': data.get("userId")
             })
         except Exception as e:
             return jsonify(error=str(e)), 403

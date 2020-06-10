@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { Context as UserContext } from "contexts/AuthContext";
 import { Context as MealContext } from "contexts/MealContext";
@@ -9,7 +9,7 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
 import API from "api/index";
 
-const PaymentForm = ({ shoppingCart, arrivalDate }) => {
+const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState("");
@@ -20,6 +20,7 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
   const {
     state: { user },
   } = useContext(UserContext);
+
   const { emptyCart } = useContext(MealContext);
   const { alert } = useContext(AlertContext);
 
@@ -32,11 +33,15 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
       const { data } = await API.post("/create-payment-intent", {
         orderedItems: shoppingCart,
         arrivalDate: arrivalDate,
+        chefId: chefId,
+        userId: user.id,
       });
       setClientSecret(data.clientSecret);
+      console.log(data);
     };
-
-    getClientSecret();
+    if (shoppingCart.length && arrivalDate) {
+      getClientSecret();
+    }
   }, [shoppingCart, arrivalDate]);
 
   const handleSubmit = async (e) => {
@@ -65,10 +70,13 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
     }
   };
 
-  return (
+  return arrivalDate && shoppingCart.length ? (
     <>
       <Box className={classes.paymentBox}>
-        <CardSection />
+        <Typography variant="h5" className={classes.paymentDetails}>
+          Enter your payment details
+        </Typography>
+        <CardSection className={classes.paymentDetails} />
       </Box>
       <Button
         type="submit"
@@ -78,13 +86,25 @@ const PaymentForm = ({ shoppingCart, arrivalDate }) => {
         disabled={!stripe || !arrivalDate || !clientSecret}
         onClick={handleSubmit}
       >
-        Checkout
+        Confirm Checkout
       </Button>
     </>
+  ) : (
+    <Typography variant="h5" className={classes.message}>
+      {shoppingCart.length
+        ? "Choose an arrival date for your order"
+        : "Your cart is empty"}
+    </Typography>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
+  paymentDetails: {
+    margin: theme.spacing(2, 0, 2, 0),
+  },
+  message: {
+    color: theme.palette.error.main,
+  },
   paymentBox: {
     [theme.breakpoints.up("md")]: {
       maxWidth: "60%",
@@ -118,14 +138,14 @@ const CARD_ELEMENT_OPTIONS = {
       color: "#32325d",
       fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
       fontSmoothing: "antialiased",
-      fontSize: "16px",
+      fontSize: "18px",
       "::placeholder": {
         color: "#aab7c4",
       },
     },
     invalid: {
-      color: "#fa755a",
-      iconColor: "#fa755a",
+      color: "#d8000c",
+      iconColor: "#d8000c",
     },
   },
 };

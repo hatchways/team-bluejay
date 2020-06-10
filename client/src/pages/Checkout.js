@@ -45,25 +45,7 @@ const Checkout = () => {
                   <OrderCard key={item.id} mealItem={item} chefId={chefId} />
                 ))}
               </Box>
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="h5" className={classes.arrivalTime}>
-                  Arrival Time:
-                </Typography>
-                <DateTimePicker
-                  clearable
-                  variant="inline"
-                  minutesStep={30}
-                  place
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  onError={console.log}
-                  disablePast
-                  minDate={Date.now()}
-                  format="MM/dd/yyyy HH:mm a"
-                  className={classes.arrivalTime}
-                  helperText={selectedDate ? "" : "Please choose a Date & Time"}
-                />
-              </Box>
+
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h4" display="inline-flex">
                   Total :
@@ -83,13 +65,30 @@ const Checkout = () => {
               </Box>
               <hr />
               <Box className={classes.checkoutBox}>
-                <Typography variant="h6" component="h3">
-                  Enter your payment details
+                <Typography variant="h5" className={classes.arrivalTime}>
+                  Arrival Time:
                 </Typography>
+                <DateTimePicker
+                  clearable
+                  variant="inline"
+                  minutesStep={30}
+                  place
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  onError={console.log}
+                  disablePast
+                  minDate={Date.now()}
+                  format="MM/dd/yyyy HH:mm a"
+                  className={classes.arrivalTime}
+                  helperText={selectedDate ? "" : "Please choose a Date & Time"}
+                />
+              </Box>
+
+              <Box className={classes.checkoutBox}>
                 <PaymentForm
                   shoppingCart={shoppingCart}
                   arrivalDate={selectedDate}
-                  orderFrom={chefId}
+                  chefId={chefId}
                 />
               </Box>
             </Paper>
@@ -128,7 +127,8 @@ const OrderCard = ({ mealItem, chefId }) => {
 
 const useStyles = makeStyles((theme) => ({
   arrivalTime: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(0, 3, 0, 0),
+    display: "inline-block",
   },
   cardContent: {
     color: theme.palette.secondary.main,
