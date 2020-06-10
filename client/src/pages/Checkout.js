@@ -29,6 +29,8 @@ const Checkout = () => {
     0
   );
 
+  const formattedPrice = (Math.round(totalPrice * 100) / 100).toFixed(2);
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <div className={classes.root}>

@@ -1,32 +1,71 @@
-import React, { useContext } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useEffect, useContext } from "react";
+import { useForm } from "react-hook-form";
 import {
   Typography,
   TextField,
-  Select,
-  Input,
-  InputLabel,
-  MenuItem,
   FormControl,
-  Chip,
   Button,
   FormHelperText,
+  Avatar,
+  Box,
 } from "@material-ui/core";
+import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as UserContext } from "contexts/AuthContext";
+import { DialogContext } from "contexts/DialogContext";
+import Dropzone from "common/DropZone";
+import API from "api";
 
-const EditProfileForm = ({ onSubmit }) => {
+const EditProfileForm = () => {
   const classes = useStyles();
+
   let {
     state: { user },
+    updateUser,
   } = useContext(UserContext);
 
-  const { register, handleSubmit, errors, control } = useForm({
+  const [cuisines, setCuisines] = useState([]);
+  const [profileImage, setProfileImage] = useState();
+  const [previewImage, setPreviewImage] = useState("");
+  const [chefCuisine, setChefCuisine] = useState(user.chefCuisine);
+
+  const { closeDialog } = useContext(DialogContext);
+
+  const onFormSubmit = (profileData) => {
+    updateUser(profileData);
+    closeDialog();
+  };
+
+  useEffect(() => {
+    (async function getCuisines() {
+      const { data: allCuisines } = await API.get("/cuisines");
+      setCuisines(allCuisines);
+    })();
+  }, []);
+
+  const { register, handleSubmit, errors, setValue } = useForm({
     reValidateMode: "onChange",
     validateCriteriaMode: "all",
   });
 
-  // TODO: Add validation to street, address, location, city, state, country, zipcode fields to ensure it is a proper address on google maps
+  const [selectedCuisines, setSelectedCuisines] = useState(
+    user.cuisines.map((cuisine) => cuisine.id)
+  );
+
+  useEffect(() => {
+    register("cuisines");
+    register("chefCuisine");
+    register("profileImage");
+  });
+  useEffect(() => {
+    setValue(
+      "cuisines",
+      selectedCuisines.map((cuisineId) => ({ id: cuisineId }))
+    );
+    setValue("chefCuisine", chefCuisine);
+    setValue("profileImage", profileImage);
+  });
+
   const fields = [
     {
       component: TextField,
@@ -72,26 +111,34 @@ const EditProfileForm = ({ onSubmit }) => {
     return user.isChef ? true : field.name !== "chefProfile";
   });
 
-  const cuisines = [
-    "Japanese",
-    "Martian",
-    "American",
-    "Chinese",
-    "Middle Eastern",
-  ];
-
   return (
     <>
       <Typography component="h1" variant="h5">
         Edit your profile
       </Typography>
-      {/* TODO:  add fullWidth to all input components (so that they expand the whole dialog)
-                 use Grids for some of the components so that entire form width will expand equally the width of the dialog*/}
+
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onFormSubmit)}
         className={classes.form}
         noValidate
       >
+        <Avatar
+          src={
+            previewImage
+              ? previewImage
+              : user.profileImage
+              ? user.profileImage
+              : ""
+          }
+          alt="profile"
+          className={classes.avatar}
+        />
+
+        <Dropzone
+          setImageFile={setProfileImage}
+          setPreviewImage={setPreviewImage}
+        />
+
         {fields.map(
           (
             {
@@ -136,51 +183,51 @@ const EditProfileForm = ({ onSubmit }) => {
             </FormControl>
           )
         )}
-        {/* TODO: Add option to add customized cuisines */}
-        <div>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-mutiple-chip-label">
-              Favorite Cuisines
-            </InputLabel>
-            <Controller
-              as={
-                <Select
-                  labelId="cuisines-label"
-                  id="cuisines"
-                  multiple
-                  input={<Input id="select-multiple-chip" />}
-                  renderValue={(selected) => (
-                    <div className={classes.chips}>
-                      {selected.map((value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          className={classes.chip}
-                          color="primary"
-                        />
-                      ))}
-                    </div>
-                  )}
-                  MenuProps={MenuProps}
-                >
-                  {cuisines.map((cuisine) => (
-                    <MenuItem
-                      key={cuisine}
-                      value={cuisine}
-                      className={classes.menuItem}
-                    >
-                      {cuisine}
-                    </MenuItem>
-                  ))}
-                </Select>
-              }
-              name="cuisines"
-              rules={{ required: "Please list at least one cuisine" }}
-              control={control}
-              defaultValue={user.cuisines}
-            />
-          </FormControl>
-        </div>
+        <Typography component="h6" variant="h6">
+          Favorite Cuisines:
+        </Typography>
+        <Box>
+          {cuisines.map((cuisine) => {
+            const isSelected = selectedCuisines.includes(cuisine.id);
+            return (
+              <Button
+                className={classes.button}
+                color={isSelected ? "primary" : "default"}
+                variant="contained"
+                key={cuisine.id}
+                onClick={() =>
+                  isSelected
+                    ? setSelectedCuisines(
+                        selectedCuisines.filter(
+                          (cuisineId) => cuisineId !== cuisine.id
+                        )
+                      )
+                    : setSelectedCuisines([...selectedCuisines, cuisine.id])
+                }
+              >
+                {cuisine.name}
+                {isSelected && <Clear />}
+              </Button>
+            );
+          })}
+        </Box>
+        {user.isChef && (
+          <Box>
+            <Typography component="h6" variant="h6">
+              Chef Cuisine
+            </Typography>
+            {cuisines.map((cuisine) => (
+              <Button
+                className={classes.button}
+                color={cuisine.name === chefCuisine ? "primary" : "default"}
+                variant="contained"
+                onClick={() => setChefCuisine(cuisine.name)}
+              >
+                {cuisine.name}
+              </Button>
+            ))}
+          </Box>
+        )}
         <div>
           <Button
             type="submit"
@@ -197,6 +244,9 @@ const EditProfileForm = ({ onSubmit }) => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(1),
+  },
   form: {
     marginTop: theme.spacing(1),
     "& > *": {
@@ -206,16 +256,6 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
     padding: theme.spacing(2, 10),
-  },
-  shortWidth: {
-    [theme.breakpoints.up("md")]: {
-      width: "25ch",
-    },
-  },
-  mediumWidth: {
-    [theme.breakpoints.up("md")]: {
-      width: "50ch",
-    },
   },
   largeWidth: {
     [theme.breakpoints.up("md")]: {
@@ -227,27 +267,13 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
     maxWidth: 300,
   },
-  chips: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  chip: {
-    margin: 2,
-  },
-  menuItem: {
-    fontWeight: theme.typography.fontWeightRegular,
+  avatar: {
+    width: theme.spacing(25),
+    height: theme.spacing(25),
+    border: "solid white 5px",
+    boxShadow: "0 0 10px lightgrey",
+    marginBottom: theme.spacing(3),
   },
 }));
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
 
 export default EditProfileForm;

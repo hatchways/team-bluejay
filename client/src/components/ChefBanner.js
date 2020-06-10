@@ -33,10 +33,15 @@ const ChefBanner = ({ chef, editable }) => {
         <Grid item className={classes.chefDetails}>
           <Typography variant="h6">{chef.name}</Typography>
           <Box color="text.secondary">
-            <Typography>{chef.location}</Typography>
+            <Typography>{chef.generalLocation}</Typography>
           </Box>
           <Divider classes={{ root: classes.divider }} variant="middle" />
-          <Typography>{chef.bio}</Typography>
+          <Typography>{chef.chefProfile}</Typography>
+          <Chip
+            className={classes.cuisineChip}
+            size="large"
+            label={`${chef.chefCuisine}`}
+          />
           <Button
             fullWidth
             variant="contained"
@@ -53,6 +58,11 @@ const ChefBanner = ({ chef, editable }) => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  cuisineChip: {
+    color: theme.palette.primary.main,
+    backgroundColor: "transparent",
+    fontSize: "1.5rem",
+  },
   root: {
     minHeight: theme.spacing(80),
     backgroundColor: "#fff",
