@@ -38,7 +38,7 @@ const Checkout = () => {
     state: { shoppingCart, chefId },
   } = useContext(MealContext);
 
-  const [selectedDate, handleDateChange] = useState(new Date());
+  const [selectedDate, handleDateChange] = useState(null);
 
   const totalPrice = shoppingCart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -48,7 +48,7 @@ const Checkout = () => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <div className={classes.root}>
-        <Grid container>
+        <Grid container className={classes.container}>
           <Grid item xs={12} sm={12} md={4} lg={4}>
             <Paper className={classes.checkoutPaper} elevation={2}>
               <Box className={classes.yourOrdersHeader}>
@@ -61,16 +61,23 @@ const Checkout = () => {
                   <OrderCard key={item.id} mealItem={item} chefId={chefId} />
                 ))}
               </Box>
-              <Box display="inline-flex">
-                <Typography variant="h5">Arrival Time:</Typography>
-                <KeyboardDateTimePicker
+              <Box display="flex" justifyContent="space-between">
+                <Typography variant="h5" className={classes.arrivalTime}>
+                  Arrival Time:
+                </Typography>
+                <DateTimePicker
+                  clearable
                   variant="inline"
                   minutesStep={30}
+                  place
                   value={selectedDate}
                   onChange={handleDateChange}
                   onError={console.log}
                   disablePast
+                  minDate={Date.now()}
                   format="MM/dd/yyyy HH:mm a"
+                  className={classes.arrivalTime}
+                  helperText={selectedDate ? "" : "Please choose a Date & Time"}
                 />
               </Box>
               <Box display="flex" justifyContent="space-between">
@@ -95,7 +102,11 @@ const Checkout = () => {
                 <Typography variant="h6" component="h3">
                   Enter your payment details
                 </Typography>
-                <PaymentForm shoppingCart={shoppingCart} />
+                <PaymentForm
+                  shoppingCart={shoppingCart}
+                  arrivalDate={selectedDate}
+                  orderFrom={chefId}
+                />
               </Box>
             </Paper>
           </Grid>
@@ -132,6 +143,9 @@ const OrderCard = ({ mealItem, chefId }) => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  arrivalTime: {
+    margin: theme.spacing(2),
+  },
   cardContent: {
     color: theme.palette.secondary.main,
     "& p": {
@@ -163,6 +177,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 6, 3, 6),
   },
   checkoutPaper: {
+    borderBottom: `1px solid ${theme.palette.primary.main}`,
     margin: theme.spacing(0, 2, 0, 2),
     "& hr": {
       border: `1px solid ${theme.palette.primary.main}`,
@@ -175,11 +190,11 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: "bold",
     },
   },
+  container: {
+    flexDirection: "row-reverse",
+  },
   root: {
     marginTop: theme.spacing(1),
-    "& div:nth-child(1)": {
-      flexDirection: "row-reverse",
-    },
   },
 }));
 

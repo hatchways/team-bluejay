@@ -1,24 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Cards from "react-credit-cards";
-import "react-credit-cards/es/styles-compiled.css";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Box,
-  TextField,
-  Select,
-  Input,
-  MenuItem,
-  FormControl,
-  Chip,
-  Card,
-  CardMedia,
-  CardContent,
-  Button,
-  FormHelperText,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Box, Button } from "@material-ui/core";
 import {
   useStripe,
   useElements,
@@ -29,19 +11,10 @@ import {
 
 import API from "api/index";
 
-const PaymentForm = ({ shoppingCart, orderDate }) => {
-  const [state, setState] = useState({
-    cvc: "",
-    expiry: "",
-    focus: "",
-    name: "",
-    number: "",
-  });
-
+const PaymentForm = ({ shoppingCart, arrivalDate }) => {
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState("");
-  const [disabled, setDisabled] = useState(true);
   const [clientSecret, setClientSecret] = useState("");
   const stripe = useStripe();
   const elements = useElements();
@@ -52,36 +25,18 @@ const PaymentForm = ({ shoppingCart, orderDate }) => {
     const getClientSecret = async () => {
       const { data } = await API.post("/create-payment-intent", {
         orderedItems: shoppingCart,
+        arrivalDate: arrivalDate,
       });
       setClientSecret(clientSecret);
       console.log(data);
     };
 
     getClientSecret();
-  }, [shoppingCart]);
-
-  const handleInputFocus = (e) => {
-    const { name } = e.target;
-    setState({ ...state, focus: name });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (
-      (name === "expiry" && value.length > 4) ||
-      (name === "cvc" && value.length > 4)
-    ) {
-      return;
-    } else {
-      setState({ ...state, [name]: value });
-    }
-  };
+  }, [shoppingCart, arrivalDate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // to do api call
     setProcessing(true);
-    console.log("stripe");
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
@@ -102,22 +57,21 @@ const PaymentForm = ({ shoppingCart, orderDate }) => {
   };
 
   return (
-    <div id="PaymentForm">
+    <>
       <Box className={classes.paymentBox}>
-        <form onSubmit={handleSubmit}>
-          <Button
-            type="submit"
-            size="large"
-            variant="contained"
-            color="primary"
-            disabled={!stripe}
-          >
-            Checkout
-          </Button>
-        </form>
+        <CardSection />
       </Box>
-      <CardSection onChange={() => alert("hi")} />
-    </div>
+      <Button
+        type="submit"
+        size="large"
+        variant="contained"
+        color="primary"
+        disabled={!stripe || !arrivalDate}
+        onClick={handleSubmit}
+      >
+        Checkout
+      </Button>
+    </>
   );
 };
 
@@ -170,7 +124,6 @@ const CARD_ELEMENT_OPTIONS = {
 function CardSection() {
   return (
     <label>
-      Card details
       <CardElement options={CARD_ELEMENT_OPTIONS} />
     </label>
   );
