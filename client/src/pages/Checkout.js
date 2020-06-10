@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -13,6 +13,7 @@ import PaymentForm from "components/PaymentForm";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as MealContext } from "contexts/MealContext";
 import DateFnsUtils from "@date-io/date-fns";
+import { fromUnixTime, format } from "date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import foodImg from "images/makisushi.jpg";
 
@@ -28,6 +29,17 @@ const Checkout = () => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
+  useEffect(() => {
+    if (selectedDate) {
+      console.log(
+        "Selected Date: ",
+        format(selectedDate, "MM/dd/yyyy HH:mm a")
+      );
+    }
+  }, [selectedDate]);
+
+  console.log("Today", format(Date.now(), "MM/dd/yyyy HH:mm a"));
 
   const formattedPrice = (Math.round(totalPrice * 100) / 100).toFixed(2);
 
