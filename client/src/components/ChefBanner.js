@@ -28,7 +28,7 @@ const ChefBanner = ({ chef, editable }) => {
     >
       <Paper className={classes.paper} elevation={2}>
         <Grid item className={classes.image}>
-          <Avatar className={classes.avatar} src={chef.avatarUrl} />
+          <Avatar className={classes.avatar} src={chef.profileImage} />
         </Grid>
         <Grid item className={classes.chefDetails}>
           <Typography variant="h6">{chef.name}</Typography>
