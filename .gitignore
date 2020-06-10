@@ -31,8 +31,8 @@ instance/
 
 # env vars
 .env
-server/.env
 client/.env
+server/.env
 
 # SQL database migrations folder
 migrations
