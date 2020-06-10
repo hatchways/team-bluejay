@@ -123,24 +123,32 @@ const CreateMealForm = ({ meal }) => {
         className={classes.form}
         noValidate
       >
-        <Typography variant="h5" component="h3">
-          Select a Cuisine for your Chef Profile
-        </Typography>
-        <Box display="inline" wrap="flex-wrap">
-          {cuisines.map((c, i) => (
-            <Button
-              color={c.name === selectedCuisine ? "primary" : "default"}
-              variant="contained"
-              className={classes.cuisineButton}
-              onClick={() => setSelectedCuisine(c.name)}
-              key={i}
-            >
-              {c.name}
-            </Button>
-          ))}
-        </Box>
+        {!user.isChef && (
+          <>
+            <Typography variant="h5" component="h3">
+              Select a Cuisine for your Chef Profile
+            </Typography>
+            <Box display="inline" wrap="flex-wrap">
+              {cuisines.map((c, i) => (
+                <Button
+                  color={c.name === selectedCuisine ? "primary" : "default"}
+                  variant="contained"
+                  className={classes.cuisineButton}
+                  onClick={() => setSelectedCuisine(c.name)}
+                  key={i}
+                >
+                  {c.name}
+                </Button>
+              ))}
+            </Box>
+          </>
+        )}
         <Typography variant="h5" component="h3" className={classes.mealTitle}>
-          Add your first meal
+          {!user.isChef
+            ? "Add your first meal"
+            : mealId
+            ? "Edit your meal"
+            : "Add a meal"}
         </Typography>
         <img
           className={classes.image}
