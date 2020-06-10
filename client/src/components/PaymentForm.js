@@ -29,7 +29,7 @@ import {
 
 import API from "api/index";
 
-const PaymentForm = ({ shoppingCart }) => {
+const PaymentForm = ({ shoppingCart, orderDate }) => {
   const [state, setState] = useState({
     cvc: "",
     expiry: "",
