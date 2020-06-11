@@ -69,53 +69,40 @@ const CreateMealForm = ({ meal }) => {
       name: "name",
       label: "Meal Name",
       defaultValue: meal.name,
-      validation: {
-        required: "Meal Name is required.",
-      },
+      type: "text",
+      required: true,
     },
     {
       name: "price",
       label: "Price",
       defaultValue: meal.price,
-      validation: {
-        required: "Price is required.",
-        pattern: {
-          value: /\d+/,
-          message: "Please supply a proper price",
-        },
-      },
+      type: "number",
+      required: true,
     },
     {
       name: "servings",
       label: "Servings",
       defaultValue: meal.servings,
-      validation: {
-        required: "Servings is required.",
-        pattern: {
-          value: /^\d+$/,
-          message: "Please supply a proper serving size",
-        },
-      },
+      type: "number",
+      required: true,
     },
     {
       name: "ingredients",
       label: "Ingredients",
       defaultValue: meal.ingredients,
+      type: "text",
     },
     {
       name: "required_items",
       label: "Required Items",
       defaultValue: meal.required_items,
+      type: "text",
     },
   ];
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onFormSubmit)}
-        className={classes.form}
-        noValidate
-      >
+      <form onSubmit={handleSubmit(onFormSubmit)} className={classes.form}>
         {!user.isChef && (
           <>
             <Typography variant="h5" component="h3">
@@ -152,34 +139,20 @@ const CreateMealForm = ({ meal }) => {
         <Dropzone setImageFile={setImage} setPreviewImage={setPreviewImage} />
 
         {fields.map(
-          (
-            {
-              name,
-              label,
-              defaultValue = "",
-              validation,
-              multiline = false,
-              rows,
-            },
-            index
-          ) => (
+          ({ name, label, defaultValue = "", required, type }, index) => (
             <FormControl key={index}>
               <TextField
                 variant="outlined"
                 margin="normal"
-                required
+                required={required}
                 fullWidth
                 id={name}
                 className={classes.largeWidth}
                 label={label}
                 name={name}
-                autoComplete={name}
-                type="text"
-                multiline={multiline}
-                rows={rows}
+                type={type}
                 defaultValue={defaultValue}
-                autoFocus={index === 0}
-                inputRef={register(validation)}
+                inputRef={register()}
               />
               {errors[name] && (
                 <FormHelperText
