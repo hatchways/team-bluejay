@@ -15,6 +15,10 @@ class NotificationResource(Resource):
     @jwt_required
     def get(self):
         user_id = get_jwt_identity().get('id')
-        all_notifications = Notification.get_by_userId(user_id)
-        ser_notifications = notifications_schema.dump(all_notifications)
-        return custom_json_response(ser_notifications, 200)
+        #all_notifications = Notification.get_by_userId(user_id)
+        all_notifications = Notification.get_by_userId(1)
+        data = {
+            "message": "Notifications received",
+            "notifications": notifications_schema.dump(all_notifications)
+        }
+        return custom_json_response(data, 200)
