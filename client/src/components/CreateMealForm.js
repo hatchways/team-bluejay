@@ -98,13 +98,6 @@ const CreateMealForm = ({ meal }) => {
       },
     },
     {
-      name: "description",
-      label: "Description",
-      defaultValue: meal.description,
-      multiline: true,
-      rows: 2,
-    },
-    {
       name: "ingredients",
       label: "Ingredients",
       defaultValue: meal.ingredients,

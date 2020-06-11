@@ -14,18 +14,16 @@ class MealItem(db.Model):
     name = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     servings = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.Text, nullable=True)
     ingredients = db.Column(db.String(128), nullable=True)
     required_items = db.Column(db.String(128), nullable=True)
     image = db.Column(db.Text)
     user = db.relationship("User", back_populates="mealItems")
 
-    def __init__(self, userId, name, price, servings, description="", ingredients="", required_items="", image=""):
+    def __init__(self, userId, name, price, servings, ingredients="", required_items="", image=""):
         self.userId = userId
         self.name = name
         self.price = price
         self.servings = servings
-        self.description = description
         self.ingredients = ingredients
         self.required_items = required_items
         self.image = image
@@ -61,7 +59,6 @@ class MealItemSchema(Schema):
     name = fields.Str(required=True)
     price = fields.Float(required=True)
     servings = fields.Int(required=True)
-    description = fields.Str()
     ingredients = fields.Str()
     required_items = fields.Str()
     image = fields.String()
