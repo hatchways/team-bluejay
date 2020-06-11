@@ -13,6 +13,7 @@ import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as UserContext } from "contexts/AuthContext";
 import { DialogContext } from "contexts/DialogContext";
+import { CuisineContext } from "contexts/CuisineContext";
 import Dropzone from "common/DropZone";
 import API from "api";
 
@@ -23,8 +24,8 @@ const EditProfileForm = () => {
     state: { user },
     updateUser,
   } = useContext(UserContext);
+  const { availableCuisines } = useContext(CuisineContext);
 
-  const [cuisines, setCuisines] = useState([]);
   const [profileImage, setProfileImage] = useState();
   const [previewImage, setPreviewImage] = useState("");
   const [chefCuisine, setChefCuisine] = useState(user.chefCuisine);
@@ -37,13 +38,6 @@ const EditProfileForm = () => {
     updateUser(profileData);
     closeDialog();
   };
-
-  useEffect(() => {
-    (async function getCuisines() {
-      const { data: allCuisines } = await API.get("/cuisines");
-      setCuisines(allCuisines);
-    })();
-  }, []);
 
   const { register, handleSubmit, errors, setValue } = useForm({
     reValidateMode: "onChange",
@@ -182,7 +176,7 @@ const EditProfileForm = () => {
               Favorite Cuisines:
             </Typography>
             <Box>
-              {cuisines.map((cuisine) => {
+              {availableCuisines.map((cuisine) => {
                 const isSelected = selectedCuisines.includes(cuisine.id);
                 return (
                   <Button
@@ -213,7 +207,7 @@ const EditProfileForm = () => {
             <Typography component="h6" variant="h6">
               Chef Cuisine
             </Typography>
-            {cuisines.map((cuisine, i) => (
+            {availableCuisines.map((cuisine, i) => (
               <Button
                 className={classes.button}
                 color={cuisine.name === chefCuisine ? "primary" : "default"}

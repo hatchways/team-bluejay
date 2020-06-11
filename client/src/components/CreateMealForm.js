@@ -14,6 +14,7 @@ import Dropzone from "common/DropZone";
 import API from "api";
 import imagePlaceholder from "images/imagePlaceholder.jpg";
 import { Context as AuthContext } from "contexts/AuthContext";
+import { CuisineContext } from "contexts/CuisineContext";
 
 const CreateMealForm = ({ meal }) => {
   const mealId = meal ? meal.id : null;
@@ -25,19 +26,17 @@ const CreateMealForm = ({ meal }) => {
     state: { user },
   } = useContext(AuthContext);
 
-  const [cuisines, setCuisines] = useState([]);
+  const { availableCuisines } = useContext(CuisineContext);
+
   const [selectedCuisine, setSelectedCuisine] = useState(null);
 
   useEffect(() => {
-    (async function getCuisines() {
-      const { data: allCuisines } = await API.get("/cuisines");
-      setCuisines(allCuisines);
-      const randomCuisine =
-        allCuisines[Math.floor(Math.random() * allCuisines.length)].name;
-      const defaultCuisine = user.chefCuisine || randomCuisine;
-      setSelectedCuisine(defaultCuisine);
-    })();
-  }, [user.chefCuisine]);
+    const randomCuisine =
+      availableCuisines[Math.floor(Math.random() * availableCuisines.length)]
+        .name;
+    const defaultCuisine = user.chefCuisine || randomCuisine;
+    setSelectedCuisine(defaultCuisine);
+  }, []);
 
   const { closeDialog } = useContext(DialogContext);
 
@@ -109,7 +108,7 @@ const CreateMealForm = ({ meal }) => {
               Select a Cuisine for your Chef Profile
             </Typography>
             <Box display="inline" wrap="flex-wrap">
-              {cuisines.map((c, i) => (
+              {availableCuisines.map((c, i) => (
                 <Button
                   color={c.name === selectedCuisine ? "primary" : "default"}
                   variant="contained"
