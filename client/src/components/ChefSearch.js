@@ -73,8 +73,8 @@ const ChefSearch = ({ coords }) => {
             Available Chefs:
           </Typography>
           <Box className={classes.chefTileArea}>
-            {chefs.map((chef) => (
-              <CustomCard chef={chef} />
+            {chefs.map((chef, i) => (
+              <CustomCard chef={chef} key={i} />
             ))}
           </Box>
         </Box>
@@ -107,12 +107,12 @@ const CustomCard = ({ chef }) => {
             <Chip
               className={classes.chip}
               color="primary"
-              variant="large"
+              variant="default"
               label={chefCuisine}
             />
           )}
 
-          <Typography variant="body" color="textSecondary" component="p">
+          <Typography variant="body1" color="textSecondary" component="p">
             {chefProfile}
           </Typography>
         </CardContent>

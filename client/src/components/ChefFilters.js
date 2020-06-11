@@ -117,7 +117,7 @@ const ChefFilters = ({
           <form className={classes.locationBox} onSubmit={handleSubmit}>
             <LocationOn
               className={classes.locationIcon}
-              color={userCoordinates ? "primary" : "lightgrey"}
+              color={userCoordinates ? "primary" : "error"}
               onClick={toggleLocation}
             />
             <Input
@@ -135,12 +135,12 @@ const ChefFilters = ({
             Cuisine:
           </Typography>
           <Box className={classes.selectedCuisines}>
-            {selectedCuisines.map((cuisine) => (
+            {selectedCuisines.map((cuisine, i) => (
               <Button
                 className={classes.button}
                 color="primary"
                 variant="contained"
-                key={cuisine}
+                key={i}
               >
                 {cuisine}
                 <Clear onClick={() => removeSelectedCuisine(cuisine)} />
@@ -152,12 +152,12 @@ const ChefFilters = ({
           <Box className={classes.cuisineTypes}>
             {cuisineTypes
               .filter((cuisine) => !selectedCuisines.includes(cuisine))
-              .map((cuisine) => (
+              .map((cuisine, i) => (
                 <Button
                   className={classes.button}
                   color="default"
                   variant="contained"
-                  key={cuisine}
+                  key={i}
                   onClick={() => addSelectedCuisine(cuisine)}
                 >
                   {cuisine}
@@ -188,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
   locationBox: {
     width: "100%",
     display: "inline-block",
-    border: `1px solid ${"lightgrey"}`,
+    border: "1px solid lightgrey",
     "& div": {
       width: "90%",
     },

@@ -28,18 +28,18 @@ const ChefBanner = ({ chef, editable }) => {
     >
       <Paper className={classes.paper} elevation={2}>
         <Grid item className={classes.image}>
-          <Avatar className={classes.avatar} src={chef.profileImage} />
+          <Avatar className={classes.avatar} src={chef.profileImage || ""} />
         </Grid>
         <Grid item className={classes.chefDetails}>
           <Typography variant="h6">{chef.name}</Typography>
-          <Box color="text.secondary">
-            <Typography>{chef.generalLocation}</Typography>
-          </Box>
+          <Typography variant="subtitle1" className={classes.location}>
+            {chef.generalLocation}
+          </Typography>
           <Divider classes={{ root: classes.divider }} variant="middle" />
           <Typography>{chef.chefProfile}</Typography>
           <Chip
             className={classes.cuisineChip}
-            size="large"
+            size="medium"
             label={`${chef.chefCuisine}`}
           />
           <Button
@@ -108,6 +108,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(3, 0),
     padding: theme.spacing(2),
+  },
+  location: {
+    color: "darkgrey",
   },
 }));
 

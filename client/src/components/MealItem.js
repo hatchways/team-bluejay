@@ -8,21 +8,19 @@ import {
   Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import EditMealButton from "components/EditMealButton";
 import { Context as MealContext } from "contexts/MealContext";
-
-import foodImg from "images/makisushi.jpg";
+import imagePlaceholder from "images/imagePlaceholder.jpg";
+import { Edit } from "@material-ui/icons";
+import CreateMealForm from "components/CreateMealForm";
+import { DialogContext } from "contexts/DialogContext";
 
 const MealItem = ({ meal, editable, chefId }) => {
   const classes = useStyles();
   const { checkCartStatus } = useContext(MealContext);
-  // const { image } = meal;
-  // todo: remove when images are implemented
-  const image = foodImg;
+  const { openDialog } = useContext(DialogContext);
 
   return (
     <Card className={classes.root} elevation={2}>
-      {editable && <EditMealButton />}
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Chip
@@ -49,17 +47,31 @@ const MealItem = ({ meal, editable, chefId }) => {
             Requirements:
           </Typography>
           <Typography>{meal.required_items}</Typography>
-          <Button
-            variant="contained"
-            size="small"
-            className={classes.addToCart}
-            onClick={() => checkCartStatus(meal, chefId)}
-          >
-            Add to Cart
-          </Button>
+          {editable ? (
+            <Button
+              variant="outlined"
+              className={classes.editMeal}
+              onClick={() => openDialog(<CreateMealForm meal={meal} />)}
+            >
+              <Edit />
+              Edit meal
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              size="small"
+              className={classes.addToCart}
+              onClick={() => checkCartStatus(meal, chefId)}
+            >
+              Add to Cart
+            </Button>
+          )}
         </CardContent>
       </div>
-      <CardMedia className={classes.image} image={image} />
+      <CardMedia
+        className={classes.image}
+        image={meal.image || imagePlaceholder}
+      />
     </Card>
   );
 };
@@ -67,7 +79,6 @@ const MealItem = ({ meal, editable, chefId }) => {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "80%",
-    height: theme.spacing(35),
     display: "flex",
     position: "relative",
   },
@@ -108,6 +119,10 @@ const useStyles = makeStyles((theme) => ({
   },
   spacer: {
     margin: theme.spacing(1),
+  },
+  editMeal: {
+    marginTop: theme.spacing(3),
+    width: theme.spacing(25),
   },
 }));
 export default MealItem;

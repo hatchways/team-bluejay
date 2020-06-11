@@ -3,14 +3,12 @@ from models.User import User
 from flask import request, Response, json
 from flask_restful import Resource
 from helpers.api import custom_json_response
-from flask_jwt_extended import (
-    get_jwt_identity,
-    jwt_required
-)
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
 from helpers.database import save_to_database
-
+from helpers.image_uploads import upload_picture
 meal_item_schema = MealItemSchema()
+from controllers.meal import create_meal, edit_meal
 
 
 class MealItemResource(Resource):
@@ -29,51 +27,24 @@ class MealItemResource(Resource):
 
     @jwt_required
     def post(self):
-        req_data = request.get_json()
         user_id = get_jwt_identity().get("id")
+
+        req_data = request.form.to_dict()
         req_data["userId"] = user_id
 
-        try:
-            meal_data = meal_item_schema.load(req_data)
-            meal_data['userId'] = user_id
-        except ValidationError as err:
-            return custom_json_response(err.messages, 400)
+        req_image = request.files.get('image')
 
-        new_meal = MealItem(**meal_data)
-        new_meal.save()
-
-        curr_user = User.get_by_id(user_id)
-        curr_user.chef_flag_true()
-        curr_user.save()
-
-        data = {
-            "message": "Created",
-            "meal": meal_item_schema.dump(new_meal)
-        }
-        return custom_json_response(data, 201)
+        return create_meal(req_data, req_image)
 
     @jwt_required
     def put(self, id):
-        req_body = request.get_json()
+        user_id = get_jwt_identity().get("id")
 
-        try:
-            valid_data = meal_item_schema.load(req_body, partial=True)
-        except ValidationError as err:
-            return custom_json_response(err.messages, 400)
-
-        current_user = get_jwt_identity()
         meal_item = MealItem.get_by_id(id)
-
-        if not meal_item or meal_item.userId != current_user.get("id"):
+        if not meal_item or meal_item.userId != user_id:
             return custom_json_response(
-                {"message": "You do not own that meal"}
-            , 400)
+                {"message": "You do not own that meal"}, 400)
 
-        # prevent userId from being edited
-        valid_data.pop("userId", None)
-        meal_item.update(valid_data)
-        data = {
-            "meal": meal_item_schema.dump(meal_item),
-            "message": "Succesfully Edited."
-        }
-        return custom_json_response(data, 200)
+        meal = request.form.to_dict()
+        req_image = request.files.get('image')
+        return edit_meal(meal, meal_item, req_image)
