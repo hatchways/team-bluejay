@@ -6,6 +6,7 @@ import { Provider as AuthProvider } from "contexts/AuthContext";
 import { Provider as MealProvider } from "contexts/MealContext";
 import { Provider as AlertProvider } from "contexts/AlertContext";
 import { DialogProvider } from "contexts/DialogContext";
+import { CuisineProvider } from "contexts/CuisineContext";
 
 const RootProvider = ({ children }) => {
   return (
@@ -13,7 +14,10 @@ const RootProvider = ({ children }) => {
       <AlertProvider>
         <AuthProvider>
           <MealProvider>
-            <DialogProvider>{children}</DialogProvider>
+            <CuisineProvider>
+              {/* DialogProvider must be the innermost provider so that its children can use contexts from outermost parent providers */}
+              <DialogProvider>{children}</DialogProvider>
+            </CuisineProvider>
           </MealProvider>
         </AuthProvider>
       </AlertProvider>

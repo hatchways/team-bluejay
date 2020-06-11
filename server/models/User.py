@@ -24,7 +24,8 @@ class User(db.Model):
     chefCuisine = db.Column(db.String(128))
     profileImage = db.Column(db.Text)
 
-    mealItems = db.relationship("MealItem", back_populates="user")
+    mealItems = db.relationship(
+        "MealItem", back_populates="user", order_by="-MealItem.id")
     cuisines = db.relationship('Cuisine',
                                secondary=favorite_cuisines_table,
                                back_populates='users'
@@ -35,13 +36,13 @@ class User(db.Model):
         self.email = email
         self.password = self.__generate_hash(password)
         self.isChef = False
+        self.aboutMe = ""
+        self.address = ""
+        self.profileImage = ""
+        self.cuisines = []
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name}, {self.email}>"
-
-    def chef_flag_true(self):
-        self.isChef = True
-        return
 
     def save(self):
         db.session.add(self)
@@ -124,7 +125,7 @@ class UserSchema(Schema):
     profileImage = fields.String()
 
     mealItems = fields.List(fields.Nested(
-        "MealItemSchema", exclude=("userId",)))
+        "MealItemSchema", exclude=("user",)))
     # When schema is from another file it must be in quotes to prevent circular imports. Marshmallow automatically searches other Schemas from other files in this directory and finds one called "CuisineSchema"
     cuisines = fields.List(fields.Nested(
         "CuisineSchema", exclude=("users",)))

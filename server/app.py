@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, json, jsonify, request
 from marshmallow import Schema
 from flask_restful import Api
 from config import DB_URL
@@ -8,6 +8,7 @@ from api.user_handler import UserResource
 from api.chef_handler import ChefResource
 from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
+from api.StripeResource import StripeResource
 from api.cuisine_handler import CuisineResource
 from api.notification_handler import NotificationResource
 
@@ -47,5 +48,6 @@ def create_app():
     api.add_resource(LogoutResource, '/users/logout')
     api.add_resource(CuisineResource, '/cuisines')
     api.add_resource(NotificationResource, '/notifications')
+    api.add_resource(StripeResource, '/create-payment-intent')
 
     return app

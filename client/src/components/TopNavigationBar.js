@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
   AppBar,
@@ -14,11 +14,13 @@ import { ArrowDropDown } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
-import BecomeChefButton from "components/BecomeChefButton";
 import ShoppingCartIcon from "components/ShoppingCartIcon";
+import CreateMealForm from "components/CreateMealForm";
+import { DialogContext } from "contexts/DialogContext";
 
 const TopNavigationBar = ({ loggedInUser, signOut }) => {
   const classes = useStyles();
+  const { openDialog } = useContext(DialogContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -43,7 +45,11 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
         </Button>
         <div className={classes.grow} />
         <ShoppingCartIcon />
-        <BecomeChefButton loggedInUser={loggedInUser} />
+        {!loggedInUser.isChef && (
+          <Button size="large" onClick={() => openDialog(<CreateMealForm />)}>
+            Become A Chef
+          </Button>
+        )}
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />
           <Typography>{loggedInUser.name}</Typography>

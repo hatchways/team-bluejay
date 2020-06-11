@@ -9,42 +9,32 @@ import API from "api/index";
 const ChefProfile = ({ user }) => {
   const classes = useStyles();
   const { chefId } = useParams();
-  const [chef, setChef] = useState(user);
+
+  const [chef, setChef] = useState();
   const editable = user ? true : false;
 
-  const fetchChef = async () => {
-    const { data } = await API.get(`/chefs/${chefId}`);
-    setChef(data);
-  };
-
   useEffect(() => {
-    if (!chef) {
-      fetchChef();
+    if (user) setChef(user);
+    else {
+      (async function fetchChef() {
+        const { data } = await API.get(`/chefs/${chefId}`);
+        setChef(data);
+      })();
     }
-  }, []);
+  }, [user, chefId]);
 
   if (chef) {
     return (
-      <div className={classes.root}>
-        <Grid container>
-          <ChefBanner chef={chef} editable={editable} />
-          <MealItemList
-            chef={chef}
-            meals={chef.mealItems}
-            editable={editable}
-          />
-        </Grid>
-      </div>
+      <Grid container>
+        <ChefBanner chef={chef} editable={editable} />
+        <MealItemList chef={chef} meals={chef.mealItems} editable={editable} />
+      </Grid>
     );
   } else {
     return <div>Loading...</div>;
   }
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: theme.spacing(10),
-  },
-}));
+const useStyles = makeStyles((theme) => ({}));
 
 export default ChefProfile;

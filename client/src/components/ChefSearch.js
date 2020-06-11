@@ -14,7 +14,7 @@ import ChefFilters from "components/ChefFilters";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 // to remove later
-import chefImage from "images/chef.png";
+import defaultImage from "images/chefPlaceholder.jpeg";
 
 const ChefSearch = ({ coords }) => {
   const [chefs, setChefs] = useState([]);
@@ -70,8 +70,8 @@ const ChefSearch = ({ coords }) => {
             Available Chefs:
           </Typography>
           <Box className={classes.chefTileArea}>
-            {chefs.map((chef) => (
-              <CustomCard chef={chef} />
+            {chefs.map((chef, i) => (
+              <CustomCard chef={chef} key={i} />
             ))}
           </Box>
         </Box>
@@ -88,7 +88,7 @@ const CustomCard = ({ chef }) => {
     <Card className={classes.chefTile}>
       <CardMedia
         className={classes.chefImage}
-        image={chefImage}
+        image={chef.profileImage || defaultImage}
         title="Chef Image"
       />
       <CardActionArea onClick={() => history.push(`/chefs/${id}`)}>
@@ -104,12 +104,12 @@ const CustomCard = ({ chef }) => {
             <Chip
               className={classes.chip}
               color="primary"
-              variant="large"
+              variant="default"
               label={chefCuisine}
             />
           )}
 
-          <Typography variant="body" color="textSecondary" component="p">
+          <Typography variant="body1" color="textSecondary" component="p">
             {chefProfile}
           </Typography>
         </CardContent>
