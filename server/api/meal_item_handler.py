@@ -6,7 +6,6 @@ from helpers.api import custom_json_response
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
 from helpers.database import save_to_database
-from helpers.api import get_req_image
 from helpers.image_uploads import upload_picture
 meal_item_schema = MealItemSchema()
 from controllers.meal import create_meal, edit_meal
@@ -33,8 +32,7 @@ class MealItemResource(Resource):
         req_data = request.form.to_dict()
         req_data["userId"] = user_id
 
-        req_image = get_req_image(request, 'image')
-        req_data.pop('image', None)
+        req_image = request.files.get('image')
 
         return create_meal(req_data, req_image)
 
@@ -48,5 +46,5 @@ class MealItemResource(Resource):
                 {"message": "You do not own that meal"}, 400)
 
         meal = request.form.to_dict()
-        req_image = get_req_image(request, 'image')
+        req_image = request.files.get('image')
         return edit_meal(meal, meal_item, req_image)

@@ -11,7 +11,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_refresh_token_required
 )
-from helpers.api import custom_json_response, get_req_image
+from helpers.api import custom_json_response
 from helpers.image_uploads import upload_picture
 from datetime import timedelta
 from marshmallow import ValidationError
@@ -71,7 +71,7 @@ class UserResource(Resource):
         if req_body.get('cuisines') and isinstance(req_body['cuisines'], str):
             req_body['cuisines'] = json.loads(req_body['cuisines'])
 
-        req_image = get_req_image(request, 'profileImage')
+        req_image = request.files.get('profileImage')
 
         if req_image:
             s3_file_path = f'users/{current_userid}/profile_pic'

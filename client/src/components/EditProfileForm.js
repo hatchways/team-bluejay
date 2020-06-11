@@ -32,6 +32,8 @@ const EditProfileForm = () => {
   const { closeDialog } = useContext(DialogContext);
 
   const onFormSubmit = (profileData) => {
+    if (profileData.profileImage === undefined) delete profileData.profileImage;
+
     updateUser(profileData);
     closeDialog();
   };

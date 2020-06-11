@@ -10,7 +10,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-from helpers.api import custom_json_response, get_req_image
+from helpers.api import custom_json_response
 from helpers.database import save_to_database
 from sqlalchemy import exc, or_
 from helpers.distance import distance
@@ -71,6 +71,5 @@ class ChefResource(Resource):
         # create meal
         req_data.pop("chefCuisine", None)
         req_data["userId"] = user_id
-        req_image = get_req_image(request, 'image')
-        req_data.pop('image', None)
+        req_image = request.files.get('image')
         return become_chef(req_data, chef_cuisine, req_image)

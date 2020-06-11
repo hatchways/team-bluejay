@@ -106,7 +106,6 @@ const Provider = ({ children }) => {
       const formData = new FormData();
       for (const [key, value] of Object.entries(updatedUser)) {
         //Objects such as arrays need to be stringifed when sending as multipart/form-data
-        if (key === "profileImage" && value === undefined) continue;
         if (key === "cuisines") formData.set(key, JSON.stringify(value));
         else formData.set(key, value);
       }
@@ -154,8 +153,7 @@ const Provider = ({ children }) => {
       const formData = new FormData();
       formData.set("chefCuisine", chefCuisineStr);
       for (const [key, value] of Object.entries(firstMeal)) {
-        if (key === "image" && value === undefined) continue;
-        else formData.set(key, value);
+        formData.set(key, value);
       }
 
       const {
@@ -174,8 +172,7 @@ const Provider = ({ children }) => {
     try {
       const formData = new FormData();
       for (const [key, value] of Object.entries(newMeal)) {
-        if (key === "image" && value === undefined) continue;
-        else formData.set(key, value);
+        formData.set(key, value);
       }
 
       const {
@@ -194,8 +191,7 @@ const Provider = ({ children }) => {
     try {
       const formData = new FormData();
       for (const [key, value] of Object.entries(updatedMeal)) {
-        if (key === "image" && value === undefined) continue;
-        else formData.set(key, value);
+        formData.set(key, value);
       }
 
       const {
