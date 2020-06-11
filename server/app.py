@@ -11,6 +11,7 @@ from api.LogoutResource import LogoutResource
 from api.StripeResource import StripeResource
 from api.cuisine_handler import CuisineResource
 from api.notification_handler import NotificationResource
+from api.order_handler import OrderResource
 
 
 from flask_jwt_extended import (
@@ -49,5 +50,6 @@ def create_app():
     api.add_resource(CuisineResource, '/cuisines')
     api.add_resource(NotificationResource, '/notifications')
     api.add_resource(StripeResource, '/create-payment-intent')
+    api.add_resource(OrderResource, '/orders/<id>')
 
     return app

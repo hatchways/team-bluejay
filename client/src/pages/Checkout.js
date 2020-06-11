@@ -7,20 +7,29 @@ import {
   Card,
   CardMedia,
   CardContent,
+  Button,
 } from "@material-ui/core";
 import { AddCircle, RemoveCircle } from "@material-ui/icons";
+
 import PaymentForm from "components/PaymentForm";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as MealContext } from "contexts/MealContext";
+import { Context as AuthContext } from "contexts/AuthContext";
+import API from "api/index";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import foodImg from "images/makisushi.jpg";
+import { DialogContext } from "contexts/DialogContext";
 
 const Checkout = () => {
   const classes = useStyles();
   const {
     state: { shoppingCart, chefId },
   } = useContext(MealContext);
+  const {
+    state: { user },
+  } = useContext(AuthContext);
+  const { openDialog, closeDialog } = useContext(DialogContext);
 
   const [selectedDate, handleDateChange] = useState(null);
 
@@ -28,6 +37,32 @@ const Checkout = () => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
+  const getClientSecret = async () => {
+    const { data } = await API.post("/create-payment-intent", {
+      orderedItems: shoppingCart.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      })),
+      // datetime convert to timestamp in ms
+      arrivalDateTimeStamp: new Date(selectedDate).getTime(),
+      chefId: chefId,
+      userId: user.id,
+    });
+    return data;
+  };
+
+  const openPaymentDialog = async () => {
+    const { clientSecret, orderId } = await getClientSecret();
+    openDialog(
+      <PaymentForm
+        clientSecret={clientSecret}
+        user={user}
+        orderId={orderId}
+        closeDialog={closeDialog}
+      />
+    );
+  };
 
   const formattedPrice = (Math.round(totalPrice * 100) / 100).toFixed(2);
 
@@ -53,7 +88,7 @@ const Checkout = () => {
                   Total :
                 </Typography>
                 <Typography variant="h4" display="inline-flex">
-                  {`$ ${totalPrice}`}
+                  {`$ ${formattedPrice}`}
                 </Typography>
               </Box>
             </Paper>
@@ -85,13 +120,16 @@ const Checkout = () => {
                   helperText={selectedDate ? "" : "Please choose a Date & Time"}
                 />
               </Box>
-
               <Box className={classes.checkoutBox}>
-                <PaymentForm
-                  shoppingCart={shoppingCart}
-                  arrivalDate={selectedDate}
-                  chefId={chefId}
-                />
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  disabled={!selectedDate || !shoppingCart.length}
+                  onClick={openPaymentDialog}
+                >
+                  Confirm Order
+                </Button>
               </Box>
             </Paper>
           </Grid>
