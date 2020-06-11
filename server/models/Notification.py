@@ -13,16 +13,19 @@ class Notification(db.Model):
     )
     message = db.Column(db.Text, nullable=False)
     isRead = db.Column(db.Boolean, nullable=False)
-    user = db.relationship("User", back_populates="notifications")
 
     def __init__(self, userId, message, isRead):
         self.userId = userId
         self.message = message
         self.isRead = isRead
 
+    @staticmethod
+    def get_by_userId(userId):
+        return Notification.query.filter(Notification.userId == userId).all()
+
 
 class NotificationSchema(Schema):
     id = fields.Int(dump_only=True)
-    userId = fields.Int(required=True)
+    userId = fields.Int(load_only=True)
     message = fields.Str(required=True)
     isRead = fields.Boolean(required=True)

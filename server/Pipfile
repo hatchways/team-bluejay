@@ -20,6 +20,7 @@ python-dotenv = "*"
 flask-migrate = "*"
 flask-script = "*"
 faker = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.8"

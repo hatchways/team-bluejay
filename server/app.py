@@ -9,6 +9,7 @@ from api.chef_handler import ChefResource
 from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
 from api.cuisine_handler import CuisineResource
+from api.notification_handler import NotificationResource
 
 
 from flask_jwt_extended import (
@@ -45,5 +46,6 @@ def create_app():
     api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
     api.add_resource(LogoutResource, '/users/logout')
     api.add_resource(CuisineResource, '/cuisines')
+    api.add_resource(NotificationResource, '/notifications')
 
     return app
