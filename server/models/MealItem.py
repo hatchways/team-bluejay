@@ -20,10 +20,10 @@ class MealItem(db.Model):
     image = db.Column(db.Text)
     user = db.relationship("User", back_populates="mealItems")
 
-    orders = db.relationship('Order',
-                            secondary=order_join_meal_items,
-                            back_populates='meal_items'
-                            )
+    # orders = db.relationship('Order',
+    #                         secondary=order_join_meal_items,
+    #                         back_populates='meal_items'
+    #                         )
 
     def __init__(self, userId, name, price, servings, ingredients="", required_items="", image=""):
         self.userId = userId

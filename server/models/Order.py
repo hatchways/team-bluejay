@@ -10,7 +10,6 @@ order_join_meal_items = db.Table('order_join_meal_items',
                                             db.ForeignKey('meal_items.id'))
                                 )
 
-
 class Order(db.Model):
     __tablename__ = 'orders'
 
@@ -25,8 +24,7 @@ class Order(db.Model):
     clientSecret = db.Column(db.Text)
 
     meal_items = db.relationship('MealItem',
-                            secondary=order_join_meal_items,
-                            back_populates='orders'
+                            secondary=order_join_meal_items
                             )
 
     def __repr__(self):
@@ -55,3 +53,18 @@ class Order(db.Model):
     @staticmethod
     def get_by_id(id):
         return Order.query.get(id)
+
+class OrderJoinMealSchema(Schema):
+    id = fields.Int()
+
+class OrderSchema(Schema):
+    id = fields.Int(dump_only=True)
+    chefId = fields.Int()
+    userId = fields.Int()
+
+    created_date_time = fields.DateTime()
+    arrival_date_time = fields.DateTime()
+
+    meal_items = fields.List(fields.Nested("MealItemSchema", exclude=("user",)))
+
+    # fields.Nested("MealItemSchema", exclude=("user",))
