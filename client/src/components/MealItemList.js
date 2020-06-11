@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Grid,
   Paper,
@@ -10,16 +10,35 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import Image from "material-ui-image";
 import MealItem from "components/MealItem";
+import { Add } from "@material-ui/icons";
+import CreateMealForm from "components/CreateMealForm";
+import { DialogContext } from "contexts/DialogContext";
 
 const MealItemList = ({ chef, meals, editable }) => {
   const classes = useStyles();
+  const { openDialog } = useContext(DialogContext);
+
   return (
     <Grid item className={classes.root}>
       <Typography
         variant="h5"
         className={classes.menuTitle}
       >{`${chef.name}'s Menu`}</Typography>
+      {editable && (
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className={classes.addMeal}
+          onClick={() => openDialog(<CreateMealForm />)}
+        >
+          <Add />
+          Add a meal
+        </Button>
+      )}
+
       <Grid item className={classes.menuList}>
+        {/* Todo: Add ability for chef to drag 'n' drop to edit order of their meal items */}
         {meals &&
           meals.map((meal) => {
             return (
@@ -53,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     alignItems: "center",
     flexDirection: "column",
+  },
+  addMeal: {
+    marginBottom: theme.spacing(3),
   },
 }));
 

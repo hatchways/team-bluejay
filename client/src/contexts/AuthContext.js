@@ -19,6 +19,37 @@ const reducer = (state, action) => {
     case "refreshUser":
     case "updateUser":
       return { user: action.payload.user, errorMessage: "" };
+    case "becomeChef":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          chefCuisine: action.payload.chefCuisine,
+          isChef: true,
+          mealItems: [action.payload.meal],
+        },
+      };
+    case "createMeal":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          isChef: true,
+          mealItems: [action.payload.meal, ...state.user.mealItems],
+        },
+      };
+    case "editMeal":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          mealItems: state.user.mealItems.map((mealItem) =>
+            mealItem.id !== action.payload.meal.id
+              ? mealItem
+              : action.payload.meal
+          ),
+        },
+      };
     default:
       return state;
   }
@@ -75,19 +106,21 @@ const Provider = ({ children }) => {
       const formData = new FormData();
       for (const [key, value] of Object.entries(updatedUser)) {
         //Objects such as arrays need to be stringifed when sending as multipart/form-data
-        if (key === "profileImage" && value === undefined) continue;
         if (key === "cuisines") formData.set(key, JSON.stringify(value));
         else formData.set(key, value);
       }
 
-      const { data } = await API.put("/users", formData, {
+      const {
+        data: { user },
+      } = await API.put("/users", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // add date to imageUrl so react sees that the image has changed and will rerender it
-      data.user.profileImage = `${data.user.profileImage}?${Date.now()}`;
-
-      dispatch({ type: "updateUser", payload: { user: data.user } });
+      if (user.profileImage) {
+        const cacheBuster = Date.now();
+        user.profileImage = `${user.profileImage}?${cacheBuster}`;
+      }
+      dispatch({ type: "updateUser", payload: { user } });
     } catch (error) {
       handleErrorResponse(error);
     }
@@ -115,10 +148,64 @@ const Provider = ({ children }) => {
     }
   };
 
-  const createMeal = async (meal) => {
+  const becomeChef = async (chefCuisineStr, firstMeal) => {
     try {
-      await API.post("/meal_items", meal);
-      refreshLoggedInUser();
+      const formData = new FormData();
+      formData.set("chefCuisine", chefCuisineStr);
+      for (const [key, value] of Object.entries(firstMeal)) {
+        formData.set(key, value);
+      }
+
+      const {
+        data: { meal, chefCuisine },
+      } = await API.post("/chefs", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      dispatch({ type: "becomeChef", payload: { meal, chefCuisine } });
+    } catch (error) {
+      handleErrorResponse(error);
+    }
+  };
+
+  const createMeal = async (newMeal) => {
+    try {
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(newMeal)) {
+        formData.set(key, value);
+      }
+
+      const {
+        data: { meal },
+      } = await API.post("/meal_items", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      dispatch({ type: "createMeal", payload: { meal } });
+    } catch (error) {
+      handleErrorResponse(error);
+    }
+  };
+
+  const editMeal = async (mealId, updatedMeal) => {
+    try {
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(updatedMeal)) {
+        formData.set(key, value);
+      }
+
+      const {
+        data: { meal },
+      } = await API.put(`/meal_items/${mealId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (meal.image) {
+        const cacheBuster = Date.now();
+        meal.image = `${meal.image}?${cacheBuster}`;
+      }
+
+      dispatch({ type: "editMeal", payload: { meal } });
     } catch (error) {
       handleErrorResponse(error);
     }
@@ -134,7 +221,9 @@ const Provider = ({ children }) => {
         signOut,
         updateUser,
         refreshLoggedInUser,
+        becomeChef,
         createMeal,
+        editMeal,
       }}
     >
       {children}

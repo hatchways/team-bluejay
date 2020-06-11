@@ -6,12 +6,16 @@ from flask_jwt_extended import (
     set_access_cookies,
     create_refresh_token,
     get_csrf_token,
-    set_refresh_cookies
+    set_refresh_cookies,
+    jwt_required,
+    get_jwt_identity
 )
 from helpers.api import custom_json_response
 from helpers.database import save_to_database
 from sqlalchemy import exc, or_
 from helpers.distance import distance
+from controllers.meal import create_meal, become_chef
+import json
 
 user_schema = UserSchema()
 user_schema_private = UserSchema(exclude=['password', 'email', 'isChef', 'address'])
@@ -52,3 +56,20 @@ class ChefResource(Resource):
             "Applied Filters": ",".join(applied_filters)
         }
         return custom_json_response(data, 200)
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity().get("id")
+        req_data = request.form.to_dict()
+
+        # update chef
+        chef_cuisine = req_data.get('chefCuisine')
+        updated_chef_fields = {"isChef": True, "chefCuisine": chef_cuisine}
+        curr_user = User.get_by_id(user_id)
+        curr_user.update(updated_chef_fields)
+
+        # create meal
+        req_data.pop("chefCuisine", None)
+        req_data["userId"] = user_id
+        req_image = request.files.get('image')
+        return become_chef(req_data, chef_cuisine, req_image)
