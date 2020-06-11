@@ -1,35 +1,55 @@
 from flask_restful import Resource
 from flask import jsonify, request, json
 from config import STRIPE_API_KEY
+from models.Order import Order
+from models.MealItem import MealItem
+from helpers.api import custom_json_response
+from flask_jwt_extended import jwt_required 
 
 import stripe
 
 stripe.api_key = STRIPE_API_KEY
 
 
-def calculate_order_amount_in_cents(items=[]):
-    # Stripe accepts value in cents
-    total = 0
-    for item in items:
-        total += (item.get("quantity") * item.get("price"))
-    return total * 100
+def total_amount_with_meal_objects(ordered_items):
+    total_amount = 0
+    meal_objects = []
+    for item in ordered_items:
+        for i in range(item.get("quantity")):
+            meal_item = MealItem.get_by_id(item.get("id"))
+            total_amount += meal_item.price
+            meal_objects.append(meal_item)
+    return {"total_amount": total_amount, "meal_objects": meal_objects}
 
 
 class StripeResource(Resource):
+    @jwt_required
     def post(self):
         try:
             data = json.loads(request.data)
-            total_amount_cents = calculate_order_amount_in_cents(data.get("orderedItems"))
+
+            chef_id = data.get("chefId")
+            user_id = data.get("userId")
+            arrival_ts = data.get("arrivalDateTimeStamp")
+            ordered_items = data.get("orderedItems")
+
+            ret_dict = total_amount_with_meal_objects(ordered_items)
+            total_amount_dollars = ret_dict.get("total_amount")
+            meal_objects = ret_dict.get("meal_objects")
+
+            order = Order(chef_id, user_id, arrival_ts, meal_objects)   
+            order.save()
+
             intent = stripe.PaymentIntent.create(
-                amount=total_amount_cents,
+                amount=int(total_amount_dollars*100),
                 currency='usd'
             )
+
             return jsonify({
                 'clientSecret': intent['client_secret'],
-                'totalAmount': total_amount_cents / 100,
-                'arrivalDate': data.get("arrivalDate"),
-                'chefId': data.get("chefId"),
-                'userId': data.get("userId")
+                'totalAmount': total_amount_dollars,
+                'orderId': order.id
             })
-        except Exception as e:
-            return jsonify(error=str(e)), 403
+
+        except Exception:
+            return custom_json_response({'error': 'problem getting clientSecret'}, 403)

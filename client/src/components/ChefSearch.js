@@ -13,7 +13,7 @@ import {
 import ChefFilters from "components/ChefFilters";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-// to remove later
+
 import defaultImage from "images/chefPlaceholder.jpeg";
 
 const ChefSearch = ({ coords }) => {
@@ -25,13 +25,16 @@ const ChefSearch = ({ coords }) => {
   const [distanceFilter, setDistanceFilter] = useState(null);
 
   const classes = useStyles();
+
   useEffect(() => {
-    searchChefs();
-    // to change later
     (async function getCuisines() {
       const { data: allCuisines } = await API.get("/cuisines");
       setCuisineTypes(allCuisines.map((c) => c.name));
     })();
+  }, []);
+
+  useEffect(() => {
+    searchChefs();
   }, [userAddress, userCoordinates, selectedCuisines, distanceFilter]);
 
   const searchChefs = async () => {
