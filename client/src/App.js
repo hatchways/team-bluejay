@@ -8,7 +8,6 @@ import ProtectedRoute from "common/ProtectedRoute";
 import LoginPage from "pages/Login";
 import SignUp from "pages/SignUp";
 import Checkout from "pages/Checkout";
-import Home from "pages/Home";
 import Profile from "pages/Profile";
 import Chefs from "pages/Chefs";
 import ChefProfile from "components/ChefProfile";
@@ -41,7 +40,7 @@ const LoggedInContainer = () => {
         <Route path="/checkout" component={Checkout} />
         <Route path="/chefs" component={Chefs} />
         <Route path="/profile" component={Profile} />
-        <Route path="/" component={Home} />
+        <Route path="/" component={Chefs} />
       </Switch>
     </>
   );

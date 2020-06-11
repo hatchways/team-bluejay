@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   Grid,
   Paper,
@@ -7,21 +7,29 @@ import {
   Card,
   CardMedia,
   CardContent,
+  Button,
 } from "@material-ui/core";
 import { AddCircle, RemoveCircle } from "@material-ui/icons";
+
 import PaymentForm from "components/PaymentForm";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as MealContext } from "contexts/MealContext";
+import { Context as UserContext } from "contexts/AuthContext";
+import API from "api/index";
 import DateFnsUtils from "@date-io/date-fns";
-import { fromUnixTime, format } from "date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import foodImg from "images/makisushi.jpg";
+import { DialogContext } from "contexts/DialogContext";
 
 const Checkout = () => {
   const classes = useStyles();
   const {
     state: { shoppingCart, chefId },
   } = useContext(MealContext);
+  const {
+    state: { user },
+  } = useContext(UserContext);
+  const { openDialog, closeDialog } = useContext(DialogContext);
 
   const [selectedDate, handleDateChange] = useState(null);
 
@@ -30,16 +38,30 @@ const Checkout = () => {
     0
   );
 
-  // useEffect(() => {
-  //   if (selectedDate) {
-  //     console.log(
-  //       "Selected Date: ",
-  //       format(selectedDate, "MM/dd/yyyy HH:mm a")
-  //     );
-  //   }
-  // }, [selectedDate]);
+  const getClientSecret = async () => {
+    const { data } = await API.post("/create-payment-intent", {
+      orderedItems: shoppingCart.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      })),
+      // datetime convert to timestamp in ms
+      arrivalDateTimeStamp: new Date(selectedDate).getTime(),
+      chefId: chefId,
+      userId: user.id,
+    });
+    return data.clientSecret;
+  };
 
-  // console.log("Today", format(Date.now(), "MM/dd/yyyy HH:mm a"));
+  const openPaymentDialog = async () => {
+    const clientSecret = await getClientSecret();
+    openDialog(
+      <PaymentForm
+        clientSecret={clientSecret}
+        user={user}
+        closeDialog={closeDialog}
+      />
+    );
+  };
 
   const formattedPrice = (Math.round(totalPrice * 100) / 100).toFixed(2);
 
@@ -97,13 +119,16 @@ const Checkout = () => {
                   helperText={selectedDate ? "" : "Please choose a Date & Time"}
                 />
               </Box>
-
               <Box className={classes.checkoutBox}>
-                <PaymentForm
-                  shoppingCart={shoppingCart}
-                  arrivalDate={selectedDate}
-                  chefId={chefId}
-                />
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  disabled={!selectedDate || !shoppingCart.length}
+                  onClick={openPaymentDialog}
+                >
+                  Confirm Order
+                </Button>
               </Box>
             </Paper>
           </Grid>

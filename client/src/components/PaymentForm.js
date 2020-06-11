@@ -1,25 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Button, Typography } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { Context as UserContext } from "contexts/AuthContext";
+
 import { Context as MealContext } from "contexts/MealContext";
 import { Context as AlertContext } from "contexts/AlertContext";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
-import API from "api/index";
-
-const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
+const PaymentForm = ({ clientSecret, user, closeDialog }) => {
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState("");
-  const [clientSecret, setClientSecret] = useState(null);
+
   const stripe = useStripe();
   const elements = useElements();
-
-  const {
-    state: { user },
-  } = useContext(UserContext);
 
   const { emptyCart } = useContext(MealContext);
   const { alert } = useContext(AlertContext);
@@ -27,26 +21,6 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
   const history = useHistory();
 
   const classes = useStyles();
-
-  useEffect(() => {
-    const getClientSecret = async () => {
-      const { data } = await API.post("/create-payment-intent", {
-        orderedItems: shoppingCart.map((item) => ({
-          id: item.id,
-          quantity: item.quantity,
-        })),
-        // date convert to timestamp in ms
-        arrivalDateTimeStamp: new Date(arrivalDate).getTime(),
-        chefId: chefId,
-        userId: user.id,
-      });
-      setClientSecret(data.clientSecret);
-      console.log(data);
-    };
-    if (shoppingCart.length && arrivalDate) {
-      getClientSecret();
-    }
-  }, [shoppingCart, arrivalDate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,7 +33,7 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
         },
       },
     });
-    console.log(payload);
+
     if (payload.error) {
       setError(`Payment failed ${payload.error.message}`);
       setProcessing(false);
@@ -72,67 +46,35 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
       history.push("/");
       alert("Order Placed", "success");
     }
+    closeDialog();
   };
 
-  return arrivalDate && shoppingCart.length ? (
+  return (
     <>
       <Box className={classes.paymentBox}>
         <Typography variant="h5" className={classes.paymentDetails}>
           Enter your payment details
         </Typography>
-        <CardSection className={classes.paymentDetails} />
+        <CardSection />
       </Box>
       <Button
         type="submit"
         size="large"
         variant="contained"
         color="primary"
-        disabled={!stripe || !arrivalDate || !clientSecret}
+        disabled={!stripe || !clientSecret}
         onClick={handleSubmit}
+        className={classes.paymentDetails}
       >
-        Confirm Checkout
+        Checkout
       </Button>
     </>
-  ) : (
-    <Typography variant="h5" className={classes.message}>
-      {shoppingCart.length
-        ? "Choose an arrival date for your order"
-        : "Your cart is empty"}
-    </Typography>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   paymentDetails: {
-    margin: theme.spacing(2, 0, 2, 0),
-  },
-  message: {
-    color: theme.palette.error.main,
-  },
-  paymentBox: {
-    [theme.breakpoints.up("md")]: {
-      maxWidth: "60%",
-    },
-    [theme.breakpoints.down("md")]: {
-      width: "100%",
-    },
-    "& div:nth-child(3)": {
-      [theme.breakpoints.up("md")]: {
-        width: "50%",
-      },
-    },
-    "& div:nth-child(4)": {
-      [theme.breakpoints.up("md")]: {
-        width: "50%",
-      },
-    },
-    "& div:nth-child(1)": {
-      margin: 0,
-    },
-    margin: theme.spacing(2, 0, 2, 0),
-  },
-  cardInput: {
-    margin: theme.spacing(1, 0, 1, 0),
+    margin: theme.spacing(4, 0, 4, 0),
   },
 }));
 
