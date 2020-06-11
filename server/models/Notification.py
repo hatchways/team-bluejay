@@ -23,6 +23,13 @@ class Notification(db.Model):
     def get_by_userId(userId):
         return Notification.query.filter(Notification.userId == userId).all()
 
+    @staticmethod
+    def mark_all_as_read(userId):
+        Notification.query.filter(Notification.userId == userId).update(
+            {"isRead": True})
+        db.session.commit()
+        return Notification.query.filter(Notification.userId == userId).all()
+
 
 class NotificationSchema(Schema):
     id = fields.Int(dump_only=True)

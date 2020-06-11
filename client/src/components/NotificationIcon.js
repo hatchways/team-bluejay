@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Button, Badge, Menu, MenuItem, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-//import { Context as MealContext } from "contexts/MealContext";
 import { Notifications, NotificationsNone } from "@material-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import API from "api";
 
 const NotificationIcon = () => {
   useEffect(() => {
-    (async function getNotifications() {
-      const {
-        data: { notifications },
-      } = await API.get("/notifications");
-      setNotifications(notifications);
-    })();
+    getNotifications();
   }, []);
+
+  async function getNotifications() {
+    const {
+      data: { notifications },
+    } = await API.get("/notifications");
+    setNotifications(notifications);
+  }
+
+  async function markNotificationsRead() {
+    const {
+      data: { notifications },
+    } = await API.put("/notifications");
+    setNotifications(notifications);
+  }
 
   const [notifications, setNotifications] = useState([]);
   /*const notifications = [
@@ -46,18 +54,28 @@ const NotificationIcon = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const openMenu = (event) => setAnchorEl(event.currentTarget);
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+    markNotificationsRead();
+  };
+
   const closeMenu = () => setAnchorEl(null);
 
   const classes = useStyles();
 
-  const Icon = notifications.length ? (
-    <Badge badgeContent={notifications.length} color="primary">
-      <Notifications />
-    </Badge>
-  ) : (
-    <NotificationsNone color="secondary" />
+  const unreadMessageCount = notifications.reduce(
+    (acc, { isRead }) => acc + !isRead,
+    0
   );
+
+  const Icon =
+    unreadMessageCount > 0 ? (
+      <Badge badgeContent={unreadMessageCount} color="primary">
+        <Notifications />
+      </Badge>
+    ) : (
+      <NotificationsNone color="secondary" />
+    );
 
   return (
     <>
