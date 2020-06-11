@@ -31,7 +31,10 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
   useEffect(() => {
     const getClientSecret = async () => {
       const { data } = await API.post("/create-payment-intent", {
-        orderedItems: shoppingCart,
+        orderedItems: shoppingCart.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
         // date convert to timestamp in ms
         arrivalDateTimeStamp: new Date(arrivalDate).getTime(),
         chefId: chefId,
@@ -42,7 +45,6 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
     };
     if (shoppingCart.length && arrivalDate) {
       getClientSecret();
-      console.log(typeof arrivalDate);
     }
   }, [shoppingCart, arrivalDate]);
 
