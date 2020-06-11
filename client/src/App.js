@@ -41,7 +41,7 @@ const LoggedInContainer = () => {
         <Route path="/checkout" component={Checkout} />
         <Route path="/chefs" component={Chefs} />
         <Route path="/profile" component={Profile} />
-        <Route path="/" component={Chefs} />
+        <Route path="/" component={Home} />
       </Switch>
     </>
   );

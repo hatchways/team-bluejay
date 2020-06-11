@@ -1,24 +1,22 @@
 from . import db
 from marshmallow import fields, Schema
 
-
-# Join table linking users and their favorite cuisines
-favorite_cuisines_table = db.Table('favorite_cuisines(users_cuisines)',
-                                   db.Column('user_id', db.Integer,
-                                             db.ForeignKey('users.id'), primary_key=True),
-                                   db.Column('cuisine_id', db.Integer,
-                                             db.ForeignKey('cuisines.id'), primary_key=True)
-                                   )
+order_join_meal_items = db.Table('order_join_meal_items',
+                                db.Column('order_id', db.Integer,
+                                            db.ForeignKey('orders.id'), primary_key=True),
+                                db.Column('meal_item_id', db.Integer,
+                                            db.ForeignKey('meal_items.id'), primary_key=True)
+                                )
 
 
-class Cuisine(db.Model):
-    __tablename__ = 'cuisines'
+class Order(db.Model):
+    __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False, unique=True)
-    users = db.relationship('User',
+    
+    items = db.relationship('MealItem',
                             secondary=favorite_cuisines_table,
-                            back_populates='cuisines'
+                            back_populates='orders'
                             )
 
     def __init__(self, name):
@@ -27,10 +25,6 @@ class Cuisine(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-
-    @staticmethod
-    def get_cuisines_by_ids(ids):
-        return Cuisine.query.filter(Cuisine.id.in_(ids)).all()
 
 
 class CuisineSchema(Schema):

@@ -30,16 +30,16 @@ const Checkout = () => {
     0
   );
 
-  useEffect(() => {
-    if (selectedDate) {
-      console.log(
-        "Selected Date: ",
-        format(selectedDate, "MM/dd/yyyy HH:mm a")
-      );
-    }
-  }, [selectedDate]);
+  // useEffect(() => {
+  //   if (selectedDate) {
+  //     console.log(
+  //       "Selected Date: ",
+  //       format(selectedDate, "MM/dd/yyyy HH:mm a")
+  //     );
+  //   }
+  // }, [selectedDate]);
 
-  console.log("Today", format(Date.now(), "MM/dd/yyyy HH:mm a"));
+  // console.log("Today", format(Date.now(), "MM/dd/yyyy HH:mm a"));
 
   const formattedPrice = (Math.round(totalPrice * 100) / 100).toFixed(2);
 
@@ -65,7 +65,7 @@ const Checkout = () => {
                   Total :
                 </Typography>
                 <Typography variant="h4" display="inline-flex">
-                  {`$ ${totalPrice}`}
+                  {`$ ${formattedPrice}`}
                 </Typography>
               </Box>
             </Paper>

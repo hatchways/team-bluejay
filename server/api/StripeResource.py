@@ -4,6 +4,8 @@ from config import STRIPE_API_KEY
 
 import stripe
 
+from datetime import datetime
+
 stripe.api_key = STRIPE_API_KEY
 
 
@@ -24,12 +26,22 @@ class StripeResource(Resource):
                 amount=total_amount_cents,
                 currency='usd'
             )
+            # create order 
+            dt_int = data.get("arrivalDateTimeStamp")
+            dt_obj = datetime.fromtimestamp(int(dt_int/1000))
             return jsonify({
                 'clientSecret': intent['client_secret'],
                 'totalAmount': total_amount_cents / 100,
-                'arrivalDate': data.get("arrivalDate"),
+                'arrivalDateTimeStamp': data.get("arrivalDateTimeStamp"),
                 'chefId': data.get("chefId"),
                 'userId': data.get("userId")
             })
         except Exception as e:
             return jsonify(error=str(e)), 403
+
+    def get(self):
+        q_params = request.args
+        date = q_params.get("date")
+        datetime_obj = datetime.fromtimestamp(int(int(date)/1000))
+        print(datetime_obj.strftime("%m/%d/%Y, %H:%M"))
+        return datetime_obj.timestamp()

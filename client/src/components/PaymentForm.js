@@ -32,7 +32,8 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
     const getClientSecret = async () => {
       const { data } = await API.post("/create-payment-intent", {
         orderedItems: shoppingCart,
-        arrivalDate: arrivalDate,
+        // date convert to timestamp in ms
+        arrivalDateTimeStamp: new Date(arrivalDate).getTime(),
         chefId: chefId,
         userId: user.id,
       });
@@ -41,6 +42,7 @@ const PaymentForm = ({ shoppingCart, arrivalDate, chefId }) => {
     };
     if (shoppingCart.length && arrivalDate) {
       getClientSecret();
+      console.log(typeof arrivalDate);
     }
   }, [shoppingCart, arrivalDate]);
 
