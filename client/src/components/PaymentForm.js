@@ -6,8 +6,9 @@ import { useHistory } from "react-router-dom";
 import { Context as MealContext } from "contexts/MealContext";
 import { Context as AlertContext } from "contexts/AlertContext";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import API from "api/index";
 
-const PaymentForm = ({ clientSecret, user, closeDialog }) => {
+const PaymentForm = ({ clientSecret, orderId, user, closeDialog }) => {
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState("");
@@ -45,6 +46,10 @@ const PaymentForm = ({ clientSecret, user, closeDialog }) => {
       emptyCart();
       history.push("/");
       alert("Order Placed", "success");
+      // update order status to "fulfilled" in the backend
+      API.put(`/orders/${orderId}`, {
+        clientSecret,
+      });
     }
     closeDialog();
   };
@@ -55,7 +60,7 @@ const PaymentForm = ({ clientSecret, user, closeDialog }) => {
         <Typography variant="h5" className={classes.paymentDetails}>
           Enter your payment details
         </Typography>
-        <CardSection />
+        <CardElement options={CARD_ELEMENT_OPTIONS} />
       </Box>
       <Button
         type="submit"
@@ -95,13 +100,5 @@ const CARD_ELEMENT_OPTIONS = {
     },
   },
 };
-
-function CardSection() {
-  return (
-    <label>
-      <CardElement options={CARD_ELEMENT_OPTIONS} />
-    </label>
-  );
-}
 
 export default PaymentForm;

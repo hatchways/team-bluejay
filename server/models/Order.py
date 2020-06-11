@@ -21,10 +21,16 @@ class Order(db.Model):
     created_date_time = db.Column(db.DateTime, nullable=False)
     arrival_date_time = db.Column(db.DateTime, nullable=False)
 
+    fulfilled = db.Column(db.Boolean, nullable=False)
+    clientSecret = db.Column(db.Text)
+
     meal_items = db.relationship('MealItem',
                             secondary=order_join_meal_items,
                             back_populates='orders'
                             )
+
+    def __repr__(self):
+        return f"<Order #{self.id}>"
 
     def __init__(self, chefId, userId, arrival_ts, meal_objects):
         self.chefId = chefId
@@ -32,8 +38,20 @@ class Order(db.Model):
         self.created_date_time = datetime.now()
         # timestamp from JS is in ms, timestamp in python is in secs
         self.arrival_date_time = datetime.fromtimestamp(int(arrival_ts/1000))
+        self.fulfilled = False
         self.meal_items = meal_objects
+    
+    def fulfill(self, clientSecret):
+        self.fulfilled = True
+        self.clientSecret = clientSecret
+        db.session.add(self)
+        db.session.commit()
+        
 
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def get_by_id(id):
+        return Order.query.get(id)

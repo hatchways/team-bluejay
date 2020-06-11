@@ -14,7 +14,7 @@ import { AddCircle, RemoveCircle } from "@material-ui/icons";
 import PaymentForm from "components/PaymentForm";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context as MealContext } from "contexts/MealContext";
-import { Context as UserContext } from "contexts/AuthContext";
+import { Context as AuthContext } from "contexts/AuthContext";
 import API from "api/index";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -28,7 +28,7 @@ const Checkout = () => {
   } = useContext(MealContext);
   const {
     state: { user },
-  } = useContext(UserContext);
+  } = useContext(AuthContext);
   const { openDialog, closeDialog } = useContext(DialogContext);
 
   const [selectedDate, handleDateChange] = useState(null);
@@ -49,15 +49,16 @@ const Checkout = () => {
       chefId: chefId,
       userId: user.id,
     });
-    return data.clientSecret;
+    return data;
   };
 
   const openPaymentDialog = async () => {
-    const clientSecret = await getClientSecret();
+    const { clientSecret, orderId } = await getClientSecret();
     openDialog(
       <PaymentForm
         clientSecret={clientSecret}
         user={user}
+        orderId={orderId}
         closeDialog={closeDialog}
       />
     );

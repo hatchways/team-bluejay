@@ -3,12 +3,13 @@ from flask import jsonify, request, json
 from config import STRIPE_API_KEY
 from models.Order import Order
 from models.MealItem import MealItem
+from helpers.api import custom_json_response
+from flask_jwt_extended import jwt_required 
 
 import stripe
 
-from datetime import datetime
-
 stripe.api_key = STRIPE_API_KEY
+
 
 def total_amount_with_meal_objects(ordered_items):
     total_amount = 0
@@ -22,6 +23,7 @@ def total_amount_with_meal_objects(ordered_items):
 
 
 class StripeResource(Resource):
+    @jwt_required
     def post(self):
         try:
             data = json.loads(request.data)
@@ -49,5 +51,5 @@ class StripeResource(Resource):
                 'orderId': order.id
             })
 
-        except Exception as e:
-            return jsonify(error=str(e)), 403
+        except Exception:
+            return custom_json_response({'error': 'problem getting clientSecret'}, 403)
