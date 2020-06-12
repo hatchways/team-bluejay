@@ -1,14 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, Badge, Menu, MenuItem, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Notifications, NotificationsNone } from "@material-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import API from "api";
+import { SocketContext } from "contexts/SocketContext";
 
 const NotificationIcon = () => {
+  //TODO: fix error of socket notifications not being recieved if notification menu is open!!!
+
+  const { socket } = useContext(SocketContext);
+
+  const [notifications, setNotifications] = useState([]);
+
   useEffect(() => {
     getNotifications();
   }, []);
+
+  useEffect(() => {
+    socket.on("new notification", (notification) => {
+      setNotifications([notification, ...notifications]);
+    });
+    return () => socket.off("new notification");
+  }, [socket, notifications]);
 
   async function getNotifications() {
     const {
@@ -24,42 +38,16 @@ const NotificationIcon = () => {
     setNotifications(notifications);
   }
 
-  const [notifications, setNotifications] = useState([]);
-  /*const notifications = [
-    {
-      id: 1,
-      isRead: false,
-      message: "A notification message that happens to be really long",
-      date_created: "5 minutes ago",
-    },
-    {
-      id: 2,
-      isRead: false,
-      message: "A notification message",
-      date_created: "5 minutes ago",
-    },
-    {
-      id: 3,
-      isRead: true,
-      message: "A notification message",
-      date_created: "5 minutes ago",
-    },
-    {
-      id: 4,
-      isRead: true,
-      message: "A notification message",
-      date_created: "5 minutes ago",
-    },
-  ];*/
-
   const [anchorEl, setAnchorEl] = useState(null);
 
   const openMenu = (event) => {
     setAnchorEl(event.currentTarget);
-    markNotificationsRead();
   };
 
-  const closeMenu = () => setAnchorEl(null);
+  const closeMenu = () => {
+    setAnchorEl(null);
+    markNotificationsRead();
+  };
 
   const classes = useStyles();
 
