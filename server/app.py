@@ -1,6 +1,7 @@
 from flask import Flask, json, jsonify, request
 from marshmallow import Schema
 from flask_restful import Api
+from flask_socketio import SocketIO
 from config import DB_URL
 
 from api.login_handler import LoginResource
@@ -24,6 +25,7 @@ from models import db
 
 def create_app():
     app = Flask(__name__)
+
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
     # Only allow JWT cookies to be sent over https. In production, this
@@ -53,3 +55,11 @@ def create_app():
     api.add_resource(OrderResource, '/orders/<id>')
 
     return app
+
+
+if __name__ == "__main__":
+    app = create_app()
+    # Setup flask_socketio with a secret key
+    app.config['SECRET_KEY'] = 'secret!'
+    socketio = SocketIO(app)
+    socketio.run(app)
