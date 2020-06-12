@@ -21,7 +21,7 @@ def user_connection(user_id):
     online_users[user_id] = request.sid
 
 
-@socketio.on('logout')
+@socketio.on('signOut')
 def logout_user():
     disconnect(request.sid)
 
@@ -32,13 +32,17 @@ def user_disconnects():
 
 
 def notifyUser(user_id, message):
+    # HOW TO USE THIS METHOD:
+    # From socket_events import notifyUser
+    # notifyUser(1, "A new notification was dispatched just for you")
     # Todo: add error handling using Schema.loads() for invalid notification fields
     new_notification = Notification(user_id, message)
     new_notification.save()
     socketid = online_users.get(user_id)
     if socketid:
         ser_notification = NotificationSchema().dump(new_notification)
-        emit('new notification', ser_notification, room=socketid)
+        # Todo: check if namespace = '/' is needed
+        emit('new notification', ser_notification, room=socketid, namespace='/')
 
 
 def disconnect(socketid):
