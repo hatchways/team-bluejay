@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.Order import Order, OrderSchema
 from helpers.api import custom_json_response
 
-order_schema = OrderSchema()
+order_schema = OrderSchema(many=True)
 
 
 class OrderResource(Resource):
@@ -16,6 +16,12 @@ class OrderResource(Resource):
         return custom_json_response({"message": "order created"}, 201)
 
     @jwt_required
-    def get(self, id):
-        order = Order.get_by_id(id)
-        return order_schema.dump(order)
+    def get(self):
+        id = get_jwt_identity().get("id")
+        chefOrders = Order.get_order_by_chefId(id)
+        userOrders = Order.get_order_by_userId(id)
+        data = {
+            "chefOrders": order_schema.dump(chefOrders, many=True),
+            "userOrders": order_schema.dump(userOrders, many=True)
+        }
+        return data

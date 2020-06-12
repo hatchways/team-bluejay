@@ -61,6 +61,14 @@ class Order(db.Model):
     @staticmethod
     def get_by_id(id):
         return Order.query.get(id)
+    
+    @staticmethod
+    def get_order_by_chefId(id):
+        return Order.query.filter_by(chefId=id).all()
+
+    @staticmethod
+    def get_order_by_userId(id):
+        return Order.query.filter_by(userId=id).all()
 
 class OrderJoinMealItemSchema(Schema):
     id = fields.Int()
