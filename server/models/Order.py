@@ -26,8 +26,8 @@ class Order(db.Model):
     __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
-    chefId = db.Column(db.Integer, nullable=False)
-    userId = db.Column(db.Integer, nullable=False)
+    chefId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    userId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     created_date_time = db.Column(db.DateTime, nullable=False)
     arrival_date_time = db.Column(db.DateTime, nullable=False)
@@ -87,5 +87,3 @@ class OrderSchema(Schema):
     arrival_date_time = fields.DateTime()
 
     ordered_items = fields.List(fields.Nested("OrderJoinMealItemSchema"))
-
-    # fields.Nested("MealItemSchema", exclude=("user",))
