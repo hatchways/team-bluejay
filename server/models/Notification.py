@@ -14,10 +14,14 @@ class Notification(db.Model):
     message = db.Column(db.Text, nullable=False)
     isRead = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, userId, message, isRead):
+    def __init__(self, userId, message, isRead=False):
         self.userId = userId
         self.message = message
         self.isRead = isRead
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
     @staticmethod
     def get_by_userId(userId):
@@ -35,4 +39,4 @@ class NotificationSchema(Schema):
     id = fields.Int(dump_only=True)
     userId = fields.Int(load_only=True)
     message = fields.Str(required=True)
-    isRead = fields.Boolean(required=True)
+    isRead = fields.Boolean()

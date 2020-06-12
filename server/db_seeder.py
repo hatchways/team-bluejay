@@ -33,10 +33,9 @@ for i in range(1, 4):
     new_notification3 = Notification(
         i, "A reallly really really really long read notification message", True)
     new_notification4 = Notification(i, "A read notification message", True)
-    new_notification1 = Notification(
-        i, "An unread notification message", False)
+    new_notification1 = Notification(i, "An unread notification message")
     new_notification2 = Notification(
-        i, "A really really really really long unread notification message", False)
+        i, "A really really really really long unread notification message")
     db.session.add(new_notification1)
     db.session.add(new_notification2)
     db.session.add(new_notification3)
