@@ -52,7 +52,7 @@ def create_app():
     api.add_resource(CuisineResource, '/cuisines')
     api.add_resource(NotificationResource, '/notifications')
     api.add_resource(StripeResource, '/create-payment-intent')
-    api.add_resource(OrderResource, '/orders/<id>')
+    api.add_resource(OrderResource, '/orders', '/orders/<id>')
 
     # Encrypts flask_socketio communications with a secret key
     app.config['SECRET_KEY'] = 'secret!'

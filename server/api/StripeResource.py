@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import jsonify, request, json
 from config import STRIPE_API_KEY
-from models.Order import Order
+from models.Order import Order, OrderJoinMealItem
 from models.MealItem import MealItem
 from helpers.api import custom_json_response
 from flask_jwt_extended import jwt_required 
@@ -11,15 +11,14 @@ import stripe
 stripe.api_key = STRIPE_API_KEY
 
 
-def total_amount_with_meal_objects(ordered_items):
+def compute_total(ordered_items):
     total_amount = 0
-    meal_objects = []
+    
     for item in ordered_items:
-        for i in range(item.get("quantity")):
-            meal_item = MealItem.get_by_id(item.get("id"))
-            total_amount += meal_item.price
-            meal_objects.append(meal_item)
-    return {"total_amount": total_amount, "meal_objects": meal_objects}
+        meal_item = MealItem.get_by_id(item.get("id"))
+        total_amount += ( meal_item.price * item.get("quantity") )
+            
+    return total_amount
 
 
 class StripeResource(Resource):
@@ -31,14 +30,17 @@ class StripeResource(Resource):
             chef_id = data.get("chefId")
             user_id = data.get("userId")
             arrival_ts = data.get("arrivalDateTimeStamp")
+            # items with meal_id and quantity
             ordered_items = data.get("orderedItems")
 
-            ret_dict = total_amount_with_meal_objects(ordered_items)
-            total_amount_dollars = ret_dict.get("total_amount")
-            meal_objects = ret_dict.get("meal_objects")
-
-            order = Order(chef_id, user_id, arrival_ts, meal_objects)   
+            order = Order(chef_id, user_id, arrival_ts)   
             order.save()
+
+            for item in ordered_items:
+                ojmt_obj = OrderJoinMealItem(order.id, item.get("id"), item.get("quantity"))
+                ojmt_obj.save()
+                
+            total_amount_dollars = compute_total(ordered_items)
 
             intent = stripe.PaymentIntent.create(
                 amount=int(total_amount_dollars*100),

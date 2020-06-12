@@ -10,6 +10,7 @@ import SignUp from "pages/SignUp";
 import Checkout from "pages/Checkout";
 import Profile from "pages/Profile";
 import Chefs from "pages/Chefs";
+import Orders from "pages/Orders";
 import ChefProfile from "components/ChefProfile";
 
 import "App.css";
@@ -39,6 +40,7 @@ const LoggedInContainer = () => {
         />
         <Route path="/checkout" component={Checkout} />
         <Route path="/chefs" component={Chefs} />
+        <Route path="/profile/orders" component={Orders} />
         <Route path="/profile" component={Profile} />
         <Route path="/" component={Chefs} />
       </Switch>
