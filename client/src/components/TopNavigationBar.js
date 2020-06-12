@@ -40,8 +40,8 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
         <Button component={RouterLink} to="/chefs" size="large">
           Chefs
         </Button>
-        <Button component={RouterLink} to="/dishes" size="large">
-          Dishes
+        <Button component={RouterLink} to="/profile/orders" size="large">
+          Orders
         </Button>
         <div className={classes.grow} />
         <ShoppingCartIcon />

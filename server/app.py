@@ -48,6 +48,6 @@ def create_app():
     api.add_resource(LogoutResource, '/users/logout')
     api.add_resource(CuisineResource, '/cuisines')
     api.add_resource(StripeResource, '/create-payment-intent')
-    api.add_resource(OrderResource, '/orders/<id>')
+    api.add_resource(OrderResource, '/orders', '/orders/<id>')
 
     return app
