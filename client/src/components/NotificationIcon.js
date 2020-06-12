@@ -87,7 +87,7 @@ const NotificationIcon = () => {
         {notifications.map((notification) => (
           <MenuItem
             component={RouterLink}
-            to="/"
+            to="/profile/orders"
             key={notification.id}
             onClick={closeMenu}
             className={classes.menuItem}
