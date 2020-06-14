@@ -12,8 +12,6 @@ socketio = SocketIO(cors_allowed_origins=CLIENT_URL)
 online_users = {}  # userid => socketid
 sockets = {}  # socketid => userid
 
-# Todo: Add error handling for socket connections
-
 
 @socketio.on('user connected')
 def user_connection(user_id):
@@ -33,16 +31,15 @@ def user_disconnects():
 
 def notifyUser(user_id, message):
     # HOW TO USE THIS METHOD:
-    # From socket_events import notifyUser
-    # notifyUser(1, "A new notification was dispatched just for you")
-    # Todo: add error handling using Schema.loads() for invalid notification fields
+    # from socket_events import notifyUser
+    # notifyUser(1, "sample notification message")
     new_notification = Notification(user_id, message)
     new_notification.save()
+    ser_notification = NotificationSchema().dump(new_notification)
     socketid = online_users.get(user_id)
     if socketid:
-        ser_notification = NotificationSchema().dump(new_notification)
-        # Todo: check if namespace = '/' is needed
         emit('new notification', ser_notification, room=socketid, namespace='/')
+    return ser_notification
 
 
 def disconnect(socketid):

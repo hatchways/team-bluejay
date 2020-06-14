@@ -84,22 +84,34 @@ const NotificationIcon = () => {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
       >
-        {notifications.map((notification) => (
-          <MenuItem
-            component={RouterLink}
-            to="/profile/orders"
-            key={notification.id}
-            onClick={closeMenu}
-            className={classes.menuItem}
-          >
-            <Box py={0.5} className={notification.isRead ? "" : classes.unread}>
-              {notification.message}
-            </Box>
-          </MenuItem>
-        ))}
+        <div // first child of a MUI Menu cannot be a functional component, so we have a div, see stackoverflow.com/a/56309771/9357034
+        >
+          <NotificationsList
+            notifications={notifications}
+            closeMenu={closeMenu}
+          />
+        </div>
       </Menu>
     </>
   );
+};
+
+const NotificationsList = ({ notifications, closeMenu }) => {
+  const classes = useStyles();
+
+  return notifications.map((notification) => (
+    <MenuItem
+      component={RouterLink}
+      to="/profile/orders"
+      key={notification.id}
+      onClick={closeMenu}
+      className={classes.menuItem}
+    >
+      <Box py={0.5} className={notification.isRead ? "" : classes.unread}>
+        {notification.message}
+      </Box>
+    </MenuItem>
+  ));
 };
 
 const useStyles = makeStyles((theme) => ({
