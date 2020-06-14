@@ -7,8 +7,6 @@ import API from "api";
 import { SocketContext } from "contexts/SocketContext";
 
 const NotificationIcon = () => {
-  //TODO: fix error of socket notifications not being recieved if notification menu is open!!!
-
   const { socket } = useContext(SocketContext);
 
   const [notifications, setNotifications] = useState([]);
@@ -81,7 +79,7 @@ const NotificationIcon = () => {
         getContentAnchorEl={null}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         transformOrigin={{ vertical: "top", horizontal: "center" }}
-        open={Boolean(anchorEl)}
+        open={notifications.length > 0 && Boolean(anchorEl)}
         onClose={closeMenu}
       >
         <div // first child of a MUI Menu cannot be a functional component, so we have a div, see stackoverflow.com/a/56309771/9357034
