@@ -30,9 +30,11 @@ def user_disconnects():
 
 
 def notifyUser(user_id, message):
-    # HOW TO USE THIS METHOD:
-    # from socket_events import notifyUser
-    # notifyUser(1, "sample notification message")
+    """
+    How to use this method:
+        from socket_events import notifyUser
+        notifyUser(1, "sample notification message")
+    """
     new_notification = Notification(user_id, message)
     new_notification.save()
     ser_notification = NotificationSchema().dump(new_notification)
