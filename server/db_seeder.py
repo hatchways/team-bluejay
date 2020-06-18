@@ -6,6 +6,7 @@ app.app_context().push()
 from models.User import User
 from models.Cuisine import Cuisine
 from models.MealItem import MealItem
+from models.Notification import Notification
 
 
 cuisines = ['Japanese', 'French', 'Mexican', 'Egyptian', 'Viking']
@@ -27,6 +28,18 @@ for i in range(1,11):
 
 db.session.commit()
 
+# add notifications for first 3 users:
+for i in range(1, 4):
+    new_notification3 = Notification(
+        i, "A reallly really really really long read notification message", True)
+    new_notification4 = Notification(i, "A read notification message", True)
+    new_notification1 = Notification(i, "An unread notification message")
+    new_notification2 = Notification(
+        i, "A really really really really long unread notification message")
+    db.session.add(new_notification1)
+    db.session.add(new_notification2)
+    db.session.add(new_notification3)
+    db.session.add(new_notification4)
 
 #create meal_items for chefs
 for i in range(1, 11):
@@ -44,6 +57,6 @@ for i in range(1, 11):
     db.session.add(user)
 
 db.session.commit()
-
+print("Added sample data to database")
 
 exit()

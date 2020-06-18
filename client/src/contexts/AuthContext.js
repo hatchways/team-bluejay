@@ -2,6 +2,7 @@ import React, { useReducer, useContext, useEffect } from "react";
 import API from "api/index";
 import { useHistory, useLocation } from "react-router-dom";
 import { Context as AlertContext } from "contexts/AlertContext";
+import { SocketContext } from "contexts/SocketContext";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -59,6 +60,8 @@ const Context = React.createContext();
 
 const Provider = ({ children }) => {
   const { alert } = useContext(AlertContext);
+  const { socket } = useContext(SocketContext);
+
   const [state, dispatch] = useReducer(reducer, {
     user: null,
     errorMessage: "",
@@ -85,6 +88,7 @@ const Provider = ({ children }) => {
     try {
       const { data } = await API.post("/users", user);
       dispatch({ type: "signUp", payload: { user: data.user } });
+      socket.emit("user connected", data.user.id);
       history.push("/");
     } catch (error) {
       handleErrorResponse(error);
@@ -94,6 +98,7 @@ const Provider = ({ children }) => {
     try {
       const { data } = await API.post("/users/login", { email, password });
       dispatch({ type: "login", payload: { user: data.user } });
+      socket.emit("user connected", data.user.id);
       let { from } = location.state || { from: { pathname: "/" } };
       history.replace(from);
     } catch (error) {
@@ -132,6 +137,7 @@ const Provider = ({ children }) => {
     try {
       await API.post("/users/logout");
       dispatch({ type: "signOut" });
+      socket.emit("signOut");
       history.push("/login");
     } catch (error) {
       handleErrorResponse(error);
@@ -142,6 +148,7 @@ const Provider = ({ children }) => {
     try {
       const { data } = await API.get("/users/login");
       dispatch({ type: "refreshUser", payload: { user: data.user } });
+      socket.emit("user connected", data.user.id);
     } catch (error) {
       alert(`Unable to ${action} user`);
       return;

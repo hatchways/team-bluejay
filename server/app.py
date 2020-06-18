@@ -2,6 +2,7 @@ from flask import Flask, json, jsonify, request
 from marshmallow import Schema
 from flask_restful import Api
 from config import DB_URL
+from socket_events import socketio
 
 from api.login_handler import LoginResource
 from api.user_handler import UserResource
@@ -10,6 +11,7 @@ from api.meal_item_handler import MealItemResource
 from api.LogoutResource import LogoutResource
 from api.StripeResource import StripeResource
 from api.cuisine_handler import CuisineResource
+from api.notification_handler import NotificationResource
 from api.order_handler import OrderResource
 
 
@@ -23,6 +25,7 @@ from models import db
 
 def create_app():
     app = Flask(__name__)
+
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
     # Only allow JWT cookies to be sent over https. In production, this
@@ -47,7 +50,17 @@ def create_app():
     api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
     api.add_resource(LogoutResource, '/users/logout')
     api.add_resource(CuisineResource, '/cuisines')
+    api.add_resource(NotificationResource, '/notifications')
     api.add_resource(StripeResource, '/create-payment-intent')
     api.add_resource(OrderResource, '/orders', '/orders/<id>')
 
+    # Encrypts flask_socketio communications with a secret key
+    app.config['SECRET_KEY'] = 'secret!'
+    socketio.init_app(app)
+
     return app
+
+
+if __name__ == "__main__":
+    app = create_app()
+    socketio.run(app)

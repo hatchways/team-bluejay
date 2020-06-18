@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "images/logo.svg";
 import UserAvatar from "common/UserAvatar";
 import ShoppingCartIcon from "components/ShoppingCartIcon";
+import NotificationIcon from "components/NotificationIcon";
 import CreateMealForm from "components/CreateMealForm";
 import { DialogContext } from "contexts/DialogContext";
 
@@ -50,6 +51,7 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
             Become A Chef
           </Button>
         )}
+        <NotificationIcon />
         <Button onClick={handleMenu}>
           <UserAvatar user={loggedInUser} />
           <Typography>{loggedInUser.name}</Typography>
@@ -69,9 +71,9 @@ const TopNavigationBar = ({ loggedInUser, signOut }) => {
             Messages
           </MenuItem>
           <Divider />
-          <Link component={RouterLink} to="/profile" color="inherit">
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-          </Link>
+          <MenuItem component={RouterLink} to="/profile" onClick={handleClose}>
+            Profile
+          </MenuItem>
           <MenuItem
             onClick={() => {
               handleClose();

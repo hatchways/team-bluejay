@@ -25,3 +25,7 @@ After making changes to any database models, the database tables need to be upda
 1. `python manage.py db init` to create a "migrations" folder in the project directory (only needs to be done once)
 2. `python manage.py db migrate` to populate our "migrations" folder with the updated tables
 3. `python manage.py db upgrade` to apply the changes to the database
+
+## Running in production
+
+1. Install the python library `eventlet`, an optimized engine for web sockets. Flask-socketio will automatically use `eventlet` if its installed.
