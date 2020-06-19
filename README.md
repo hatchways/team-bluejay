@@ -19,7 +19,7 @@ It’s always nice to have a homecooked meal that is authentic and made in your 
 
 ## Setup instructions
 
-Rename `.env.template` under `server/` and `client.` to `.env` update the values/settings to your own
+Rename `.env.template` under both the `server` and `client` folders to `.env` and update the values/settings to your own.
 
 ### Adding Postgres database
 
@@ -57,7 +57,7 @@ Within your server install the python library [eventlet](https://eventlet.net/),
 ## Features
 
 - Authentication
-- Filtering by distance
+- Searching by distance
 - Shopping cart
 - Checkout
 - Payments with Stripe
@@ -68,20 +68,20 @@ Within your server install the python library [eventlet](https://eventlet.net/),
 
 ### Feature descriptions
 
-**Authentication:** Uses cookies for access, refresh, and csrf tokens. React Context passes the users's logged in state throughout the app.
+- **Authentication:** Uses cookies for access, refresh, and csrf tokens. React Context passes the users's logged in state throughout the app.
 
-**Filtering**: Customers can filter for chefs based on cuisines and distance from an address
+- **Searching**: Customers can filter chefs based on cuisines and distance from an address
 
-**Shopping cart**: Customers can add meals to their cart for one chef at a time. If they try adding meals for multiple chefs, they will be prompted to empty their cart.
+- **Shopping cart**: Customers can add meals to their cart for one chef at a time. If they try adding meals for multiple chefs, they will be prompted to empty their cart.
 
-**Checkout**: Customer chooses an availability that works for them, confirms their cart items, and enters their payment details.
+- **Checkout**: Customer chooses an availability that works for them, confirms their cart items, and enters their payment details.
 
-**Payments:** Payments are made using Stripe
+- **Payments:** Payments are made using Stripe.
 
-**Live notifications**: Chefs are notified via web sockets when they receive an order via Stripe. All notifications start off as "unread" and change to "read" when a chef opens them.
+- **Live notifications**: Chefs are notified via web sockets when they receive an order via Stripe. All notifications start off as "unread" and change to "read" when a chef opens them.
 
-**Profile Pages**: All users can add profile images, cuisines, and an address. Chefs can add meals. General address locations are shown via Google Maps.
+- **Profile Pages**: All users can add profile images, cuisines, and an address. Chefs can add meals. General address locations are shown via Google Maps.
 
-**Meal Creation**: Chefs can create and edit meals to include relevant info such as images, pricing, and ingredients.
+- **Meal Creation**: Chefs can create and edit meals to include relevant info such as images, pricing, and ingredients.
 
-**Alerts**: Front end alerts are shown whenever a server request returns an error, such as for incorrect logins or an invalid address.
+- **Alerts**: Front end alerts are shown whenever a server request returns an error, such as for incorrect logins or an invalid address.
