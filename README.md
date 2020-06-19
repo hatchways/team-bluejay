@@ -1,31 +1,87 @@
-# flask-starter
+# BookAChef
 
-## Starting the server:
+It’s always nice to have a homecooked meal that is authentic and made in your own kitchen. BookAChef is a marketplace where customers can book a chef in their area based on cuisine type and availability.
+
+## Contributors
+
+[Gabriel Atienza](https://github.com/giftofgrub), [Moshe Siegel](https://github.com/mssiegel/), [Kareem Sakr](https://github.com/kareemsakr)
+
+## Tech stack
+
+- React
+- Material UI
+- Python
+- Flask
+- Postgres SQL
+- Amazon S3
+- SocketIO
+- Stripe
+
+## Setup instructions
+
+Rename `.env.template` under `server/` and `client.` to `.env` update the values/settings to your own
+
+### Adding Postgres database
+
+1. Download [Postgres](https://www.postgresql.org/)
+2. Create new database using any SQL client such as [pgAdmin](https://www.pgadmin.org/).
+3. Update `server/.env` with your database name, user, password, and url.
+4. Set up your database tables by running `python init_db.py`
+5. Add sample customers, chefs, and cuisines by running `python db_seeder.py`
+
+### Starting the server
 
 1. Open a terminal and go to the server folder. Make sure you have **pipenv** installed (`pip install pipenv`)
-2. Install the dependencies with `pipenv install`. This also createa a virtual environment, if there isn't one already
+2. Install the dependencies with `pipenv install`. This also creates a virtual environment, if there isn't one already
 3. Activate the virtual environment with `pipenv shell`
 4. Start the app with `flask run`
 
-## Adding Postgres database:
+### Starting the client
 
-1. Download [Postgres](https://www.postgresql.org/)
-2. Create database named 'team-bluejay' using a SQL client of your choice. [Instructions for database creation](https://www.guru99.com/postgresql-create-database.html) using pgAdmin which is automatically downloaded with Postgres. (Instructions are halfway down the link page)
-3. Update password variable in `app.py` to match your SQL password
-4. Initialize database tables with `pipenv run init_db`
+1. Open a terminal and go to the client folder
+2. Install the dependencies with `npm install`
+3. Launch the app on http://localhost:3000 with `npm start`
 
-## Add seeder data to databse:
+## Updating SQL database relationships
 
-1. Add cuisines by running `python db_seeder.py`
-
-## Updating Postgress database relationships:
-
-After making changes to any database models, the database tables need to be updated. To update them, from your server folder run:
+After changing any database models, you'll need to update your SQL tables by going to your server folder and running:
 
 1. `python manage.py db init` to create a "migrations" folder in the project directory (only needs to be done once)
 2. `python manage.py db migrate` to populate our "migrations" folder with the updated tables
 3. `python manage.py db upgrade` to apply the changes to the database
 
-## Running in production
+## Special instructions for running in production
 
-1. Install the python library `eventlet`, an optimized engine for web sockets. Flask-socketio will automatically use `eventlet` if its installed.
+Within your server install the python library [eventlet](https://eventlet.net/), an optimized engine for web sockets. Flask-socketio will automatically use `eventlet` if its installed.
+
+## Features
+
+- Authentication
+- Filtering by distance
+- Shopping cart
+- Checkout
+- Payments with Stripe
+- Live notifications
+- Meal creation
+- Profile pages
+- Alerts
+
+### Feature descriptions
+
+**Authentication:** Uses cookies for access, refresh, and csrf tokens. React Context passes the users's logged in state throughout the app.
+
+**Filtering**: Customers can filter for chefs based on cuisines and distance from an address
+
+**Shopping cart**: Customers can add meals to their cart for one chef at a time. If they try adding meals for multiple chefs, they will be prompted to empty their cart.
+
+**Checkout**: Customer chooses an availability that works for them, confirms their cart items, and enters their payment details.
+
+**Payments:** Payments are made using Stripe
+
+**Live notifications**: Chefs are notified via web sockets when they receive an order via Stripe. All notifications start off as "unread" and change to "read" when a chef opens them.
+
+**Profile Pages**: All users can add profile images, cuisines, and an address. Chefs can add meals. General address locations are shown via Google Maps.
+
+**Meal Creation**: Chefs can create and edit meals to include relevant info such as images, pricing, and ingredients.
+
+**Alerts**: Front end alerts are shown whenever a server request returns an error, such as for incorrect logins or an invalid address.
