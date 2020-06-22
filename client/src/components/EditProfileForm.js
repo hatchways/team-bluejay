@@ -15,7 +15,6 @@ import { Context as UserContext } from "contexts/AuthContext";
 import { DialogContext } from "contexts/DialogContext";
 import { CuisineContext } from "contexts/CuisineContext";
 import Dropzone from "common/DropZone";
-import API from "api";
 
 const EditProfileForm = () => {
   const classes = useStyles();

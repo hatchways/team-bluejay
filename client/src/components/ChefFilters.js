@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Grid,
   Paper,
@@ -6,19 +6,11 @@ import {
   Box,
   Input,
   Typography,
-  Chip,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardMedia,
-  CardContent,
   Slider,
 } from "@material-ui/core";
 import { LocationOn, Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { addressToCoords, coordsToAddress } from "api/googleMaps";
-import chefImage from "images/chef.png";
-import chefPlaceholder from "images/chefPlaceholder.jpeg";
 
 const ChefFilters = ({
   userAddress,

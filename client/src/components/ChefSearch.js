@@ -35,6 +35,7 @@ const ChefSearch = ({ coords }) => {
 
   useEffect(() => {
     searchChefs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress, userCoordinates, selectedCuisines, distanceFilter]);
 
   const searchChefs = async () => {

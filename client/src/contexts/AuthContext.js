@@ -70,6 +70,7 @@ const Provider = ({ children }) => {
   useEffect(() => {
     // Check if user is logged in on first visit to application
     refreshLoggedInUser("login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let history = useHistory();

@@ -1,14 +1,10 @@
-import React, { useState, useContext } from "react";
-import Dialog from "common/Dialog";
+import React, { useContext } from "react";
 import EditProfileForm from "components/EditProfileForm";
 import { Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import { Edit } from "@material-ui/icons";
-import { Context as UserContext } from "contexts/AuthContext";
 import { DialogContext } from "contexts/DialogContext";
 
 const EditProfileButton = () => {
-  const classes = useStyles();
   const { openDialog } = useContext(DialogContext);
 
   return (
@@ -24,7 +20,5 @@ const EditProfileButton = () => {
     </>
   );
 };
-
-const useStyles = makeStyles((theme) => ({}));
 
 export default EditProfileButton;

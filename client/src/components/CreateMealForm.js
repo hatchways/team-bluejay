@@ -11,7 +11,6 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { DialogContext } from "contexts/DialogContext";
 import Dropzone from "common/DropZone";
-import API from "api";
 import imagePlaceholder from "images/imagePlaceholder.jpg";
 import { Context as AuthContext } from "contexts/AuthContext";
 import { CuisineContext } from "contexts/CuisineContext";
@@ -36,7 +35,7 @@ const CreateMealForm = ({ meal }) => {
         .name;
     const defaultCuisine = user.chefCuisine || randomCuisine;
     setSelectedCuisine(defaultCuisine);
-  }, []);
+  }, [availableCuisines, user.chefCuisine]);
 
   const { closeDialog } = useContext(DialogContext);
 

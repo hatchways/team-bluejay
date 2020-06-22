@@ -3,7 +3,6 @@ import API from "api/index";
 import { Context as AlertContext } from "contexts/AlertContext";
 import Dialog from "common/Dialog";
 import { Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 
 const reducer = (state, action) => {
   const { shoppingCart } = state;
@@ -70,6 +69,7 @@ const Provider = ({ children }) => {
   useEffect(() => {
     updateToLocalStorage();
     console.log(state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.chefId, state.shoppingCart]);
 
   const updateFromLocalStorage = () => {

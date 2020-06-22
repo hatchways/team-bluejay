@@ -1,14 +1,6 @@
 import React, { useContext } from "react";
-import {
-  Grid,
-  Paper,
-  Avatar,
-  Chip,
-  Button,
-  Typography,
-} from "@material-ui/core";
+import { Grid, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Image from "material-ui-image";
 import MealItem from "components/MealItem";
 import { Add } from "@material-ui/icons";
 import CreateMealForm from "components/CreateMealForm";

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Redirect, useHistory, useLocation } from "react-router-dom";
+import { Redirect, useLocation } from "react-router-dom";
 import Form from "common/Form";
 import { Context as AuthContext } from "contexts/AuthContext";
 

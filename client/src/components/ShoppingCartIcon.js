@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
