@@ -44,15 +44,15 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    api.add_resource(UserResource, '/users')
-    api.add_resource(ChefResource, '/chefs', '/chefs/<id>')
-    api.add_resource(LoginResource, '/users/login')
-    api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
-    api.add_resource(LogoutResource, '/users/logout')
-    api.add_resource(CuisineResource, '/cuisines')
-    api.add_resource(NotificationResource, '/notifications')
-    api.add_resource(StripeResource, '/create-payment-intent')
-    api.add_resource(OrderResource, '/orders', '/orders/<id>')
+    api.add_resource(UserResource, '/api/users')
+    api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
+    api.add_resource(LoginResource, '/api/users/login')
+    api.add_resource(MealItemResource, '/api/meal_items', '/api/meal_items/<id>')
+    api.add_resource(LogoutResource, '/api/users/logout')
+    api.add_resource(CuisineResource, '/api/cuisines')
+    api.add_resource(NotificationResource, '/api/notifications')
+    api.add_resource(StripeResource, '/api/create-payment-intent')
+    api.add_resource(OrderResource, '/api/orders', '/api/orders/<id>')
 
     # Encrypts flask_socketio communications with a secret key
     app.config['SECRET_KEY'] = 'secret!'
