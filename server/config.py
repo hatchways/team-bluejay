@@ -10,4 +10,4 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
-CLIENT_URL = "http://localhost:3000"
+CLIENT_URL = "/"

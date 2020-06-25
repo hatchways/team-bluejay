@@ -24,7 +24,7 @@ from models import db
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="../client/build", static_url_path="/")
 
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
@@ -32,7 +32,7 @@ def create_app():
     # should likely be True
     app.config['JWT_COOKIE_SECURE'] = False
     app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
-    app.config['JWT_REFRESH_COOKIE_PATH'] = '/users/login'
+    app.config['JWT_REFRESH_COOKIE_PATH'] = '/api/users/login'
     app.config['JWT_COOKIE_CSRF_PROTECT'] = True
     app.config['JWT_CSRF_IN_COOKIES'] = True
     app.config['JWT_SECRET_KEY'] = 'team-bluejay'
@@ -43,6 +43,10 @@ def create_app():
 
     db.init_app(app)
     api = Api(app)
+
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
 
     api.add_resource(UserResource, '/api/users')
     api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
