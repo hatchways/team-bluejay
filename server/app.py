@@ -1,5 +1,5 @@
 from flask import Flask, json, jsonify, request
-from marshmallow import Schema
+"""from marshmallow import Schema
 from flask_restful import Api
 from config import DB_URL
 from socket_events import socketio
@@ -21,8 +21,29 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from models import db
+"""
 
 
+def create_app():
+    #app = Flask(__name__, static_folder="../client/build", static_url_path="/")
+    app = Flask(__name__)
+
+    @app.route('/')
+    @app.route('/<path1>')
+    @app.route('/<path1>/<path2>')
+    def index(**kwargs):
+        return "<h1>HELLO THERE AND WELCOME</h1>"
+        # //return app.send_static_file('index.html')
+
+    return app
+
+
+# if run via gunicorn this will return false
+# if __name__ == "__main__":
+app = create_app()
+
+
+"""
 def create_app():
     #app = Flask(__name__, static_folder="../client/build", static_url_path="/")
     app = Flask(__name__)
@@ -73,3 +94,4 @@ def create_app():
 # if __name__ == "__main__":
 app = create_app()
 # socketio.run(app)
+"""
