@@ -16,6 +16,5 @@ def create_app():
 
 print(os.getenv('FLASK_ENV'))
 
-# if run via gunicorn this will return false
 if __name__ == "__main__" or os.getenv('FLASK_ENV') == 'production':
     app = create_app()
