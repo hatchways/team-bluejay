@@ -72,4 +72,4 @@ def create_app():
 # if run via gunicorn this will return false
 # if __name__ == "__main__":
 app = create_app()
-socketio.run(app)
+# socketio.run(app)
