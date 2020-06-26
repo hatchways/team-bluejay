@@ -14,7 +14,5 @@ def create_app():
     return app
 
 
-print(os.getenv('FLASK_ENV'))
-
-if __name__ == "__main__" or os.getenv('FLASK_ENV') == 'production':
-    app = create_app()
+# if __name__ == "__main__" or os.getenv('FLASK_ENV') == 'production':
+app = create_app()
