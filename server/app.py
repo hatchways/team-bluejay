@@ -24,8 +24,8 @@ from models import db
 
 
 def create_app():
-    app = Flask(__name__, static_folder="../client/build", static_url_path="/")
-
+    #app = Flask(__name__, static_folder="../client/build", static_url_path="/")
+    app = Flask(__name__)
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
     # Only allow JWT cookies to be sent over https. In production, this
@@ -48,7 +48,8 @@ def create_app():
     @app.route('/<path1>')
     @app.route('/<path1>/<path2>')
     def index(**kwargs):
-        return app.send_static_file('index.html')
+        return "<h1>WELCOME HERE TO A STATIC PAGE</h1>"
+        # return app.send_static_file('index.html')
 
     api.add_resource(UserResource, '/api/users')
     api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
