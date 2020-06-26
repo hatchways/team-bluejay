@@ -45,13 +45,16 @@ def create_app():
     api = Api(app)
 
     @app.route('/')
-    def index():
+    @app.route('/<path1>')
+    @app.route('/<path1>/<path2>')
+    def index(**kwargs):
         return app.send_static_file('index.html')
 
     api.add_resource(UserResource, '/api/users')
     api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
     api.add_resource(LoginResource, '/api/users/login')
-    api.add_resource(MealItemResource, '/api/meal_items', '/api/meal_items/<id>')
+    api.add_resource(MealItemResource, '/api/meal_items',
+                     '/api/meal_items/<id>')
     api.add_resource(LogoutResource, '/api/users/logout')
     api.add_resource(CuisineResource, '/api/cuisines')
     api.add_resource(NotificationResource, '/api/notifications')
