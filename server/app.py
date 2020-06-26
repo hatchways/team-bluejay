@@ -1,4 +1,4 @@
-from flask import Flask, json, jsonify, request
+from flask import Flask, json, jsonify, request, send_from_directory
 from marshmallow import Schema
 from flask_restful import Api
 from config import DB_URL
@@ -21,6 +21,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from models import db
+import os
 
 
 def create_app():
@@ -44,10 +45,6 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    @app.route('/')
-    def index():
-        return app.send_static_file('index.html')
-
     api.add_resource(UserResource, '/api/users')
     api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
     api.add_resource(LoginResource, '/api/users/login')
@@ -57,6 +54,12 @@ def create_app():
     api.add_resource(NotificationResource, '/api/notifications')
     api.add_resource(StripeResource, '/api/create-payment-intent')
     api.add_resource(OrderResource, '/api/orders', '/api/orders/<id>')
+
+    @app.route('/')
+    @app.route('/<path1>')
+    @app.route('/<path1>/<path2>')
+    def serve(**kwargs):
+        return app.send_static_file("index.html")
 
     # Encrypts flask_socketio communications with a secret key
     app.config['SECRET_KEY'] = 'secret!'
