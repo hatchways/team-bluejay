@@ -25,15 +25,13 @@ from models import db
 
 
 def create_app():
-    #app = Flask(__name__, static_folder="../client/build", static_url_path="/")
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="../client/build", static_url_path="/")
 
     @app.route('/')
     @app.route('/<path1>')
     @app.route('/<path1>/<path2>')
     def index(**kwargs):
-        return "<h1>HELLO THERE AND WELCOME</h1>"
-        # //return app.send_static_file('index.html')
+        return app.send_static_file('index.html')
 
     return app
 
