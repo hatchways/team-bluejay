@@ -10,4 +10,5 @@ DB_URL = os.getenv('DATABASE_URL') or 'postgresql+psycopg2://{user}:{pw}@{url}/{
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
-CLIENT_URL = "/"
+ALLOWED_CLIENT_URLS = ['http://localhost:5000',
+                       'http://localhost:3000/login', 'https://team-bluejay.herokuapp.com/']

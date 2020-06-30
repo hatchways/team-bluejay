@@ -1,5 +1,5 @@
 import boto3
-from config import AWS_ACCESS_KEY, AWS_SECRET_KEY
+from server.config import AWS_ACCESS_KEY, AWS_SECRET_KEY
 
 
 def upload_picture(file, s3_file_path):

@@ -1,8 +1,8 @@
 from . import db, bcrypt
 from marshmallow import fields, Schema, validate, validates, validates_schema, ValidationError
 
-from models.Cuisine import Cuisine, favorite_cuisines_table
-from helpers.google import address_to_data
+from server.models.Cuisine import Cuisine, favorite_cuisines_table
+from server.helpers.google import address_to_data
 
 
 class User(db.Model):
