@@ -22,6 +22,7 @@ flask-migrate = "*"
 flask-script = "*"
 faker = "*"
 flask-socketio = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"

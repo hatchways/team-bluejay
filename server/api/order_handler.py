@@ -1,9 +1,9 @@
 from flask_restful import Resource
 from flask import jsonify, request, json
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.Order import Order, OrderSchema
-from helpers.api import custom_json_response
-from socket_events import notifyUser
+from server.models.Order import Order, OrderSchema
+from server.helpers.api import custom_json_response
+from server.socket_events import notifyUser
 
 order_schema = OrderSchema(many=True)
 

@@ -1,12 +1,12 @@
 # seeds database with sample data
-from app import create_app, db
+from server import create_app, db
 import random
 app = create_app()
 app.app_context().push()
-from models.User import User
-from models.Cuisine import Cuisine
-from models.MealItem import MealItem
-from models.Notification import Notification
+from server.models.User import User
+from server.models.Cuisine import Cuisine
+from server.models.MealItem import MealItem
+from server.models.Notification import Notification
 
 
 cuisines = ['Japanese', 'French', 'Mexican', 'Egyptian', 'Viking']
@@ -15,14 +15,14 @@ for cuisine in cuisines:
     db.session.add(new_cuisine)
 
 # create 10 users
-for i in range(1,11):
+for i in range(1, 11):
     chef = User(f'chef{i}', f'chef{i}@chef.com', 'p@ssword1')
     chef.isChef = True
     chef.chefCuisine = random.choice(cuisines)
     db.session.add(chef)
 
-#create 10 users
-for i in range(1,11):
+# create 10 users
+for i in range(1, 11):
     user = User(f'user{i}', f'user{i}@user.com', 'p@ssword1')
     db.session.add(user)
 
@@ -41,12 +41,13 @@ for i in range(1, 4):
     db.session.add(new_notification3)
     db.session.add(new_notification4)
 
-#create meal_items for chefs
+# create meal_items for chefs
 for i in range(1, 11):
     userId = User.query.filter_by(email=f'chef{i}@chef.com').first().id
 
     for j in range(1, 11):
-        meal_item = MealItem(userId, f'Yummy Food {j}', 10, 2, "Very very delicious")
+        meal_item = MealItem(
+            userId, f'Yummy Food {j}', 10, 2, "Very very delicious")
         db.session.add(meal_item)
 
 # create cuisines for users

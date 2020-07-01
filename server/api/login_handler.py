@@ -1,9 +1,9 @@
 from flask import request, Response, json
 from flask_restful import Resource
-from models import User, UserSchema
+from server.models import User, UserSchema
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 set_access_cookies, create_refresh_token, set_refresh_cookies, get_csrf_token, jwt_required, jwt_refresh_token_required)
-from helpers.api import custom_json_response
+from server.helpers.api import custom_json_response
 from datetime import timedelta
 
 

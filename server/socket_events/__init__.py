@@ -1,13 +1,13 @@
 from flask_socketio import SocketIO, emit
-from config import CLIENT_URL
+from server.config import ALLOWED_CLIENT_URLS
 from flask import request
-from models.Notification import Notification, NotificationSchema
+from server.models.Notification import Notification, NotificationSchema
 
 # In development mode flask-socketio uses Flasks non-optimized built in engine to run sockets
 # In production "eventlet" package should be installed. If "eventlet" is installed, flask-socketio will automatically detect it and use its superior engine for running sockets.
 # eventlet should not be used in "development" mode as it prevents flask from restarting server on file changes
 
-socketio = SocketIO(cors_allowed_origins=CLIENT_URL)
+socketio = SocketIO(cors_allowed_origins=ALLOWED_CLIENT_URLS)
 
 online_users = {}  # userid => socketid
 sockets = {}  # socketid => userid
