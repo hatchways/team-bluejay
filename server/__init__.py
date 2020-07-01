@@ -36,6 +36,8 @@ def create_app():
     def serve(**kwargs):
         return app.send_static_file("index.html")
 
+    app.host = '0.0.0.0'
+
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
     # Only allow JWT cookies to be sent over https. In production, this
