@@ -1,4 +1,4 @@
-from flask import Flask, json, jsonify, request
+from flask import Flask, json, jsonify, request, send_from_directory
 from marshmallow import Schema
 from flask_restful import Api
 from config import DB_URL
@@ -20,7 +20,8 @@ from flask_jwt_extended import (
     jwt_refresh_token_required, create_refresh_token,
     get_jwt_identity
 )
-from models import db
+# Exclude DB
+# from models import db
 
 
 def create_app():
@@ -32,7 +33,7 @@ def create_app():
     # should likely be True
     app.config['JWT_COOKIE_SECURE'] = False
     app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
-    app.config['JWT_REFRESH_COOKIE_PATH'] = '/users/login'
+    app.config['JWT_REFRESH_COOKIE_PATH'] = '/api/users/login'
     app.config['JWT_COOKIE_CSRF_PROTECT'] = True
     app.config['JWT_CSRF_IN_COOKIES'] = True
     app.config['JWT_SECRET_KEY'] = 'team-bluejay'
@@ -45,16 +46,17 @@ def create_app():
     # db.init_app(app)
     api = Api(app)
 
-    api.add_resource(UserResource, '/users')
-    api.add_resource(ChefResource, '/chefs', '/chefs/<id>')
-    api.add_resource(LoginResource, '/users/login')
-    api.add_resource(MealItemResource, '/meal_items', '/meal_items/<id>')
-    api.add_resource(LogoutResource, '/users/logout')
-    api.add_resource(CuisineResource, '/cuisines')
-    api.add_resource(NotificationResource, '/notifications')
-    api.add_resource(StripeResource, '/create-payment-intent')
-    api.add_resource(OrderResource, '/orders', '/orders/<id>')
+    api.add_resource(UserResource, '/api/users')
+    api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
+    api.add_resource(LoginResource, '/api/users/login')
+    api.add_resource(MealItemResource, '/api/meal_items', '/api/meal_items/<id>')
+    api.add_resource(LogoutResource, '/api/users/logout')
+    api.add_resource(CuisineResource, '/api/cuisines')
+    api.add_resource(NotificationResource, '/api/notifications')
+    api.add_resource(StripeResource, '/api/create-payment-intent')
+    api.add_resource(OrderResource, '/api/orders', '/api/orders/<id>')
 
+    # test route
     @app.route("/test")
     def test():
         return "Test"
