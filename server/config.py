@@ -10,5 +10,5 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
-ALLOWED_CLIENT_URLS = ['http://localhost:5000',
-                       'http://localhost:3000', 'https://team-bluejay.herokuapp.com/']
+ALLOWED_CLIENT_URLS = '*'  # ['http://localhost:5000',
+# 'http://localhost:3000', 'https://team-bluejay.herokuapp.com/']
