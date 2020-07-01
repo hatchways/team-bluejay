@@ -26,6 +26,16 @@ from server.models import db
 def create_app():
     app = Flask(__name__, static_folder="../client/build", static_url_path="/")
 
+    @app.route("/manifest.json")
+    def manifest():
+        return app.send_static_file('manifest.json')
+
+    @app.route('/')
+    @app.route('/<path1>')
+    @app.route('/<path1>/<path2>')
+    def serve(**kwargs):
+        return app.send_static_file("index.html")
+
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
     # Only allow JWT cookies to be sent over https. In production, this
@@ -54,12 +64,6 @@ def create_app():
     api.add_resource(NotificationResource, '/api/notifications')
     api.add_resource(StripeResource, '/api/create-payment-intent')
     api.add_resource(OrderResource, '/api/orders', '/api/orders/<id>')
-
-    @app.route('/')
-    @app.route('/<path1>')
-    @app.route('/<path1>/<path2>')
-    def serve(**kwargs):
-        return app.send_static_file("index.html")
 
     # Encrypts flask_socketio communications with a secret key
     app.config['SECRET_KEY'] = 'secret!'
