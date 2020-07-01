@@ -1,7 +1,9 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const instance = axios.create();
+const instance = axios.create({
+  baseURL: "/api",
+});
 
 instance.interceptors.request.use(async (config) => {
   config.headers.common["X-CSRF-TOKEN"] = Cookies.get("csrf_access_token");
