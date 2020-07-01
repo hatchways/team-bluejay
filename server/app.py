@@ -41,7 +41,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.init_app(app)
+    # Exclude DB
+    # db.init_app(app)
     api = Api(app)
 
     api.add_resource(UserResource, '/users')
@@ -53,6 +54,10 @@ def create_app():
     api.add_resource(NotificationResource, '/notifications')
     api.add_resource(StripeResource, '/create-payment-intent')
     api.add_resource(OrderResource, '/orders', '/orders/<id>')
+
+    @app.route("/test")
+    def test():
+        return "Test"
 
     # Encrypts flask_socketio communications with a secret key
     app.config['SECRET_KEY'] = 'secret!'
