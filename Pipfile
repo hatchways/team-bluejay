@@ -23,7 +23,6 @@ flask-script = "*"
 faker = "*"
 flask-socketio = "*"
 gunicorn = "*"
-eventlet = "*"
 
 [requires]
 python_version = "3.8"
