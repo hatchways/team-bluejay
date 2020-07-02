@@ -24,6 +24,7 @@ faker = "*"
 flask-socketio = "*"
 gunicorn = "*"
 gevent = "*"
+gevent-websocket = "*"
 
 [requires]
 python_version = "3.8"
