@@ -6,8 +6,27 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+flask = "*"
+flask-sqlalchemy = "*"
+psycopg2 = "*"
+flask-restful = "*"
+marshmallow = "*"
+flask-bcrypt = "*"
+sqlalchemy = "*"
+flask-jwt-extended = "*"
+requests = "*"
+stripe = "*"
+boto3 = "*"
+python-dotenv = "*"
+flask-migrate = "*"
+flask-script = "*"
+faker = "*"
+flask-socketio = "*"
 gunicorn = "*"
 eventlet = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+init_db = "init_db.py"
