@@ -23,8 +23,6 @@ flask-script = "*"
 faker = "*"
 flask-socketio = "*"
 gunicorn = "*"
-gevent = "*"
-gevent-websocket = "*"
 eventlet = "*"
 
 [requires]
