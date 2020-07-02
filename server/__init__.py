@@ -1,4 +1,4 @@
-from flask import Flask, json, jsonify, request, send_from_directory
+from flask import Flask, json, jsonify, request
 from marshmallow import Schema
 from flask_restful import Api
 from server.config import DB_URL
@@ -21,7 +21,6 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from server.models import db
-import os
 
 
 def create_app():
