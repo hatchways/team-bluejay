@@ -21,7 +21,7 @@ python-dotenv = "*"
 flask-migrate = "*"
 flask-script = "*"
 faker = "*"
-flask-socketio = "*"
+flask-socketio = "==4.3.0"
 gunicorn = "*"
 eventlet = "*"
 
