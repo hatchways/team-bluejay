@@ -1,14 +1,14 @@
-from models.MealItem import MealItem, MealItemSchema
-from models.User import User
+from server.models.MealItem import MealItem, MealItemSchema
+from server.models.User import User
 from flask import request, Response, json
 from flask_restful import Resource
-from helpers.api import custom_json_response
+from server.helpers.api import custom_json_response
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
-from helpers.database import save_to_database
-from helpers.image_uploads import upload_picture
+from server.helpers.database import save_to_database
+from server.helpers.image_uploads import upload_picture
 meal_item_schema = MealItemSchema()
-from controllers.meal import create_meal, edit_meal
+from server.controllers.meal import create_meal, edit_meal
 
 
 class MealItemResource(Resource):

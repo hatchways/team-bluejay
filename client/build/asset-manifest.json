@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.73aa1c44.chunk.css",
+    "main.js": "/static/js/main.54ddeef4.chunk.js",
+    "main.js.map": "/static/js/main.54ddeef4.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.e44fb9b9.chunk.js": "/static/js/2.e44fb9b9.chunk.js",
+    "static/js/2.e44fb9b9.chunk.js.map": "/static/js/2.e44fb9b9.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.a7335d27740702d36082ea756a1304e1.js": "/precache-manifest.a7335d27740702d36082ea756a1304e1.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.73aa1c44.chunk.css.map": "/static/css/main.73aa1c44.chunk.css.map",
+    "static/media/chef_banner.png": "/static/media/chef_banner.bb62eab3.png",
+    "static/media/chefs_hat_icon.3ccbf101.svg": "/static/media/chefs_hat_icon.3ccbf101.svg",
+    "static/media/ddb3f7c7b2544f7f1c636f0270f032276c911f02.png": "/static/media/ddb3f7c7b2544f7f1c636f0270f032276c911f02.91bab082.png",
+    "static/media/dish_icon.abcc8b00.svg": "/static/media/dish_icon.abcc8b00.svg",
+    "static/media/logo.29046952.svg": "/static/media/logo.29046952.svg",
+    "static/media/makisushi.jpg": "/static/media/makisushi.14eafd5a.jpg"
+  }
+}

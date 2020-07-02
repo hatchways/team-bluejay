@@ -10,4 +10,7 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
-CLIENT_URL = "/"
+
+# To do: whitelist specific client urls to only include locations where our app is deployed
+# Example: ['http://localhost:5000','http://localhost:3000', 'https://team-bluejay.herokuapp.com/']
+ALLOWED_CLIENT_URLS = '*'

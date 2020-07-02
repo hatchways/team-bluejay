@@ -1,4 +1,4 @@
-from models.User import User, UserSchema
+from server.models.User import User, UserSchema
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import (
@@ -11,8 +11,8 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_refresh_token_required
 )
-from helpers.api import custom_json_response
-from helpers.image_uploads import upload_picture
+from server.helpers.api import custom_json_response
+from server.helpers.image_uploads import upload_picture
 from datetime import timedelta
 from marshmallow import ValidationError
 import os

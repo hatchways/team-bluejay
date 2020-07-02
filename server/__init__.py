@@ -1,18 +1,18 @@
 from flask import Flask, json, jsonify, request, send_from_directory
 from marshmallow import Schema
 from flask_restful import Api
-from config import DB_URL
-from socket_events import socketio
+from server.config import DB_URL
+from server.socket_events import socketio
 
-from api.login_handler import LoginResource
-from api.user_handler import UserResource
-from api.chef_handler import ChefResource
-from api.meal_item_handler import MealItemResource
-from api.LogoutResource import LogoutResource
-from api.StripeResource import StripeResource
-from api.cuisine_handler import CuisineResource
-from api.notification_handler import NotificationResource
-from api.order_handler import OrderResource
+from server.api.login_handler import LoginResource
+from server.api.user_handler import UserResource
+from server.api.chef_handler import ChefResource
+from server.api.meal_item_handler import MealItemResource
+from server.api.LogoutResource import LogoutResource
+from server.api.StripeResource import StripeResource
+from server.api.cuisine_handler import CuisineResource
+from server.api.notification_handler import NotificationResource
+from server.api.order_handler import OrderResource
 
 
 from flask_jwt_extended import (
@@ -20,12 +20,23 @@ from flask_jwt_extended import (
     jwt_refresh_token_required, create_refresh_token,
     get_jwt_identity
 )
-from models import db
+from server.models import db
 import os
 
 
 def create_app():
     app = Flask(__name__, static_folder="../client/build", static_url_path="/")
+
+    @app.route("/manifest.json")
+    def manifest():
+        # prevents manifest.json error from react static build files
+        return app.send_static_file('manifest.json')
+
+    @app.route('/')
+    @app.route('/<path1>')
+    @app.route('/<path1>/<path2>')
+    def serve(**kwargs):
+        return app.send_static_file("index.html")
 
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 
@@ -48,26 +59,16 @@ def create_app():
     api.add_resource(UserResource, '/api/users')
     api.add_resource(ChefResource, '/api/chefs', '/api/chefs/<id>')
     api.add_resource(LoginResource, '/api/users/login')
-    api.add_resource(MealItemResource, '/api/meal_items', '/api/meal_items/<id>')
+    api.add_resource(MealItemResource, '/api/meal_items',
+                     '/api/meal_items/<id>')
     api.add_resource(LogoutResource, '/api/users/logout')
     api.add_resource(CuisineResource, '/api/cuisines')
     api.add_resource(NotificationResource, '/api/notifications')
     api.add_resource(StripeResource, '/api/create-payment-intent')
     api.add_resource(OrderResource, '/api/orders', '/api/orders/<id>')
 
-    @app.route('/')
-    @app.route('/<path1>')
-    @app.route('/<path1>/<path2>')
-    def serve(**kwargs):
-        return app.send_static_file("index.html")
-
     # Encrypts flask_socketio communications with a secret key
     app.config['SECRET_KEY'] = 'secret!'
     socketio.init_app(app)
 
     return app
-
-
-if __name__ == "__main__":
-    app = create_app()
-    socketio.run(app)
