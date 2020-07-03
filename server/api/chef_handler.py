@@ -1,4 +1,4 @@
-from models.User import User, UserSchema
+from server.models.User import User, UserSchema
 from flask import request, Response, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import (
@@ -10,15 +10,16 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-from helpers.api import custom_json_response
-from helpers.database import save_to_database
+from server.helpers.api import custom_json_response
+from server.helpers.database import save_to_database
 from sqlalchemy import exc, or_
-from helpers.distance import distance
-from controllers.meal import create_meal, become_chef
+from server.helpers.distance import distance
+from server.controllers.meal import create_meal, become_chef
 import json
 
 user_schema = UserSchema()
-user_schema_private = UserSchema(exclude=['password', 'email', 'isChef', 'address'])
+user_schema_private = UserSchema(
+    exclude=['password', 'email', 'isChef', 'address'])
 
 
 class ChefResource(Resource):
@@ -42,7 +43,8 @@ class ChefResource(Resource):
 
         # supply maxDistance, userLat, and userLong to filter by distance
         if (q_params.get("maxDistance") and q_params.get("userLat") and q_params.get("userLon")):
-            user_loc = (float(q_params.get("userLat")), float(q_params.get("userLon")))
+            user_loc = (float(q_params.get("userLat")),
+                        float(q_params.get("userLon")))
             max_dist = float(q_params.get("maxDistance"))
             applied_filters.append("distance")
             ser_chefs = [

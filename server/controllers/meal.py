@@ -1,6 +1,6 @@
-from helpers.image_uploads import upload_picture
-from helpers.api import custom_json_response
-from models.MealItem import MealItem, MealItemSchema
+from server.helpers.image_uploads import upload_picture
+from server.helpers.api import custom_json_response
+from server.models.MealItem import MealItem, MealItemSchema
 meal_item_schema = MealItemSchema()
 from marshmallow import ValidationError
 

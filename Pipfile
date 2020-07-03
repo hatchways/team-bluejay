@@ -1,3 +1,4 @@
+
 [[source]]
 name = "pypi"
 url = "https://pypi.org/simple"
@@ -22,6 +23,8 @@ flask-migrate = "*"
 flask-script = "*"
 faker = "*"
 flask-socketio = "*"
+gunicorn = "*"
+eventlet = "*"
 
 [requires]
 python_version = "3.8"

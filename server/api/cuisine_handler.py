@@ -1,5 +1,5 @@
-from models.Cuisine import Cuisine, CuisineSchema
-from helpers.api import custom_json_response
+from server.models.Cuisine import Cuisine, CuisineSchema
+from server.helpers.api import custom_json_response
 from flask_restful import Resource
 
 cuisines_schema = CuisineSchema(many=True, only=("id", "name"))

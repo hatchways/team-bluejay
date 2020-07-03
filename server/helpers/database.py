@@ -1,4 +1,4 @@
-from models import db
+from server.models import db
 from sqlalchemy.exc import SQLAlchemyError
 
 

@@ -19,20 +19,20 @@ It’s always nice to have a homecooked meal that is authentic and made in your 
 
 ## Setup instructions
 
-Rename `.env.template` under both the `server` and `client` folders to `.env` and update the values/settings to your own.
+Rename `.env.template` under both the root and `client` folders to `.env` and update the values/settings to your own.
 
 ### Adding Postgres database
 
 1. Download [Postgres](https://www.postgresql.org/)
 2. Create new database using any SQL client such as [pgAdmin](https://www.pgadmin.org/).
-3. Update `server/.env` with your database name, user, password, and url.
+3. Update root `.env` with your database name, user, password, and url.
 4. Set up your database tables by running `python init_db.py`
 5. Add sample customers, chefs, and cuisines by running `python db_seeder.py`
 
 ### Starting the server
 
-1. Open a terminal and go to the server folder. Make sure you have **pipenv** installed (`pip install pipenv`)
-2. Install the dependencies with `pipenv install`. This also creates a virtual environment, if there isn't one already
+1. Open a terminal. Make sure you have **pipenv** installed (`pip install pipenv`)
+2. Install the dependencies with `pipenv install`. This also creates a virtual environment, if there isn't one already.
 3. Activate the virtual environment with `pipenv shell`
 4. Start the app with `flask run`
 
@@ -50,9 +50,9 @@ After changing any database models, you'll need to update your SQL tables by goi
 2. `python manage.py db migrate` to populate our "migrations" folder with the updated tables
 3. `python manage.py db upgrade` to apply the changes to the database
 
-## Special instructions for running in production
+## Special instructions for running in development
 
-Within your server install the python library [eventlet](https://eventlet.net/), an optimized engine for web sockets. Flask-socketio will automatically use `eventlet` if its installed.
+Pipfile includes the python library [eventlet](https://eventlet.net/), an optimized engine for running web sockets in production. `eventlet` will be frustrating for local development as it disables automatic reloading of server. For local development, run `pipenv uninstall eventlet` but **do not** commit that change when pushing to Github.
 
 ## Features
 
