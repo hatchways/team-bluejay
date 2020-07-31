@@ -2,7 +2,7 @@
 
 It’s always nice to have a homecooked meal that is authentic and made in your own kitchen. [Chef's Menu](https://team-bluejay.herokuapp.com) is a marketplace where customers can book a chef in their area based on cuisine type and availability.
 
-<sub><sup>[Go to live site](https://team-bluejay.herokuapp.com)</sup></sub>
+[Go to live site](https://team-bluejay.herokuapp.com)
 
 ![Chef's Menu application in use](client/src/images/chefsMenu.gif)
 
